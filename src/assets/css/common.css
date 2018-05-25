@@ -1,0 +1,738 @@
+@import '~antd/dist/antd.css';
+body {
+  margin: 0;
+  padding: 0;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+  overflow-x: hidden;
+  background: #F1FCFF;
+}
+.login {
+  background: url('../img/login.png') no-repeat;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.login .ant-spin-container {
+  width: 100vw;
+  height: 100vh;
+}
+.login .item {
+  margin: 20px 0;
+}
+.login .login_box {
+  width: 400px;
+  height: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -200px;
+  background: #fff;
+}
+.login .login_box .title {
+  width: 100%;
+  height: 63px;
+  background: linear-gradient(#6ba0d4, #1E75CE);
+  line-height: 63px;
+}
+.login .login_box .title img {
+  width: 145px;
+  height: 24px;
+  margin-left: 20px;
+}
+.login .login_box .inner {
+  text-align: center;
+}
+.login .login_box .inner img {
+  width: 26px;
+  height: 26px;
+  position: relative;
+  top: 0;
+  left: -35px;
+}
+.login .login_box .ant-btn {
+  width: 180px;
+  height: 40px;
+  margin-top: 20px;
+}
+.login .login_box a {
+  font-family: '微软雅黑';
+  font-size: 12px;
+  color: #999;
+  font-weight: normal;
+  margin-left: 30px;
+}
+ul {
+  padding: 0;
+  margin: 0;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.clean:after {
+  content: '';
+  display: table;
+  clear: both;
+  overflow: hidden;
+}
+#root ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+#root ::-webkit-scrollbar-track {
+  background: #f6f6f6;
+  border-radius: 4px;
+}
+#root ::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+#root ::-webkit-scrollbar-thumb:hover {
+  background: #747474;
+}
+#root ::-webkit-scrollbar-corner {
+  background: #f6f6f6;
+}
+.nav {
+  margin-bottom: 20px;
+}
+.nav span {
+  float: left;
+  display: block;
+  padding: 5px;
+  margin: 0 10px;
+}
+.nav .active {
+  border-bottom: 2px solid #2A8CF1;
+}
+.ant-table-header {
+  margin-bottom: -10px !important;
+}
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  padding: 9px;
+}
+.bx {
+  box-sizing: border-box;
+}
+.ant-table-body {
+  background: #fff;
+}
+.ant-table {
+  box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.6);
+}
+a {
+  text-decoration: none;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+}
+a:focus {
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+.dialog .mask {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+.dialog .main {
+  width: 1000px;
+  height: 460px;
+  background: #F2FCFF;
+  padding: 23px;
+  box-sizing: border-box;
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -230px;
+  margin-left: -500px;
+}
+.dialog .main .detail {
+  width: 760px;
+  height: 350px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  padding: 10px 0;
+  background: #fff;
+  box-shadow: 0px 2px 14px #ccc inset;
+}
+header {
+  width: 1920px;
+  height: 200px;
+  background: url('../img/top_bg.png') no-repeat 0 0;
+  background-size: 100% 100%;
+  position: relative;
+  margin-bottom: 36px;
+}
+header .logo {
+  background: url('../img/top_title.png') no-repeat 0 0;
+  background-size: 100% 100%;
+  width: 260px;
+  height: 30px;
+  position: absolute;
+  top: 48px;
+  left: 121px;
+}
+header .loginInfo {
+  float: right;
+  margin-top: 25px;
+  vertical-align: middle;
+  margin-right: 100px;
+  font-family: '微软雅黑';
+  font-size: 16px;
+  color: #fff;
+  font-weight: normal;
+}
+header .loginInfo img {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+}
+header .top_nav {
+  width: 100%;
+  height: 36px;
+  position: absolute;
+  top: 164px;
+  left: 0px;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #fff;
+  font-weight: normal;
+}
+header .top_nav a {
+  color: #ddd;
+}
+header .top_nav .select {
+  background: #ccc !important;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+}
+header .top_nav .navItem {
+  float: left;
+  border: 1px solid #ccc;
+  width: 195px;
+  background: transparent;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+}
+header .top_nav .nav {
+  float: left;
+}
+header .top_nav .nav b {
+  position: absolute;
+  top: 7px;
+  left: 160px;
+  width: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+header .top_nav .nav b:hover {
+  color: #999;
+}
+header .subNav {
+  background: #eee;
+  width: 1920px;
+  height: 35px;
+  position: absolute;
+  top: 36px;
+  left: 0px;
+}
+header .subNav a {
+  float: left;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+  width: 195px;
+  height: 34px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+}
+header .subNav .subActive {
+  background: #fff;
+}
+header .select .subNav {
+  display: block;
+}
+.navIndex {
+  width: 1440px;
+  margin: 40px auto;
+}
+.navIndex .row {
+  margin: 60px 50px;
+}
+.navIndex a {
+  float: left;
+  padding-top: 130px;
+  line-height: 70px;
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+  width: 300px;
+  background: #fff;
+  margin: 0 72px;
+  box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.28);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.navIndex img {
+  width: 120px;
+  position: absolute;
+  top: 10%;
+  left: 30%;
+}
+.msg {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.msg .msgBar {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 40px;
+}
+.msg .msgBar .context {
+  cursor: pointer;
+  margin: 0 12px;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+}
+.container {
+  width: 1440px;
+  margin: 60px auto;
+}
+.container .ant-table-wrapper {
+  margin-top: 20px;
+}
+.container .topForm {
+  width: 100%;
+  background: #fff;
+  box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.6);
+  padding: 5px 46px;
+  box-sizing: border-box;
+}
+.container .topForm .ant-form-item {
+  margin: 10px 0px;
+}
+.container .topForm .formItem {
+  position: relative;
+  top: 0;
+  left: 0;
+  font-family: '微软雅黑';
+  font-size: 12px;
+  color: #323232;
+  font-weight: normal;
+  margin-right: 40px;
+}
+.container .topForm .formItem .ant-form-item-label {
+  line-height: 34px;
+  z-index: 10;
+  position: absolute;
+  top: 0px;
+  left: 10px;
+}
+.container .topForm .formItem .ant-form-item-control {
+  line-height: 34px;
+}
+.container .topForm .formItem input {
+  width: 230px;
+  height: 34px;
+  padding-left: 60px;
+  box-sizing: border-box;
+}
+.container .topForm .empty {
+  font-family: '微软雅黑';
+  font-size: 12px;
+  color: #5977FF;
+  font-weight: normal;
+  line-height: 34px;
+  position: relative;
+  top: 10px;
+  left: 0;
+}
+.container .entry .top {
+  margin: 10px 0px;
+}
+.container .entry .search {
+  width: 230px;
+  float: left;
+  margin-left: 20px;
+}
+.container .entry .add {
+  float: right;
+  margin-right: 20px;
+}
+.container .entry .addNew {
+  padding-top: 10px;
+}
+.container .entry .addNew h2 {
+  text-align: center;
+  color: #323232;
+}
+.container .entry .addNew .addForm {
+  width: 1440px;
+  padding: 40px 141px;
+  background: #fff;
+  box-shadow: 8px 0px 28px rgba(98, 98, 98, 0.2);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .entry .addNew .addForm .row {
+  margin: 3px 0;
+  width: 100%;
+}
+.container .entry .addNew .addForm .row .note {
+  margin: 0 30px;
+}
+.container .entry .addNew .addForm .btns {
+  position: absolute;
+  top: 79.5%;
+  left: 70%;
+}
+.container .entry .addNew .addForm .btns button {
+  display: block;
+  width: 200px;
+  margin: 20px 0;
+}
+.container .entry .addNew .addForm .formItem {
+  margin: 30px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .entry .addNew .addForm .formItem .ant-form-item-label {
+  position: absolute;
+  top: -32px;
+  left: 0px;
+}
+.container .entry .addNew .addForm .formItem .tag {
+  position: absolute;
+  right: 0;
+  top: -42px;
+}
+.container .entry .addNew .addForm .formItem input {
+  text-align: center;
+  width: 210px;
+}
+.container .entry .addNew .addForm .formItem .ant-select {
+  width: 210px !important;
+}
+.container .entry .addNew .addForm .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .info .ant-btn {
+  width: 140px;
+  height: 38px;
+  margin-left: 120px;
+  margin-top: 20px;
+}
+.container .info .ant-spin-container {
+  margin-top: 20px;
+}
+.container .dataQuery .ant-btn {
+  width: 140px;
+  height: 38px;
+  margin-left: 60px;
+  margin-top: 25px;
+}
+.container .prove .topForm .ant-btn {
+  margin-left: 100px;
+  margin-top: 25px;
+  width: 140px;
+  height: 36px;
+}
+.container .prove .history {
+  margin-top: 20px;
+  width: 750px;
+  height: 300px;
+  padding: 15px;
+  box-sizing: border-box;
+  background: #fff;
+}
+.container .prove .history .ant-table {
+  box-shadow: none;
+}
+.container .prove .apply {
+  margin-top: 20px;
+  height: 300px;
+  width: 670px;
+  box-sizing: border-box;
+  text-align: center;
+  background: #fff;
+}
+.container .prove .apply .applyBtn {
+  width: 320px;
+  margin: 100px auto 0px;
+}
+.container .prove .apply .applyBtn .ant-btn {
+  width: 140px;
+  height: 42px;
+}
+.container .prove .apply .isApply {
+  margin: 20px auto 0px;
+  width: 325px;
+  height: 42px;
+  line-height: 42px;
+  text-align: center;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #323232;
+  font-weight: normal;
+  background: #EDF7FA;
+}
+.container .invalid .topForm .ant-btn {
+  margin-left: 100px;
+  margin-top: 25px;
+  width: 140px;
+  height: 36px;
+}
+.container .invalid .submit {
+  margin-top: 30px;
+}
+.container .audit .ant-form-item {
+  margin-bottom: 0px;
+}
+.container .audit .topForm .ant-btn-primary {
+  margin-left: 400px;
+  width: 120px;
+}
+.container .audit .footer {
+  margin-top: 10px;
+}
+.container .audit .footer .ant-btn {
+  margin-left: 20px;
+  height: 42px;
+  width: 120px;
+}
+.container .save .dialog .ant-table-wrapper {
+  margin-top: 0px;
+}
+.container .save .dialog .diaBtns {
+  width: 200px;
+  position: absolute;
+  top: 74%;
+  left: 83%;
+}
+.container .save .dialog .diaBtns .ant-btn {
+  width: 120px;
+  height: 36px;
+  margin: 5px auto;
+}
+.container .save .dialog .formItem {
+  margin: 20px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .save .dialog .formItem textarea.ant-input {
+  width: 700px;
+}
+.container .save .dialog .formItem .ant-form-item-label {
+  position: absolute;
+  top: -29px;
+  left: 0px;
+}
+.container .save .dialog .formItem input {
+  text-align: center;
+  width: 200px;
+}
+.container .save .dialog .formItem .ant-select {
+  width: 200px !important;
+}
+.container .save .dialog .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .save .dialog .formItem .pay {
+  box-sizing: border-box;
+  padding-right: 80px;
+}
+.container .save .dialog .formItem .unit {
+  position: absolute;
+  top: -10px;
+  left: 130px;
+}
+.container .save .dialog .confirm {
+  float: right;
+  margin-top: 10px;
+}
+.container .query .topForm .ant-btn,
+.container .log .topForm .ant-btn {
+  margin-left: 300px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .maintenance .ant-btn {
+  width: 120px;
+  margin-top: 10px;
+  margin-right: 50px;
+}
+.container .maintenance .edit {
+  width: 1440px;
+  padding: 40px 141px;
+  background: #fff;
+  box-shadow: 8px 0px 28px rgba(98, 98, 98, 0.2);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .maintenance .edit h2 {
+  text-align: center;
+}
+.container .maintenance .edit .row {
+  margin: 3px 0;
+  width: 100%;
+}
+.container .maintenance .edit .row .note {
+  margin: 0 30px;
+}
+.container .maintenance .edit .btns {
+  position: absolute;
+  top: 79.5%;
+  left: 70%;
+}
+.container .maintenance .edit .btns button {
+  display: block;
+  width: 200px;
+  margin: 20px 0;
+}
+.container .maintenance .edit .formItem {
+  margin: 10px 30px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .maintenance .edit .formItem .ant-form-item-label {
+  position: absolute;
+  top: -32px;
+  left: 0px;
+}
+.container .maintenance .edit .formItem .tag {
+  position: absolute;
+  right: 0;
+  top: -42px;
+}
+.container .maintenance .edit .formItem input {
+  text-align: center;
+  width: 210px;
+}
+.container .maintenance .edit .formItem .ant-select {
+  width: 210px !important;
+}
+.container .maintenance .edit .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .change .ant-btn {
+  margin-top: 30px;
+  width: 120px;
+  margin-right: 50px;
+}
+.container .change .chgForm h2 {
+  text-align: center;
+}
+.container .change .chgForm .addForm {
+  text-align: center;
+  width: 1440px;
+  padding: 40px 141px;
+  background: #fff;
+  box-shadow: 8px 0px 28px rgba(98, 98, 98, 0.2);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .change .chgForm .addForm p {
+  position: relative;
+  top: -10px;
+  left: 0;
+  display: inline-block;
+  font-family: '微软雅黑';
+  font-size: 16px;
+  color: #323232;
+  font-weight: normal;
+  padding: 10px 20px;
+  border-bottom: 2px solid #323232;
+}
+.container .change .chgForm .addForm .row {
+  margin: 3px 0;
+  width: 100%;
+}
+.container .change .chgForm .addForm .row .note {
+  margin: 0 30px;
+}
+.container .change .chgForm .addForm .btns {
+  position: absolute;
+  top: 80.5%;
+  left: 87%;
+}
+.container .change .chgForm .addForm .btns button {
+  display: block;
+  width: 120px;
+  margin: 20px 0;
+}
+.container .change .chgForm .addForm .formItem {
+  margin: 10px 30px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .change .chgForm .addForm .formItem .ant-form-item-label {
+  position: absolute;
+  top: -32px;
+  left: 0px;
+}
+.container .change .chgForm .addForm .formItem input {
+  text-align: center;
+  width: 210px;
+}
+.container .change .chgForm .addForm .formItem .ant-select {
+  width: 210px !important;
+}
+.container .recode .topForm .ant-btn {
+  margin-left: 300px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .notice .topForm .ant-btn {
+  margin-right: 50px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
