@@ -125,6 +125,10 @@ ul{
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
   padding:9px;
 }
+.ant-table-body{
+  min-height: 500px;
+  background: #fff;
+}
 // 居中
 .center(@w,@h){
   margin: 0 auto;
@@ -155,9 +159,7 @@ ul{
   top:@t;
   left:@l;
 }
-.ant-table-body{
-  background: #fff;
-}
+
 .ant-table{
   box-shadow: 0px 0px 28px rgba(181,194,197,0.6);
 }
@@ -170,13 +172,17 @@ ul{
   }
 a{
   text-decoration: none;
-  .font()
+  .font(#1890ff)
 }
 a:focus{
   text-decoration: none;
 }
 li{
   list-style: none;
+}
+.comment{
+  width: 780px !important;
+  overflow: hidden;
 }
 // 对话框样式
 .dialog{
@@ -363,10 +369,14 @@ header{
       .ant-form-item-control{
         line-height: 34px;
       }
+      .ant-select-selection__rendered{
+        padding-left: 70px;
+        .bx;
+      }
       input{
         width: 230px;
         height: 34px;
-        padding-left: 60px;
+        padding-left: 75px;
         .bx;
       }
     }
@@ -460,8 +470,22 @@ header{
     .ant-btn{
       width: 140px;
       height: 38px;
+      margin-top: 30px;
       margin-left: 60px;
-      margin-top: 25px;
+    }
+    .ant-input{
+      padding:0px;
+      height: 34px;
+      .ant-calendar-range-picker-input:first-child{
+        padding-left: 70px;
+        .bx;
+      }
+      input{
+        padding:0px;
+      }
+    }
+    .ant-calendar-range-picker-input{
+      width:155px !important;
     }
   }
   // 打印模块
@@ -545,6 +569,22 @@ header{
   }
   // 收费模块
   .save{
+    .topForm{
+      .ant-btn{
+        margin-left: 100px;
+        margin-top: 10px;
+        width: 140px;
+        height: 36px;
+      }
+    }
+    .code{
+      .ant-form-explain{
+        width:200px;
+      }
+      .ant-col-sm-8{
+        width: 70%;
+      }
+    } 
     .dialog{
       .ant-table-wrapper{
         margin-top: 0px;
@@ -597,8 +637,8 @@ header{
   .query,.log{
     .topForm{
       .ant-btn{
-        margin-left: 300px;
-        margin-top: 10px;
+        margin-right: 50px;
+        margin-top: 30px;
         width: 140px;
         height: 36px;
       }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Upload from '../../component/upload'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker } from 'antd';
+import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker , message } from 'antd';
 import Avatar from '../../component/upload';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -40,30 +40,30 @@ function CarDetail(props){//查看车辆详情
   );
 }
 
-function UnabledItem(props){//禁用表单项
-    return (
-      <FormItem label = {props.label} className = 'formItem clean'>
-        {props.tag && (<span className = 'tag'>{props.tag}</span>)}
-        <Input disabled placeholder = {props.value} className = 'disabled'/>
-      </FormItem>
-    )
-}
+// function UnabledItem(props){//禁用表单项
+//     return (
+//       <FormItem label = {props.label} className = 'formItem clean'>
+//         {props.tag && (<span className = 'tag'>{props.tag}</span>)}
+//         <Input disabled placeholder = {props.value} className = 'disabled'/>
+//       </FormItem>
+//     )
+// }
 
 
 
 
-function SelectItem(props){//下拉表单项
-   let opt = props.value.map((v,i)=>{
-     return <Option value={v} key={i}>{v}</Option>
-   })
-    return (
-      <FormItem label = {props.label} className = 'formItem clean'>
-        <Select defaultValue={props.value[0]} style={{ width: 120 }} onChange={props.formChange.bind(this,props.link)}>
-          {opt}
-        </Select>
-      </FormItem>
-    )
-}
+// function SelectItem(props){//下拉表单项
+//    let opt = props.value.map((v,i)=>{
+//      return <Option value={v} key={i}>{v}</Option>
+//    })
+//     return (
+//       <FormItem label = {props.label} className = 'formItem clean'>
+//         <Select defaultValue={props.value[0]} style={{ width: 120 }} onChange={props.formChange.bind(this,props.link)}>
+//           {opt}
+//         </Select>
+//       </FormItem>
+//     )
+// }
  class AddNew extends Component {
  
    constructor(props) {
@@ -95,10 +95,11 @@ function SelectItem(props){//下拉表单项
     this.props.form.validateFields((err, values) => {
       console.log(values)
       if (!err) {
-        console.log('Received values of form: ', values);
-        values.carId = this.props.item.id
+        values.carId = this.props.item.id;
+        values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
         $Funs.$AJAX('car/newCar','post',values,(res)=>{
-          console.log(res)
+          message.success('操作成功');
+          props.cancel()
         })
       }
     });
@@ -116,7 +117,7 @@ function SelectItem(props){//下拉表单项
   //   })
   // }
   render() {
-    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+    const { getFieldDecorator} = this.props.form;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -265,7 +266,7 @@ function SelectItem(props){//下拉表单项
                       initialValue:'马良车辆监控导航系统'
                     })(
                       <Select  style={{ width: 120 }} onChange={this.handleSelect}>
-                        <Option value="北斗/GPS双模">马良车辆监控导航系统</Option>
+                        <Option value="马良车辆监控导航系统">马良车辆监控导航系统</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -321,6 +322,11 @@ function SelectItem(props){//下拉表单项
                     })(
                       <Input  />
                     )}
+                  </FormItem>
+                </div>
+                <div className ="row clean">
+                  <FormItem  className = 'formItem clean' label='备注'>
+                    <Input  value={this.props.item.comment} disabled className = 'disabled comment'/>
                   </FormItem>
                 </div>
                 <FormItem className = 'btns'>

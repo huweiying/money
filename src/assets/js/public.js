@@ -1,4 +1,5 @@
 import $http from "superagent";
+import { message } from 'antd';
 const cook = {
   set(name, value, days) {
     var d = new Date();
@@ -16,7 +17,7 @@ const cook = {
     cook.set(name, "", -1);
   }
 };
-const Basse_Port = "http://192.168.1.84:8899/api/v1/";
+const Basse_Port = "http://192.168.1.82:8899/api/v1/";
 window.$Funs = {
   cook: cook,
   Basse_Port: Basse_Port,
@@ -52,6 +53,7 @@ window.$Funs = {
         $put.end((err, res) => {
           if (err || !res.ok) {
             //错误提示
+            message.error('网络错误');
             reject();
           } else {
             if(res.status == 200 || res.status == 201){
@@ -66,7 +68,14 @@ window.$Funs = {
     });
     return p;
   },
-  index_config: {}
+  index_config: {},
+  formatDate(data){
+    let time = new Date(data)
+    let year = time.getFullYear();
+    let month = (time.getMonth() + 1)<10 ? '0'+ (time.getMonth() + 1) : time.getMonth() + 1;
+    let date = time.getDate()
+    return year + '-' + month + '-' + date
+  }
 };
 /*export default {
   cook: cook,

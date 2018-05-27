@@ -86,6 +86,14 @@ class THeader extends Component {
       return v
     })
     navArr[i].active = true;
+    if(!navArr[i].child){
+      return
+    }
+    navArr[i].child = navArr[i].child.map(v=>{
+      v.active = false;
+      return v
+    })
+    navArr[i].child[0].active = true
   }
   subchange = (i) =>{//子路由下标
     let index = '';

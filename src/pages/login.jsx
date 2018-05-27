@@ -39,6 +39,7 @@ class TLogin extends Component {
           // 成功登录
           $Funs.cook.set('token',res.body.token,7)
           $Funs.cook.set('userName',res.body.userName,7)
+          $Funs.cook.set('id',res.body.id,7)
           this.props.history.push('/')
         }
       });
