@@ -130,6 +130,16 @@ ul {
 .ant-table {
   box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.6);
 }
+.ant-table-thead > tr > th.ant-table-selection-column,
+.ant-table-tbody > tr > td.ant-table-selection-column {
+  min-width: 0px;
+  width: 8px;
+}
+.ant-table-expand-icon-th,
+.ant-table-row-expand-icon-cell {
+  width: 40px;
+  min-width: 0px;
+}
 a {
   text-decoration: none;
   font-family: '微软雅黑';
@@ -154,6 +164,19 @@ li {
   left: 0px;
   width: 100%;
   height: 100%;
+}
+.dialog .ant-table-body {
+  min-height: 220px;
+}
+.dialog span {
+  cursor: pointer;
+}
+.dialog .title {
+  text-align: center;
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #323232;
+  font-weight: normal;
 }
 .dialog .main {
   width: 1000px;
@@ -470,24 +493,34 @@ header .select .subNav {
 .container .info .ant-spin-container {
   margin-top: 20px;
 }
-.container .dataQuery .ant-btn {
+.container .dataQuery .topForm .ant-btn,
+.container .query .topForm .ant-btn,
+.container .modify .topForm .ant-btn {
   width: 140px;
   height: 38px;
   margin-top: 30px;
   margin-left: 60px;
 }
-.container .dataQuery .ant-input {
+.container .dataQuery .topForm .ant-input,
+.container .query .topForm .ant-input,
+.container .modify .topForm .ant-input {
   padding: 0px;
   height: 34px;
 }
-.container .dataQuery .ant-input .ant-calendar-range-picker-input:first-child {
+.container .dataQuery .topForm .ant-input .ant-calendar-range-picker-input:first-child,
+.container .query .topForm .ant-input .ant-calendar-range-picker-input:first-child,
+.container .modify .topForm .ant-input .ant-calendar-range-picker-input:first-child {
   padding-left: 70px;
   box-sizing: border-box;
 }
-.container .dataQuery .ant-input input {
+.container .dataQuery .topForm .ant-input input,
+.container .query .topForm .ant-input input,
+.container .modify .topForm .ant-input input {
   padding: 0px;
 }
-.container .dataQuery .ant-calendar-range-picker-input {
+.container .dataQuery .topForm .ant-calendar-range-picker-input,
+.container .query .topForm .ant-calendar-range-picker-input,
+.container .modify .topForm .ant-calendar-range-picker-input {
   width: 155px !important;
 }
 .container .prove .topForm .ant-btn {
@@ -559,70 +592,104 @@ header .select .subNav {
   height: 42px;
   width: 120px;
 }
-.container .save .topForm .ant-btn {
+.container .save .topForm .ant-btn,
+.container .modify .topForm .ant-btn {
   margin-left: 100px;
   margin-top: 10px;
   width: 140px;
   height: 36px;
 }
-.container .save .code .ant-form-explain {
+.container .save .code .ant-form-explain,
+.container .modify .code .ant-form-explain {
   width: 200px;
 }
-.container .save .code .ant-col-sm-8 {
-  width: 70%;
+.container .save .code .ant-col-sm-8,
+.container .modify .code .ant-col-sm-8 {
+  width: 150px;
 }
-.container .save .dialog .ant-table-wrapper {
+.container .save .code #invoiceNum,
+.container .modify .code #invoiceNum {
+  width: 150px;
+}
+.container .save .dialog .ant-table-wrapper,
+.container .modify .dialog .ant-table-wrapper {
   margin-top: 0px;
 }
-.container .save .dialog .diaBtns {
+.container .save .dialog .diaBtns,
+.container .modify .dialog .diaBtns {
   width: 200px;
   position: absolute;
   top: 74%;
   left: 83%;
 }
-.container .save .dialog .diaBtns .ant-btn {
+.container .save .dialog .diaBtns .ant-btn,
+.container .modify .dialog .diaBtns .ant-btn {
   width: 120px;
   height: 36px;
   margin: 5px auto;
 }
-.container .save .dialog .formItem {
+.container .save .dialog .formItem,
+.container .modify .dialog .formItem {
   margin: 20px;
   float: left;
   position: relative;
   top: 0;
   left: 0;
 }
-.container .save .dialog .formItem textarea.ant-input {
+.container .save .dialog .formItem textarea.ant-input,
+.container .modify .dialog .formItem textarea.ant-input {
   width: 700px;
 }
-.container .save .dialog .formItem .ant-form-item-label {
+.container .save .dialog .formItem .ant-form-item-label,
+.container .modify .dialog .formItem .ant-form-item-label {
   position: absolute;
   top: -29px;
   left: 0px;
 }
-.container .save .dialog .formItem input {
+.container .save .dialog .formItem input,
+.container .modify .dialog .formItem input {
   text-align: center;
   width: 200px;
 }
-.container .save .dialog .formItem .ant-select {
-  width: 200px !important;
+.container .save .dialog .formItem .ant-select,
+.container .modify .dialog .formItem .ant-select {
+  width: 200px;
 }
-.container .save .dialog .formItem .ant-upload.ant-upload-select-picture-card {
+.container .save .dialog .formItem .ant-upload.ant-upload-select-picture-card,
+.container .modify .dialog .formItem .ant-upload.ant-upload-select-picture-card {
   width: 210px;
   margin-top: 5px;
 }
-.container .save .dialog .formItem .pay {
+.container .save .dialog .formItem .pay,
+.container .modify .dialog .formItem .pay {
   box-sizing: border-box;
   padding-right: 80px;
 }
-.container .save .dialog .formItem .unit {
+.container .save .dialog .formItem .unit,
+.container .modify .dialog .formItem .unit {
   position: absolute;
   top: -10px;
   left: 130px;
 }
-.container .save .dialog .confirm {
+.container .save .dialog .confirm,
+.container .modify .dialog .confirm {
   float: right;
   margin-top: 10px;
+}
+.container .modify .title {
+  text-align: center;
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #323232;
+  font-weight: normal;
+  margin: 10px 0;
+}
+.container .modify .topForm .ant-btn {
+  margin-left: 0px;
+  margin-right: 50px;
+  margin-top: 30px;
+  width: 140px;
+  height: 36px;
 }
 .container .query .topForm .ant-btn,
 .container .log .topForm .ant-btn {
@@ -630,6 +697,65 @@ header .select .subNav {
   margin-top: 30px;
   width: 140px;
   height: 36px;
+}
+.container .stop .topForm .ant-btn {
+  margin-right: 50px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .stop .dialog .ant-table-wrapper {
+  margin-top: 0px;
+}
+.container .stop .dialog .diaBtns {
+  width: 200px;
+  position: absolute;
+  top: 74%;
+  left: 83%;
+}
+.container .stop .dialog .diaBtns .ant-btn {
+  width: 120px;
+  height: 36px;
+  margin: 5px auto;
+}
+.container .stop .dialog .formItem {
+  margin: 20px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .stop .dialog .formItem textarea.ant-input {
+  width: 700px;
+}
+.container .stop .dialog .formItem .ant-form-item-label {
+  position: absolute;
+  top: -29px;
+  left: 0px;
+}
+.container .stop .dialog .formItem input {
+  text-align: center;
+  width: 200px;
+}
+.container .stop .dialog .formItem .ant-select {
+  width: 200px;
+}
+.container .stop .dialog .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .stop .dialog .formItem .pay {
+  box-sizing: border-box;
+  padding-right: 80px;
+}
+.container .stop .dialog .formItem .unit {
+  position: absolute;
+  top: -10px;
+  left: 130px;
+}
+.container .stop .dialog .confirm {
+  float: right;
+  margin-top: 10px;
 }
 .container .maintenance .ant-btn {
   width: 120px;

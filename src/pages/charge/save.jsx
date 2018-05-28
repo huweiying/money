@@ -87,13 +87,37 @@ class TMsgDetail extends Component{
     }
     
   }
+  componentWillMount(){
+    this.initTable()
+  }
+  initTable=()=>{
+    $Funs.$AJAX('getChargeByNewCarId','get',{newCarId:this.props.detail.newCarId},(res)=>{
+      let data = res.data.map((v,i)=>{
+        v.key = i;
+        v.chargeTime = $Funs.formatDate(v.chargeTime);
+        v.deadlineDate = $Funs.formatDate(v.deadlineDate);
+        return v
+      })
+      this.setState({
+        data:data
+      })
+    })  
+  }
+  handleNav = ()=>{
+    this.setState({
+      navIndex: this.state.navIndex == 0 ? 1 : 0
+    })
+  }
   handleSubmit = ()=>{
     this.props.form.validateFields((err, values) => {
       if(!err){
+        values.invoiceNum = values.prefix + values.invoiceNum;
+        delete values.prefix;
         values.newCarId = this.props.detail.newCarId;
         values.vehicleId = this.props.detail.vehicleId;
         values.teamName = this.props.detail.teamName;
         values.inputMan = $Funs.cook.get('id');
+        values.inputManName = $Funs.cook.get('name');
         values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
         $Funs.$AJAX('charge','post',values,(res)=>{
           message.success('操作成功');
@@ -104,16 +128,14 @@ class TMsgDetail extends Component{
   }
   render(){
     const recodeColumns = [
-      { title: '车辆ID', width: 100, dataIndex: 'newCarId',align: 'center' },
-      { title: '公司车队', width: 150, dataIndex: 'teamName' ,align: 'center' },
-      { title: '车牌号码', dataIndex: 'vehicleId', width: 150 ,align: 'center' },
-      { title: '安装时间', dataIndex: '',  width: 150 ,align: 'center' },
-      { title: '收费金额', dataIndex: 'address',  width: 150 ,align: 'center' },
-      { title: '有效期至', dataIndex: 'address', width: 150 ,align: 'center' },
-      { title: '发票号码', dataIndex: 'address', width: 150 ,align: 'center' },
-      { title: '支付方式', dataIndex: 'address', width: 150 ,align: 'center' },
-      { title: '收费备注', dataIndex: 'address', width: 150 ,align: 'center' },
-      { title: '收款人', dataIndex: 'address', width: 150 ,align: 'center' },
+      { title: '公司车队', width: 150, dataIndex: 'teamName' , key:'teamName',align: 'center' },
+      { title: '车牌号码', dataIndex: 'vehicleId',key:'vehicleId', width: 100 ,align: 'center' },
+      { title: '收费日期', dataIndex: 'chargeTime',key:'chargeTime', width: 100 ,align: 'center' },
+      { title: '收费金额', dataIndex: 'moneyAmont',key:'moneyAmont',  width: 100 ,align: 'center' },
+      { title: '有效期至', dataIndex: 'deadlineDate',key:'deadlineDate', width: 100 ,align: 'center' },
+      { title: '发票号码', dataIndex: 'invoiceNum',key:'invoiceNum', width: 100 ,align: 'center' },
+      { title: '支付方式', dataIndex: 'payType',key:'payType', width: 100 ,align: 'center' },
+      { title: '收款人', dataIndex: 'inputManName',key:'inputManName', width: 100 ,align: 'center' },
     ];
     const { getFieldDecorator} = this.props.form;
     const formItemLayout = {
@@ -126,6 +148,14 @@ class TMsgDetail extends Component{
         sm: { span: 16 },
       },
     };
+    const prefixSelector = getFieldDecorator('prefix', {
+      initialValue: 'F',
+    })(
+      <Select style={{ width: 50 }}>
+        <Option value="F">F</Option>
+        <Option value="S">S</Option>
+      </Select>
+    );
     let msgform = (
       <div className = 'detail'>
         <Form layout="inline"  className='clean'>
@@ -156,7 +186,7 @@ class TMsgDetail extends Component{
                 }],
                 initialValue:'现金'
               })(
-                <Select  style={{ width: 120 }}>
+                <Select  style={{ width: 200 }}>
                   <Option value="现金">现金</Option>
                   <Option value="转帐支票">转帐支票</Option>
                   <Option value="网银转账">网银转账</Option>
@@ -177,19 +207,21 @@ class TMsgDetail extends Component{
             </FormItem>
           </div>
           <div className = 'clean'>
-            <FormItem className = 'formItem code clean'{...formItemLayout} label="发票（或收据）号码">
+            <FormItem className = 'formItem code clean' {...formItemLayout} label="发票（或收据）号码">
               {getFieldDecorator('invoiceNum', {
                 rules: [ {
                   required: true, message: '请输入发票（或收据）号码',
                 }],
               })(
-                <Input className = 'pay' />
+                <Input  addonBefore={prefixSelector} style={{ width: '100%' }} />
               )}
             </FormItem>
           </div>
           <FormItem label = '收费备注：' className = 'formItem fl clean'>
             {getFieldDecorator('remark', {
-              
+              rules: [ {
+                required: true, message: '请输入收费备注',
+              }],
             })(
               <TextArea rows={3} />
             )}
@@ -197,14 +229,14 @@ class TMsgDetail extends Component{
         </Form>
         <div className = 'diaBtns fr'>
           <Button type="primary" onClick = {this.handleSubmit}>缴费确认</Button>
-          <Button>取消</Button>
+          <Button onClick = { this.props.cancel}>取消</Button>
         </div>
       </div>
     )
     let recode = (
       <div>
-        <Table  columns={recodeColumns} dataSource={this.state.data} scroll={{ x:1300,y:280}} pagination = {false}/>
-        <Button type="primary" className = 'confirm'>确认</Button>
+        <Table  columns={recodeColumns} dataSource={this.state.data} scroll={{ y:380}} pagination = {false} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>}/>
+        <Button type="primary" className = 'confirm' onClick = { this.props.cancel}>确认</Button>
       </div>
     )
     return(
@@ -212,8 +244,8 @@ class TMsgDetail extends Component{
         <div className = 'mask'></div>
         <div className = 'main'>
           <div className = 'nav clean'>
-            <span className = {this.state.navIndex == 0 ? 'active' :''}>收费信息填写</span>
-            <span className = {this.state.navIndex == 1 ? 'active' :''}>收费记录</span>
+            <span className = {this.state.navIndex == 0 ? 'active' :''} onClick = {this.handleNav}>收费信息填写</span>
+            <span className = {this.state.navIndex == 1 ? 'active' :''} onClick = {this.handleNav}>收费记录</span>
           </div>
             {this.state.navIndex == 0 ? msgform : recode}
         </div>
@@ -260,19 +292,21 @@ export default class Save extends Component {
   getSearch=(data)=>{
     if(data){
       this.setState({
-        keyWord:data
+        keyWord:data,
+        currPage:1
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
-      currPage:page
+      currPage:page,
     },()=>{
-      this.init({})
+      let data = this.state.keyWord;
+      data.currPage = page
+      this.init(data)
     })
   }
   addEntry = (item)=>{
-    console.log(item)
     this.setState({
       showDiglog:true,
       detail:item
@@ -301,7 +335,7 @@ export default class Save extends Component {
     return (
       <div className = 'save'>
       <SearchForm init={this.init} getSearch = {this.getSearch} />
-        <Table  columns={columns} dataSource={this.state.data} scroll={{y:400}}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange }}/>
+        <Table  columns={columns} dataSource={this.state.data} scroll={{y:400}}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
         {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
       </div>
     )

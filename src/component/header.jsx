@@ -36,9 +36,7 @@ const nav = [
     // {name:'车辆数据查询',href:'/carInfo/dataQuery',active:false}
   ]},
 ]
-let navArr = [
-  {id:0,name:'首页',href:'/',exact:true,active:false}
-]
+let navArr = []
 
 
 class THeader extends Component {
@@ -49,8 +47,12 @@ class THeader extends Component {
     })
   }
   componentWillMount(){
+    navArr = [
+      {id:0,name:'首页',href:'/',exact:true,active:false}
+    ]
     let url = this.props.location.pathname.split('/');
     if(this.props.location.pathname == '/'){
+      console.log(navArr)
       navArr[0].active = true;
       return
     }

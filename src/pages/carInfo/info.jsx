@@ -157,15 +157,18 @@ export default class Info extends Component {
   getSearch=(data)=>{
     if(data){
       this.setState({
-        keyWord:data
+        keyWord:data,
+        currPage:1
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
-      currPage:page
+      currPage:page,
     },()=>{
-      this.init({})
+      let data = this.state.keyWord;
+      data.currPage = page
+      this.init(data)
     })
   }
  
@@ -191,7 +194,7 @@ export default class Info extends Component {
     return (
       <div className = 'info'>
         <SearchForm init={this.init} getSearch = {this.getSearch} />
-        <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange }}/>
+        <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
         {this.state.showDialog && <Picshow picArr={this.state.picArr}/>}
       </div>
     )

@@ -1,60 +1,87 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Table , Input , Button , Upload, message,Icon} from 'antd';
-const props = {
-  name: 'file',
-  action: '//jsonplaceholder.typicode.com/posts/',
-  headers: {
-    authorization: 'authorization-text',
-  },
-  onChange(info) {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
-const columns = [
-  { title: '车牌号码', width: 100, dataIndex: 'name',align: 'center' },
-  { title: '车辆类型', width: 150, dataIndex: 'age' ,align: 'center' },
-  { title: '公司车队', dataIndex: 'address', width: 150 ,align: 'center' },
-  { title: '收费日期', dataIndex: 'address',  width: 150 ,align: 'center' },
-  { title: '联系电话', dataIndex: 'address',  width: 150 ,align: 'center' },
-  { title: '有效期至', dataIndex: 'address', width: 150 ,align: 'center' },
-  { title: '安装日期', dataIndex: 'address', width: 150 ,align: 'center' },
-  { title: '是否出厂安装', dataIndex: 'address', width: 150 ,align: 'center' },
-  { title: '厂家编号', dataIndex: 'address', width: 150 ,align: 'center' },
-  { title: '生产厂家', dataIndex: 'address', width: 150 ,align: 'center' },
-];
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
-    name: record.name,
-  }),
-};
-const data = [];
-for (let i = 0; i < 11; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
+
 export default class Group extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      currPage:1,
+      pageSize:13,
+      keyWord:{},//搜索关键字
+      data:[],//table数据
+      showData:[],//分页显示的数据
+      total:'',//总页数 
+    }
     
   }
-  
+  pageChange=(page)=>{
+    let data = this.state.data;
+    data.splice((page-1) * this.state.pageSize , page * this.state.pageSize -1);
+    this.setState({
+      showData:data
+    })
+  }
+  confirm = (group)=>{
+    if(group == []){
+      message.error('请选择收费车辆');
+    }
+    $Funs.$AJAX('groupCharge','post',group,(res)=>{
+      message.success('操作成功');
+    })
+  }
+
   render() {
+    let group = [];
+    const props = {
+      name: 'file',
+      action: $Funs.Basse_Port + 'groupChargeUpload',
+      headers: {
+        authorization: 'authorization-text',
+      },
+      onChange:(info)=> {
+        if (info.file.status !== 'uploading') {
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name} 上传成功`);
+          let data = info.file.response.data;
+          data = data.map((v,i)=>{
+            v.deadlineDate = $Funs.formatDate(v.deadlineDate);
+            v.key = i;
+            return v
+          }) 
+          this.setState({
+            data:data,
+            total:info.file.response.total
+          })
+          data = data.splice( 0 , this.state.pageSize -1);
+          this.setState({
+            showData:data
+          })
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} 上传失败`);
+        }
+      },
+    };
+    const columns = [
+      { title: '公司车队', dataIndex: 'teamName',key:'teamName', width: 150 ,align: 'center' },
+      { title: '车牌号码', width: 100, dataIndex: 'vehicleId',key:'vehicleId',align: 'center' },
+      { title: '付款金额', width: 100, dataIndex: 'moneyAmont',key:'moneyAmont' ,align: 'center' },
+      { title: '付款方式', dataIndex: 'payType', key:'payType',  width: 100 ,align: 'center' },
+      { title: '有效期至', dataIndex: 'deadlineDate',key:'deadlineDate', width: 100 ,align: 'center' },
+      { title: '发票（或收据）号码', dataIndex: 'invoiceNum',key:'invoiceNum', width: 150 ,align: 'center' },
+      { title: '收款人', dataIndex: 'inputManName',key:'inputManName', width: 100 ,align: 'center' },
+    ];
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        let data = selectedRows.map((v,i)=>{
+          v.deadlineDate = new Date(v.deadlineDate).getTime();
+          delete v.key;
+          return v
+        })
+        group = data;
+      },
+    };
     return (
       <div className='group'>
         <div className='clean'>
@@ -63,9 +90,9 @@ export default class Group extends Component {
               <Icon type="upload" />上传文件
             </Button>
           </Upload>
-          <Button type="primary" className='fr'>确认收费</Button>
+          <Button type="primary" className='fr' onClick={()=>{this.confirm(group)}}>确认收费</Button>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data}  pagination = {{defaultPageSize:14}}/>
+        <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.showData}  pagination = {{ defaultPageSize:13,total:this.state.data.length,onChange:this.pageChange,current:this.state.currPage }}/>
       </div>
     )
   }

@@ -135,21 +135,25 @@ export default class DataQuery extends Component {
   getSearch=(data)=>{
     if(data){
       this.setState({
-        keyWord:data
+        keyWord:data,
+        currPage:1
       })
     }
   }
+  pageChange = (page)=>{
+    this.setState({
+      currPage:page,
+    },()=>{
+      let data = this.state.keyWord;
+      data.currPage = page
+      this.init(data)
+    })
+  }
+ 
   exportForm = ()=>{
     console.log(this.state.selectedRows)
     $Funs.$AJAX('getChargeComplexToExcel','get',data,(res)=>{
       
-    })
-  }
-  pageChange = (page)=>{
-    this.setState({
-      currPage:page
-    },()=>{
-      this.init(this.state.keyWord)
     })
   }
   render() {
@@ -171,7 +175,7 @@ export default class DataQuery extends Component {
     return (
       <div className = 'dataQuery'>
         <SearchForm init={this.init} exportForm = {this.exportForm} getSearch = {this.getSearch} />
-        <Table rowSelection={rowSelection} columns={columns} expandedRowRender={record => {return (<div><span>变更详情{record.changeDetail.map((v,i)=>{return (<p style={{ margin: 0 }} key = {i}>{v}</p>)})}</span></div>) }} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange }}/>
+        <Table rowSelection={rowSelection} columns={columns} expandedRowRender={record => {return (<div><span>变更详情{record.changeDetail.map((v,i)=>{return (<p style={{ margin: 0 }} key = {i}>{v}</p>)})}</span></div>) }} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange ,current:this.state.currPage}}/>
       </div>
     )
   }

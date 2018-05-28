@@ -17,7 +17,7 @@ const cook = {
     cook.set(name, "", -1);
   }
 };
-const Basse_Port = "http://192.168.1.82:8899/api/v1/";
+const Basse_Port = "http://192.168.1.78:8899/api/v1/";
 window.$Funs = {
   cook: cook,
   Basse_Port: Basse_Port,
