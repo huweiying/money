@@ -7,6 +7,9 @@ body {
   overflow-x: hidden;
   background: #F1FCFF;
 }
+p{
+  margin:0;
+}
 .login{
   background: url('../img/login.png') no-repeat;
   width:100%;
@@ -125,6 +128,12 @@ ul{
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
   padding:9px;
 }
+.ant-table-fixed{
+}
+.ant-table-body{
+  min-height: 500px;
+  background: #fff;
+}
 // 居中
 .center(@w,@h){
   margin: 0 auto;
@@ -155,11 +164,17 @@ ul{
   top:@t;
   left:@l;
 }
-.ant-table-body{
-  background: #fff;
-}
+
 .ant-table{
   box-shadow: 0px 0px 28px rgba(181,194,197,0.6);
+}
+.ant-table-thead > tr > th.ant-table-selection-column, .ant-table-tbody > tr > td.ant-table-selection-column{
+  min-width: 0px;
+  width: 8px;
+}
+.ant-table-expand-icon-th, .ant-table-row-expand-icon-cell{
+  width: 40px;
+  min-width: 0px;
 }
 .border_radius (@radius:5px) {
   -webkit-border-radius: @radius;
@@ -170,13 +185,17 @@ ul{
   }
 a{
   text-decoration: none;
-  .font()
+  .font(#1890ff)
 }
 a:focus{
   text-decoration: none;
 }
 li{
   list-style: none;
+}
+.comment{
+  width: 780px !important;
+  overflow: hidden;
 }
 // 对话框样式
 .dialog{
@@ -188,6 +207,16 @@ li{
     width: 100%;
     height: 100%;
   }
+  .ant-table-body{
+    min-height: 220px;
+  }
+  span{
+    cursor: pointer;
+  }
+  .title{
+    text-align: center;
+    .font(#323232,18px);
+  }
   .main{
     width: 1000px;
     height: 460px;
@@ -195,7 +224,7 @@ li{
     padding:23px;
     box-sizing: border-box;
     z-index: 10;
-    .ab(50%,50%);
+    .fixed(50%,50%);
     margin-top:-230px;
     margin-left: -500px;
     .detail{
@@ -207,6 +236,7 @@ li{
       background: #fff;
       box-shadow: 0px 2px 14px #ccc inset;
     }
+    
   }
 }
 header{
@@ -363,10 +393,14 @@ header{
       .ant-form-item-control{
         line-height: 34px;
       }
+      .ant-select-selection__rendered{
+        padding-left: 70px;
+        .bx;
+      }
       input{
         width: 230px;
         height: 34px;
-        padding-left: 60px;
+        padding-left: 75px;
         .bx;
       }
     }
@@ -391,8 +425,18 @@ header{
       .fr;
       margin-right: 20px;
     }
-    .addNew,{
+    .addNew{
       padding-top: 10px;
+      .ant-form-item-label{
+        text-align: left;
+      }
+      .ant-upload-select-picture-card{
+        margin-right: 0px;
+        img{
+          width: 200px;
+          height: 100px;
+        }
+      }
       h2{
         text-align: center;
         color: #323232;
@@ -455,13 +499,36 @@ header{
     .ant-spin-container{
       margin-top:20px;
     }
+    .first{
+      margin: 0px 8px;
+      img{
+        width: 300px;
+        height: 380px;
+      }
+    }
   }
-  .dataQuery{
-    .ant-btn{
-      width: 140px;
-      height: 38px;
-      margin-left: 60px;
-      margin-top: 25px;
+  .dataQuery,.query,.modify{
+    .topForm{
+      .ant-btn{
+        width: 140px;
+        height: 38px;
+        margin-top: 30px;
+        margin-left: 60px;
+      }
+      .ant-input{
+        padding:0px;
+        height: 34px;
+        .ant-calendar-range-picker-input:first-child{
+          padding-left: 70px;
+          .bx;
+        }
+        input{
+          padding:0px;
+        }
+      }
+      .ant-calendar-range-picker-input{
+        width:155px !important;
+      }
     }
   }
   // 打印模块
@@ -544,7 +611,26 @@ header{
     }
   }
   // 收费模块
-  .save{
+  .save,.modify,.addNotice{
+    .topForm{
+      .ant-btn{
+        margin-left: 100px;
+        margin-top: 10px;
+        width: 140px;
+        height: 36px;
+      }
+    }
+    .code{
+      .ant-form-explain{
+        width:200px;
+      }
+      .ant-col-sm-8{
+        width: 150px;
+      }
+      #invoiceNum{
+        width: 150px;
+      }
+    } 
     .dialog{
       .ant-table-wrapper{
         margin-top: 0px;
@@ -562,6 +648,7 @@ header{
         textarea.ant-input{
           width:700px;
         }
+        
         margin: 20px;
         .fl;
         .re();
@@ -573,7 +660,7 @@ header{
           width: 200px;
         }
         .ant-select{
-          width: 200px !important;
+          width: 200px;
         }
         .ant-upload.ant-upload-select-picture-card{
           width: 210px;
@@ -594,13 +681,88 @@ header{
     }
     
   }
+  .modify{
+    .title{
+      text-align: center;
+      .font(#323232,18px);
+      margin:10px 0;
+    }
+    .topForm{
+      .ant-btn{
+        margin-left:0px;
+        margin-right: 50px;
+        margin-top: 30px;
+        width: 140px;
+        height: 36px;
+      }
+    }
+  }
   .query,.log{
     .topForm{
       .ant-btn{
-        margin-left: 300px;
+        margin-right: 50px;
+        margin-top: 30px;
+        width: 140px;
+        height: 36px;
+      }
+    }
+  }
+  //信息管理
+  .stop{
+    .topForm{
+      .ant-btn{
+        margin-right: 50px;
         margin-top: 10px;
         width: 140px;
         height: 36px;
+      }
+    }
+    .dialog{
+      .ant-table-wrapper{
+        margin-top: 0px;
+      }
+      .diaBtns{
+        width: 200px;
+        .ab(74%,83%);
+        .ant-btn{
+          width:120px; 
+          height: 36px;
+          margin:5px auto;
+        }
+      }
+      .formItem{
+        textarea.ant-input{
+          width:700px;
+        }
+        
+        margin: 20px;
+        .fl;
+        .re();
+        .ant-form-item-label{
+          .ab(-29px,0px);
+        }
+        input{
+          text-align: center;
+          width: 200px;
+        }
+        .ant-select{
+          width: 200px;
+        }
+        .ant-upload.ant-upload-select-picture-card{
+          width: 210px;
+          margin-top: 5px;
+        }
+        .pay{
+          .bx;
+          padding-right: 80px;
+        }
+        .unit{
+          .ab(-10px,130px);
+        }
+      }
+      .confirm{
+        .fr;
+        margin-top: 10px;
       }
     }
   }
@@ -663,10 +825,14 @@ header{
   }
   // 信息管理
   .change{
-    .ant-btn{
+    .topForm .ant-btn{
       margin-top: 30px;
       width: 120px;
       margin-right: 50px;
+    }
+    .ant-form-item-label{
+      text-align: left;
+      width: 100px;
     }
     .chgForm{
       h2{text-align: center}
@@ -678,6 +844,7 @@ header{
           .font(#323232,16px);
           padding:10px 20px;
           border-bottom: 2px solid #323232;
+          margin-bottom: 10px;
         }
         width: 1440px;
         padding: 40px 141px;
@@ -722,21 +889,128 @@ header{
   .recode{
     .topForm{
       .ant-btn{
-        margin-left: 300px;
+        margin-right: 100px;
         margin-top: 10px;
         width: 140px;
         height: 36px;
       }
     }
-  }
-  .notice{
-    .topForm{
-      .ant-btn{
-        margin-right: 50px;
-        margin-top: 10px;
-        width: 140px;
-        height: 36px;
+    .picDialog{
+      .mask{
+        position: fixed;
+        background: rgba(0,0,0,.3);
+        top:0px;
+        left:0px;
+        width: 100%;
+        height: 100%;
+      }
+      
+      .main{
+          .close{
+            cursor: pointer;
+          }
+          .toggle{
+            .re(30px,94%)
+          }
+          i{
+            cursor: pointer;
+            margin:0 5px;
+          }
+          height: 460px;
+          background: #F2FCFF;
+          padding:23px;
+          box-sizing: border-box;
+          z-index: 10;
+          .ab(50%,50%);
+          margin-top:-230px;
+          margin-left: -500px;
+          .detail{
+            width: 760px;
+            height: 350px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            padding:10px 0;
+            background: #fff;
+            box-shadow: 0px 2px 14px #ccc inset;
+          }
+          .item{
+            width:290px;
+            height: 100%;
+            padding: 0px 20px;
+            p{
+              margin: 5px 0;
+            }
+            .bx;
+            img{
+              width: 100%;
+              height:300px;
+            }
+          }
+          
+        }
+        
       }
     }
-  }
+    .nav{
+      cursor: pointer;
+    }
+    .addNotice{
+      .topForm{
+        .ant-btn{
+          margin-right: 50px !important;
+          margin-left:0px;
+          width: 140px;
+          height: 36px;
+        }
+      }
+      .dialog{
+        .detail{
+          padding:20px 0;
+        }
+        .ant-form-item-label{
+          text-align: left;
+        }
+        .formItem{
+          margin:10px 20px;
+          
+        }
+        .location{
+          input{
+            width: 450px;
+            text-align: left;
+          }
+        }
+      }
+    }
+    .notice{
+      .topForm{
+        .ant-btn{
+          margin-right: 50px;
+          margin-top: 10px;
+          width: 140px;
+          height: 36px;
+        }
+      }
+    }
+    .person{
+      .top{
+        padding:0 20px;
+        .bx;
+      }
+      .main{
+        margin-top: 20px;
+        .left{
+          background: #fff;
+          height:600px; 
+        }
+        .title{
+          text-align: center;
+          background: #7EA9F7;
+          font-size: 12px;
+          color: #fff;
+          height: 38px;
+          line-height: 38px;
+        }
+      }
+    }
 }

@@ -2,11 +2,7 @@
 import AsyncComponents from "../../component/AsyncComponents";
 
 const Routers = [
-  {
-    path:'/index/child',
-    component:AsyncComponents(()=> import("../../pages/index/child")),
-    routes:[]
-  }
+
 
 ]
 

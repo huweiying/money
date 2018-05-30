@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
 import Upload from '../../component/upload'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker } from 'antd';
+import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker , message } from 'antd';
 import Avatar from '../../component/upload';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 
 
-
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
 
 function CarDetail(props){//查看车辆详情
 
@@ -24,8 +20,7 @@ function CarDetail(props){//查看车辆详情
     { title: 'SIM卡类型', dataIndex: 'simTypeName', key: 'simTypeName', width: 150 ,align: 'center' },
     { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 150 ,align: 'center' },
     { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 150 ,align: 'center' },
-    // { title: '备注', dataIndex: 'comment', key: 'comment' ,align: 'center'  },
-    { title: '操作', dataIndex: '', key: 'action', render: (item) => <Button type="primary" onClick = {()=>{props.addCarInfo(item)}}>补全</Button> },
+    { title: '操作', dataIndex: '',width: 150, key: 'action', render: (item) => <Button type="primary" onClick = {()=>{props.addCarInfo(item)}}>补全</Button> },
   ];
   return(
     <div>
@@ -34,90 +29,53 @@ function CarDetail(props){//查看车辆详情
         placeholder="请输入车牌号或车队名字"
         onSearch={value => props.searchCar(value) }
         enterButton/>
+
+        <Button className = 'fr' onClick = {()=>{props.searchCar('')}}>全部</Button>
       </div>
-      <Table  columns={columns} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} dataSource={props.carArr} scroll={{ x: 2000 }} pagination = {{defaultPageSize:10,total:props.total,onChange:props.pageChange}}/>
+      <Table  columns={columns} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} dataSource={props.carArr} pagination = {{defaultPageSize:10,total:props.total,onChange:props.pageChange}}/>
     </div>
   );
 }
 
-function UnabledItem(props){//禁用表单项
-    return (
-      <FormItem label = {props.label} className = 'formItem clean'>
-        {props.tag && (<span className = 'tag'>{props.tag}</span>)}
-        <Input disabled placeholder = {props.value} className = 'disabled'/>
-      </FormItem>
-    )
-}
-
-
-
-
-function SelectItem(props){//下拉表单项
-   let opt = props.value.map((v,i)=>{
-     return <Option value={v} key={i}>{v}</Option>
-   })
-    return (
-      <FormItem label = {props.label} className = 'formItem clean'>
-        <Select defaultValue={props.value[0]} style={{ width: 120 }} onChange={props.formChange.bind(this,props.link)}>
-          {opt}
-        </Select>
-      </FormItem>
-    )
-}
  class AddNew extends Component {
  
    constructor(props) {
      super(props)
      this.state = {
-      //  phone:'',//联系电话
-      //  address:'',//所属地区
-      //  terminalTypeNum:'',//终端类型号
-      //  factoryNumber:'',//厂家编号
-      //  terminalType:'',//终端类型
-      //  terminalOrder:'',//终端批次
-      //  systemPlatformOrder:'',//平台批次
-      //  systemPlatformNumber:'',//平台编号
-      //  callAPerson:'',//来电人
-      //  callDate:'',//来电时间
-      //  recordPerson:'',//记录人
-      //  carColor:'',//车牌颜色
-      //  navigationType:'',//导航类型
-      //  systemPlatform:'',//系统平台
-      //  manufacturer:'',//生产厂家
+      photoCodes:[]
      }
    }
   
-  componentDidMount() {
-    // this.props.form.validateFields();
-  }
+
   handleSubmit=(e)=>{
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       console.log(values)
       if (!err) {
-        console.log('Received values of form: ', values);
-        values.carId = this.props.item.id
+        values.carId = this.props.item.id;
+        values.photoCodes = this.state.photoCodes;
+        values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
         $Funs.$AJAX('car/newCar','post',values,(res)=>{
           message.success('操作成功');
-          props.cancel()
+          this.props.cancel()
         })
       }
     });
 
   }
-  handleSelect=(e)=>{
-    // this.props.form.setFieldsValue({
-    //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-    // });
+  getPic = (obj)=>{
+    let arr = this.state.photoCodes;
+    if(obj){
+      arr.push(obj) 
+    }
+    this.setState({
+      photoCodes:arr
+    },()=>{
+      console.log(this.state.photoCodes)
+    })
   }
-
-  // formChange = (link,e) =>{
-  //   this.setState({
-  //     [link]:e.target.value
-  //   })
-  // }
   render() {
-    const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+    const { getFieldDecorator} = this.props.form;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -131,7 +89,7 @@ function SelectItem(props){//下拉表单项
     return (
       <div className='addNew'>
         <Breadcrumb>
-          <Breadcrumb.Item><Link to="/carInfo/entry">车辆录入</Link></Breadcrumb.Item>
+          <Breadcrumb.Item><a onClick = {this.props.cancel}>车辆录入</a></Breadcrumb.Item>
           <Breadcrumb.Item>补全车辆信息</Breadcrumb.Item>
         </Breadcrumb>
         <div>
@@ -266,7 +224,7 @@ function SelectItem(props){//下拉表单项
                       initialValue:'马良车辆监控导航系统'
                     })(
                       <Select  style={{ width: 120 }} onChange={this.handleSelect}>
-                        <Option value="北斗/GPS双模">马良车辆监控导航系统</Option>
+                        <Option value="马良车辆监控导航系统">马良车辆监控导航系统</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -294,13 +252,13 @@ function SelectItem(props){//下拉表单项
                 </div>
                 <div className = "row clean">
                   <FormItem label = '车辆登记证书' className = 'formItem clean'>
-                    <Avatar/>
+                    <Avatar type = '0' getPic={this.getPic}/>
                   </FormItem>
                   <FormItem label = '行驶证' className = 'formItem clean'>
-                    <Avatar/>
+                    <Avatar type = '1' getPic={this.getPic}/>
                   </FormItem>
                   <FormItem label = '车身照片' className = 'formItem clean'>
-                    <Avatar/>
+                    <Avatar type = '2' getPic={this.getPic}/>
                   </FormItem>
                 </div>
                 <div className = "row clean">
@@ -322,6 +280,11 @@ function SelectItem(props){//下拉表单项
                     })(
                       <Input  />
                     )}
+                  </FormItem>
+                </div>
+                <div className ="row clean">
+                  <FormItem  className = 'formItem clean' label='备注'>
+                    <Input  value={this.props.item.comment} disabled className = 'disabled comment'/>
                   </FormItem>
                 </div>
                 <FormItem className = 'btns'>

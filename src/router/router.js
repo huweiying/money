@@ -9,6 +9,7 @@ const print = AsyncComponents(()=> import("../pages/print/print"));//打印审�
 const charge = AsyncComponents(()=> import("../pages/charge/charge"));//收费管理
 const information = AsyncComponents(()=> import("../pages/information/information"));//信息管理
 const system = AsyncComponents(()=> import("../pages/system/system"));//信息管理
+const person = AsyncComponents(()=> import("../pages/person/person"));//信息管理
 // const person = AsyncComponents(()=> import("../pages/person/person"));//人员管理
 import indexRouter from "../router/index/router";//index页面二级路由
 import carInfoRouter from "../router/carInfo/router";//carInfo页面二级路由
@@ -55,6 +56,10 @@ const Routers = [
         path:'/system',
         component:system,
         routes:[...systemRouter]
+      },
+      {
+        path:'/person',
+        component:person
       },
     ]
   },

@@ -23,22 +23,17 @@ const nav = [
   {id:4,name:'信息管理',href:'/information/stop',active:false,child:[
     {name:'车辆报停/恢复',href:'/information/stop',active:true},
     {name:'信息变更',href:'/information/change',active:false},
-    {name:'安装维修记录',href:'/information/recode',active:false},
-    {name:'维修通知',href:'/information/notice',active:false}
+    {name:'安装、维修记录',href:'/information/recode',active:false},
+    {name:'添加安装、维修通知',href:'/information/addNotice',active:false},
+    {name:'发送通知',href:'/information/notice',active:false}
   ]},
   {id:5,name:'系统管理',href:'/system/log',active:false,child:[
     {name:'日志查询',href:'/system/log',active:true},
     {name:'信息维护',href:'/system/maintenance',active:false},
   ]},
-  {id:6,name:'人员管理',href:'/person',active:false,child:[
-    // {name:'车辆录入',href:'/carInfo/entry',active:true},
-    // {name:'车辆资料',href:'/carInfo/info',active:false},
-    // {name:'车辆数据查询',href:'/carInfo/dataQuery',active:false}
-  ]},
+  {id:6,name:'人员管理',href:'/person',active:false},
 ]
-let navArr = [
-  {id:0,name:'首页',href:'/',exact:true,active:false}
-]
+let navArr = []
 
 
 class THeader extends Component {
@@ -49,8 +44,12 @@ class THeader extends Component {
     })
   }
   componentWillMount(){
+    navArr = [
+      {id:0,name:'首页',href:'/',exact:true,active:false}
+    ]
     let url = this.props.location.pathname.split('/');
     if(this.props.location.pathname == '/'){
+      console.log(navArr)
       navArr[0].active = true;
       return
     }
@@ -86,6 +85,14 @@ class THeader extends Component {
       return v
     })
     navArr[i].active = true;
+    if(!navArr[i].child){
+      return
+    }
+    navArr[i].child = navArr[i].child.map(v=>{
+      v.active = false;
+      return v
+    })
+    navArr[i].child[0].active = true
   }
   subchange = (i) =>{//子路由下标
     let index = '';

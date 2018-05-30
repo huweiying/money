@@ -18,6 +18,11 @@ const Routers = [
     routes:[]
   },
   {
+    path:'/information/addNotice',
+    component:AsyncComponents(()=> import("../../pages/information/addNotice")),
+    routes:[]
+  },
+  {
     path:'/information/notice',
     component:AsyncComponents(()=> import("../../pages/information/notice")),
     routes:[]

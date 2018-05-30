@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker } from 'antd';
+import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker ,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -20,7 +20,7 @@ function Nav(props){
 class TopForm extends Component {
   constructor(props) {
     super(props)
- 
+    
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -85,7 +85,6 @@ class TopForm extends Component {
             </div>
             <div className = 'fr'>
               <Button type="primary" onClick={this.handleSearch}>查找</Button>
-              <Button type="primary" onClick={this.props.postChoose}>发送通知</Button>
             </div>
           </Form>
     )
@@ -101,10 +100,9 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
-      postChoose: Form.createFormField({
-        value: props.postChoose,
-      }),
- 
+    //   showDetail: Form.createFormField({
+    //     value: props.showDetail,
+    //   }),
     }
   },
 })(TopForm)
@@ -113,30 +111,33 @@ class TMsgDetail extends Component{
   constructor(props) {
     super(props)
     this.state = {
-        user:[]
+        user:[],
+        loading:true            
     }
   }
   
   componentWillMount(){
     $Funs.$AJAX('user','get',{roles:2},(res)=>{
         this.setState({
-            user:res
+            user:res,
+            loading:false,
         })
-    })    
+    })
   }
  
   handleSubmit = ()=>{
     this.props.form.validateFields((err, values) => {
       if(!err){
-        //   console.log(values)
           values.carframeId = this.props.detail.carframeId;
           values.inputMan = $Funs.cook.get('id');
           values.newCarId =  this.props.detail.newCarId;
           values.oldVehicleId = this.props.detail.oldVehicleId;
-          values.operationType = this.props.navIndex;
+          values.operationType = Number(this.props.navIndex);
           values.phone = this.props.detail.phone;
           values.vehicleId = this.props.detail.vehicleId;
           values.teamName = this.props.detail.teamName;
+          values.typeName = this.props.detail.typeName;
+          values.repairInstallType = Number(values.repairInstallType);
         $Funs.$AJAX('repairInstall','post',values,(res)=>{
           message.success('操作成功');
           this.props.cancel()
@@ -156,96 +157,96 @@ class TMsgDetail extends Component{
         sm: { span: 16 },
       },
     };
-    let msgform = (
-      <div className = 'detail'>
-        <Form layout="inline"  className='clean'>
-          <div className = 'clean'>
-            <FormItem label='车牌号' className = 'formItem clean'>
-              <Input  value={this.props.detail.vehicleId } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem label='曾使用车牌号' className = 'formItem clean'>
-              <Input  value={this.props.detail.oldVehicleId } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem label='公司或车队名' className = 'formItem clean'>
-              <Input  value={this.props.detail.teamName } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem label='车架号' className = 'formItem clean'>
-              <Input  value={this.props.detail.carframeId } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem label='联系方式' className = 'formItem clean'>
-              <Input  value={this.props.detail.userName } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem label='车辆类型' className = 'formItem clean'>
-              <Input  value={this.props.detail.typeName } disabled className = 'disabled'/>
-            </FormItem>
-          </div>
-          <div className = ' clean'>
-            <FormItem className = 'formItem clean'{...formItemLayout} label="指派人员">
-              {getFieldDecorator('userId', {
-                rules: [ {
-                  required: true, message: '请选择指派人员',
-                }],
-              })(
-                <Select  style={{ width: 200 }} >
-                  {this.state.user && this.state.user.map((v,i)=>{
-                      return (
-                          <Option value={this.state.user[i].id} key={i}>{this.state.user[i].name}</Option>
-                      )
-                  })}
-                </Select>     
-              )}
-            </FormItem>
-            <FormItem className = 'formItem clean location'{...formItemLayout} label="车辆位置">
-              {getFieldDecorator('carLocation', {
-                rules: [ {
-                  required: true, message: '请输入车辆位置',
-                }],
-              })(
-                <Input />
-              )}
-            </FormItem>
-          </div>
-          <div className = 'clean'>
-            <FormItem className = 'formItem clean'{...formItemLayout} label='安装类型'>
-                {getFieldDecorator('repairInstallType', {
+          return(
+            <div className = 'dialog'>
+              <div className = 'mask'></div>
+              <Spin spinning={this.state.loading}>
+                <div className = 'main'>
+                    <p className = 'title'>{this.props.navIndex == 0 ? '添加安装车辆' : '添加维修车辆'}</p>
+                    {  !this.state.loading && (
+                        <div className = 'detail'>
+              <Form layout="inline"  className='clean'>
+                <div className = 'clean'>
+                  <FormItem label='车牌号' className = 'formItem clean'>
+                    <Input  value={this.props.detail.vehicleId } disabled className = 'disabled'/>
+                  </FormItem>
+                  <FormItem label='曾使用车牌号' className = 'formItem clean'>
+                    <Input  value={this.props.detail.oldVehicleId } disabled className = 'disabled'/>
+                  </FormItem>
+                  <FormItem label='公司或车队名' className = 'formItem clean'>
+                    <Input  value={this.props.detail.teamName } disabled className = 'disabled'/>
+                  </FormItem>
+                  <FormItem label='车架号' className = 'formItem clean'>
+                    <Input  value={this.props.detail.carframeId } disabled className = 'disabled'/>
+                  </FormItem>
+                  <FormItem label='联系方式' className = 'formItem clean'>
+                    <Input  value={this.props.detail.phone } disabled className = 'disabled'/>
+                  </FormItem>
+                  <FormItem label='车辆类型' className = 'formItem clean'>
+                    <Input  value={this.props.detail.typeName } disabled className = 'disabled'/>
+                  </FormItem>
+                </div>
+                <div className = ' clean'>
+                    <FormItem className = 'formItem clean'{...formItemLayout} label="指派人员">
+                        {getFieldDecorator('userId', {
+                            initialValue:this.state.user[0].name
+                        })(
+                        <Select  style={{ width: 200 }} >
+                            {
+                                this.state.user.map((v,i)=>{
+                                   return <Option value={v.id} key={i}>{v.name}</Option>
+                                })
+                            }
+                        </Select>     
+                        )}
+                    </FormItem>
+                    <FormItem className = 'formItem clean location'{...formItemLayout} label="车辆位置">
+                        {getFieldDecorator('carLocation', {
+                            rules: [ {
+                                required: true, message: '请输入车辆位置',
+                            }],
+                        })(
+                            <Input />
+                        )}
+                    </FormItem>
+                </div>
+                <div className = 'clean'>
+                  <FormItem className = 'formItem clean'{...formItemLayout} label='安装类型'>
+                      {getFieldDecorator('repairInstallType', {
+                          rules: [ {
+                              required: true, message: '请选择安装类型',
+                          }],
+                          initialValue:'0'
+                      })(
+                          <Select  style={{ width: 200 }}>
+                              <Option value="0">监控</Option>
+                              <Option value="1">GPS</Option>
+                          </Select>     
+                      )}
+                  </FormItem>
+                </div>
+                <FormItem label = '备注：' className = 'formItem fl clean'>
+                  {getFieldDecorator('repairInstallRemark', {
                     rules: [ {
-                        required: true, message: '请选择安装类型',
+                      required: true, message: '请输入备注',
                     }],
-                    initialValue:'0'
-                })(
-                    <Select  style={{ width: 200 }}>
-                        <Option value="0">监控</Option>
-                        <Option value="1">GPS</Option>
-                    </Select>     
-                )}
-            </FormItem>
-          </div>
-          <FormItem label = '备注：' className = 'formItem fl clean'>
-            {getFieldDecorator('repairInstallRemark', {
-              rules: [ {
-                required: true, message: '请输入备注',
-              }],
-            })(
-              <TextArea rows={2} />
-            )}
-          </FormItem>
-        </Form>
-        <div className = 'diaBtns fr'>
-          <Button type="primary" onClick = {this.handleSubmit}>确认</Button>
-          <Button onClick = { this.props.cancel}>取消</Button>
-        </div>
-      </div>
-    )
-    return(
-      <div className = 'dialog'>
-        <div className = 'mask'></div>
-        <div className = 'main'>
-          <p className = 'title'>{this.props.navIndex == 0 ? '添加安装车辆' : '添加维修车辆'}</p>
-           {  msgform }
-        </div>
-      </div>
-    )
-  }
+                  })(
+                    <TextArea rows={2} />
+                  )}
+                </FormItem>
+              </Form>
+              <div className = 'diaBtns fr'>
+                <Button type="primary" onClick = {this.handleSubmit}>确认</Button>
+                <Button onClick = { this.props.cancel}>取消</Button>
+              </div>
+            </div>
+                      )  }
+                </div>
+              </Spin>
+            </div>
+          )
+        }
+    
 }
 const MsgDetail = Form.create({
   mapPropsToFields(props) {
@@ -281,12 +282,10 @@ export default class addNotice extends Component {
   init=(data)=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    let url = this.state.navIndex == 0 ? 'getInstallNoticeList' : 'getRepairNoticeList';
-        $Funs.$AJAX(url,'get',data,(res)=>{
+        $Funs.$AJAX('RepairInstall/getCarList','get',data,(res)=>{
             let data = res.data.map((v,i)=>{
               v.key = i;
               v.deadlineDate = $Funs.formatDate(v.deadlineDate)
-              v.repairInstallType == 0 ? v.repairInstallType = '监控' : v.repairInstallType = 'GPS';
               return v
             })
             this.setState({
@@ -294,8 +293,6 @@ export default class addNotice extends Component {
               total: res.count
             })
         })
-    
-    
   }
   getSearch=(data)=>{
     if(data){
@@ -333,45 +330,24 @@ export default class addNotice extends Component {
         this.init({})
     })
   }
-  postChoose = (items)=>{
-    console.log(items)
-    if(!items){
-      message.error('请选择需要发送通知的车辆');
-    }else{
-      $Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
-        message.success('操作成功');
-      })
-    }
-  }
   render() {
-    let choose = [];
     const columns = [
       { title: '公司车队', width: 150, dataIndex: 'teamName',key:'teamName',align: 'center' },
       { title: '车牌号', width: 100, dataIndex: 'vehicleId',key:'vehicleId' ,align: 'center' },
       { title: '车架号', dataIndex: 'carframeId',key:'carframeId', width: 150 ,align: 'center' },
-      { title: '曾使用车牌号', dataIndex: 'oldVehicleId',key:'oldVehicleId', width: 110 ,align: 'center' },
+      { title: '曾使用车牌号', dataIndex: 'oldVehicleId',key:'oldVehicleId', width: 150 ,align: 'center' },
       { title: '有效期至', dataIndex: 'deadlineDate',key:'deadlineDate', width: 100 ,align: 'center' },
-      { title: '联系方式', dataIndex: 'userName',key:'userName', width: 150 ,align: 'center' },
+      { title: '联系方式', dataIndex: 'phone',key:'phone', width: 150 ,align: 'center' },
       { title: '车辆类型', dataIndex: 'typeName',key:'typeName', width: 150 ,align: 'center' },
-      { title: '指派人员', dataIndex: 'name',key:'name', width: 100 ,align: 'center' },
-      { title: '车辆位置', dataIndex: 'carLocation',key:'carLocation' ,align: 'center' },
-      { title: '安装类型', dataIndex: 'repairInstallType',key:'repairInstallType', width: 100 ,align: 'center' },
+      { title: '操作', dataIndex: '', width: 150, key: 'action', render: (item) => <Button type="primary" onClick = {()=>{this.showDetail(item)}}>添加</Button> },
     ];
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        choose = selectedRows.map((v)=>{
-          return v.repairInstallId
-        })
-        
-      },
-    };
     
     return (
       <div className = 'addNotice'>
         <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
           <div>
-            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} postChoose = {()=>{this.postChoose(choose)}}/>
-            <Table  rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail}/>
+            <Table expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
             {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
           </div>
       </div>
