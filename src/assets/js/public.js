@@ -27,6 +27,10 @@ window.$Funs = {
   setindex() {
     cook.set("index", window.location.href);
   },
+  format(format){
+      let time=new Date(format);
+      return format=time.getFullYear()+"年"+(time.getMonth() + 1)+"月"+time.getDate()+"日";
+  },
   $AJAX(newUrl, type, data, callback) {
     let p = new Promise((resolve, reject) => {
       let $put;
@@ -35,13 +39,13 @@ window.$Funs = {
         if (type == "get") {
           $put = $http
             .get(Basse_Port + newUrl, data)
-            .set("Authorization","Bearer "+token)
+            .set("Authorization", "Bearer " + token)
             .set("Content-Type", "application/json");
         }
         if (type == "patch") {
           $put = $http
             .patch(Basse_Port + newUrl, data)
-            .set("Authorization","Bearer "+token)
+            .set("Authorization", "Bearer " + token)
             .set("Content-Type", "application/json");
         }
         if (type == "DELETE") {
@@ -53,7 +57,7 @@ window.$Funs = {
         if (type == "post") {
           $put = $http
             .post(Basse_Port + newUrl, data)
-            .set("Authorization","Bearer "+token)
+            .set("Authorization", "Bearer " + token)
             .set("Content-Type", "application/json");
         }
         $put.end((err, res) => {
@@ -62,7 +66,7 @@ window.$Funs = {
             message.error('网络错误');
             reject();
           } else {
-            if(res.status == 200 || res.status == 201){
+            if (res.status == 200 || res.status == 201) {
               callback(res.body);
               resolve();
             }
