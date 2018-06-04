@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select } from 'antd';
+import { Table , Input , Button , Form , Select ,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -21,8 +21,8 @@ class TopForm extends Component {
         if(data){
           //默认查找第一页开始
           this.props.getSearch(data);
-          data.currPage = 1;
-          this.props.init(data)
+          // data.currPage = 1;
+          // this.props.init(data)
         }
     });
   }
@@ -100,20 +100,25 @@ const SearchForm = Form.create({
 function Picshow(props){
   return (
     <div className = 'dialog'>
-      <div className = 'mask'></div>
+      <div className = 'mask' onClick = {()=>{props.cancel()}}></div>
       <div className = 'main'>
         {props.picArr[0] && 
-          <div className = 'first'>
+          <div className = 'first fl'>
+            <p>{props.picArr[0].type == 0 ?  '车辆登记证书' : (props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
+            
+           
             <img src={props.picArr[0].photoCode} />
           </div>
         }
         {props.picArr[1] && 
-          <div className = 'first'>
+          <div className = 'first fl'>
+            <p>{props.picArr[1].type == 0 ? '车辆登记证书' :(props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
             <img src={props.picArr[1].photoCode} />
           </div>
         }
         {props.picArr[2] && 
-          <div className = 'first'>
+          <div className = 'first fl'>
+            <p>{props.picArr[2].type == 0 ? '车辆登记证书' :(props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
             <img src={props.picArr[2].photoCode} />
           </div>
         }
@@ -125,6 +130,7 @@ export default class Info extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading:true,
       currPage:1,
       pageSize:13,
       keyWord:{},//搜索关键字
@@ -150,7 +156,8 @@ export default class Info extends Component {
       })
       this.setState({
         data : data,
-        total: res.count
+        total: res.count,
+        loading:false
       })
     })
   }
@@ -158,13 +165,17 @@ export default class Info extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true,
     },()=>{
       let data = this.state.keyWord;
       data.currPage = page
@@ -176,6 +187,12 @@ export default class Info extends Component {
     this.setState({
       showDialog:true,
       picArr:item.photoCodes
+    })
+  }
+  cancel = ()=>{
+    this.setState({
+      showDialog:false,
+      currPage:1
     })
   }
   render() {
@@ -193,9 +210,11 @@ export default class Info extends Component {
     ];
     return (
       <div className = 'info'>
-        <SearchForm init={this.init} getSearch = {this.getSearch} />
-        <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-        {this.state.showDialog && <Picshow picArr={this.state.picArr}/>}
+        <Spin spinning = {this.state.loading} size='large'>
+          <SearchForm init={this.init} getSearch = {this.getSearch} />
+          <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+          {this.state.showDialog && <Picshow picArr={this.state.picArr} cancel = {this.cancel}/>}
+        </Spin>
       </div>
     )
   }

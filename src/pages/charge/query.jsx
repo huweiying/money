@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Base64 } from 'js-base64';
 import { Table , Input , Button , Breadcrumb , Form , Select ,message, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -80,8 +81,9 @@ class TopForm extends Component {
             <div className = 'fl'>
               <a className = 'empty' onClick = {this.clear} >清空</a>
             </div>
-            <div className = 'fl'>
+            <div className = 'fr'>
               <Button type="primary" onClick={this.handleSearch}>查找</Button>
+              <Button type="primary" onClick={this.props.exportForm}>导出</Button>
             </div>
           </Form>
     )
@@ -97,9 +99,13 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
+      exportForm: Form.createFormField({
+        value: props.exportForm,
+      }),
     }
   },
 })(TopForm)
+
 export default class Query extends Component {
   constructor(props) {
     super(props)
@@ -111,6 +117,7 @@ export default class Query extends Component {
       data:[],//table数据
       total:'',//总页数
       detail:{},//录入项对象
+      selectedRows:[]
     }
   }
   componentWillMount(){
@@ -164,6 +171,35 @@ export default class Query extends Component {
       showDiglog:false
     })
   }
+  exportForm = ()=>{
+      if(this.state.selectedRows.length == 0){
+        message.error('未选择导出项');
+        return 
+      }
+      let exslDTO = {}
+      exslDTO.ids = this.state.selectedRows.map(v=>{
+        return v.chargeid
+      })
+      exslDTO.maps = {
+        "teamName":'公司车队',
+        "vehicleId":'车牌号',
+        "stopTime":'报停时间',
+        "deviceName":'终端说明',
+        "chargeTime":'收费日期',
+        "deadlineDate":'有效日期',
+        "stop":'是否报停',
+        "invoiceNum":'发票号',
+        "leaveFactoryDate":'安装时间',
+        "moneyAmont":'收费金额',
+        "payType":'付款方式',
+        "typeName":'车辆类型',
+        "phone":'联系电话',
+        "inputManName":'收款人',
+      }
+      exslDTO.type = 3;
+      let code = Base64.encode(JSON.stringify(exslDTO))
+      window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
+  }
   render() {
    
     const columns = [
@@ -184,13 +220,15 @@ export default class Query extends Component {
     ];
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        this.setState({
+          selectedRows:selectedRows
+        })
       }
     };
     return (
       <div className = 'query'>
-        <SearchForm init={this.init} getSearch = {this.getSearch}/>
-        <Table expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data} scroll= {{ x:1600,y:700 }} pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+        <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}/>
+        <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data} scroll= {{ x:1600,y:700 }} pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
         {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
       </div>
     )

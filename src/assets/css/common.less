@@ -7,6 +7,9 @@ body {
   overflow-x: hidden;
   background: #F1FCFF;
 }
+p{
+  margin:0;
+}
 .login{
   background: url('../img/login.png') no-repeat;
   width:100%;
@@ -125,7 +128,8 @@ ul{
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
   padding:9px;
 }
-.ant-table-fixed{
+.ant-table-placeholder{
+  z-index: 0;
 }
 .ant-table-body{
   min-height: 500px;
@@ -221,7 +225,7 @@ li{
     padding:23px;
     box-sizing: border-box;
     z-index: 10;
-    .ab(50%,50%);
+    .fixed(50%,50%);
     margin-top:-230px;
     margin-left: -500px;
     .detail{
@@ -233,6 +237,7 @@ li{
       background: #fff;
       box-shadow: 0px 2px 14px #ccc inset;
     }
+    
   }
 }
 header{
@@ -259,6 +264,7 @@ header{
       width:20px;
       height: 20px;
       margin-left: 10px;
+      cursor: pointer;
     }
   }
   .top_nav{
@@ -396,6 +402,7 @@ header{
       input{
         width: 230px;
         height: 34px;
+        line-height: 34px;
         padding-left: 75px;
         .bx;
       }
@@ -421,8 +428,19 @@ header{
       .fr;
       margin-right: 20px;
     }
-    .addNew,{
+    .addNew{
       padding-top: 10px;
+      .ant-form-item-label{
+        text-align: left;
+        width:150px;
+      }
+      .ant-upload-select-picture-card{
+        margin-right: 0px;
+        img{
+          width: 200px;
+          height: 100px;
+        }
+      }
       h2{
         text-align: center;
         color: #323232;
@@ -485,6 +503,13 @@ header{
     .ant-spin-container{
       margin-top:20px;
     }
+    .first{
+      margin: 0px 8px;
+      img{
+        width: 300px;
+        height: 380px;
+      }
+    }
   }
   .dataQuery,.query,.modify{
     .topForm{
@@ -494,8 +519,10 @@ header{
         margin-top: 30px;
         margin-left: 60px;
       }
+      .ant-calendar-picker .ant-input{
+        padding: 0px;
+      }
       .ant-input{
-        padding:0px;
         height: 34px;
         .ant-calendar-range-picker-input:first-child{
           padding-left: 70px;
@@ -506,7 +533,7 @@ header{
         }
       }
       .ant-calendar-range-picker-input{
-        width:155px !important;
+        width:160px !important;
       }
     }
   }
@@ -590,10 +617,10 @@ header{
     }
   }
   // 收费模块
-  .save,.modify{
+  .save,.modify,.addNotice{
     .topForm{
       .ant-btn{
-        margin-left: 100px;
+        margin-right: 100px;
         margin-top: 10px;
         width: 140px;
         height: 36px;
@@ -676,13 +703,33 @@ header{
       }
     }
   }
-  .query,.log{
+  .query{
     .topForm{
       .ant-btn{
-        margin-right: 50px;
+        margin-right: 0px;
         margin-top: 30px;
         width: 140px;
         height: 36px;
+      }
+    }
+  }
+  .log{
+    .topForm{
+      .ant-btn{
+        margin-right: 50px;
+        margin-top: 10px;
+        width: 140px;
+        height: 36px;
+      }
+    }
+    #deadlineDate .ant-input{
+      padding:0px;
+      input{
+        line-height: 32px !important;
+        height:32px !important;
+        width: 180px;
+        padding-left:59px;
+
       }
     }
   }
@@ -804,10 +851,14 @@ header{
   }
   // 信息管理
   .change{
-    .ant-btn{
+    .topForm .ant-btn{
       margin-top: 30px;
       width: 120px;
       margin-right: 50px;
+    }
+    .ant-form-item-label{
+      text-align: left;
+      width: 100px;
     }
     .chgForm{
       h2{text-align: center}
@@ -819,6 +870,7 @@ header{
           .font(#323232,16px);
           padding:10px 20px;
           border-bottom: 2px solid #323232;
+          margin-bottom: 10px;
         }
         width: 1440px;
         padding: 40px 141px;
@@ -826,7 +878,7 @@ header{
         box-shadow:8px 0px 28px rgba(98,98,98,0.2);
         .re;
           .row{
-            margin: 3px 0;
+            margin: 20px 0;
             width: 100%;
             .note{
               margin:0 30px;
@@ -863,21 +915,221 @@ header{
   .recode{
     .topForm{
       .ant-btn{
-        margin-left: 300px;
+        margin-right: 100px;
         margin-top: 10px;
         width: 140px;
         height: 36px;
       }
     }
-  }
-  .notice{
-    .topForm{
-      .ant-btn{
-        margin-right: 50px;
-        margin-top: 10px;
-        width: 140px;
-        height: 36px;
+    .picDialog{
+      position: fixed;
+      top:0px;
+      left:0px;
+      width: 100%;
+      height: 100%;
+      z-index: 250;
+      .mask{
+        position: fixed;
+        background: rgba(0,0,0,.3);
+        top:0px;
+        left:0px;
+        width: 100%;
+        height: 100%;
+      }
+      .insetbox{
+        height: 460px;
+        position: fixed;
+        width: 100%;
+        top: 50%;
+        margin-top: -230px;
+        text-align: center;
+        .ant-spin-spinning{
+          position: absolute!important;
+          left: 50%;
+          margin-left: -10px;
+          top: 220px;
+        }
+      }
+      .main{
+          display: inline-block;
+          .close{
+            cursor: pointer;
+          }
+          .toggle{
+            .re(30px,94%)
+          }
+          i{
+            cursor: pointer;
+            margin:0 5px;
+          }
+          height: 460px;
+          background: #F2FCFF;
+          padding:23px;
+          box-sizing: border-box;
+          z-index: 30;
+          
+          // .ab(50%,50%);
+         
+          .detail{
+            width: 760px;
+            height: 350px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            padding:10px 0;
+            background: #fff;
+            box-shadow: 0px 2px 14px #ccc inset;
+          }
+          .item{
+            width:290px;
+            height: 100%;
+            padding: 0px 20px;
+            p{
+              margin: 5px 0;
+            }
+            .bx;
+            img{
+              width: 100%;
+              height:300px;
+            }
+          }
+          
+        }
+        
       }
     }
-  }
+    .nav{
+      cursor: pointer;
+    }
+    .addNotice{
+      .topForm{
+        .ant-btn{
+          margin-right: 50px !important;
+          margin-left:0px;
+          width: 140px;
+          height: 36px;
+        }
+      }
+      .dialog{
+        .detail{
+          padding:20px 0;
+        }
+        .ant-form-item-label{
+          text-align: left;
+        }
+        .formItem{
+          margin:10px 20px;
+          
+        }
+        .location{
+          input{
+            width: 450px;
+            text-align: left;
+          }
+        }
+      }
+    }
+    .notice{
+      .topForm{
+        .ant-btn{
+          margin-right: 50px;
+          margin-top: 10px;
+          width: 140px;
+          height: 36px;
+        }
+      }
+    }
+    .person{
+      .top{
+        padding:0 20px;
+        .bx;
+        .ant-btn{
+          margin-left:10px;
+        }
+      }
+      .main_con{
+        margin-top: 20px;
+        .left{
+          background: #fff;
+          height:600px; 
+        }
+        .title{
+          text-align: center;
+          font-size: 12px;
+          .font(#fff);
+          background: #7EA9F7;
+          height: 38px;
+          line-height: 38px;
+          i{
+            font-size: 18px;
+            .re(0px,60px);
+            cursor: pointer;
+          }
+        }
+        .topTitle{
+          text-align: center;
+          font-size: 18px;
+          height: 38px;
+          line-height: 38px;
+        }
+       
+        .right{
+          width: 1150px;
+          .ant-table-wrapper{
+            margin-top:0px;
+          }
+        }
+      }
+      .formItem{
+        margin: 20px;
+      }
+      .diaBtns{
+        margin-top: 20px;
+        .ant-btn{
+          margin: 0 10px;
+        }
+      }
+      .depModal{
+        width: 100%;
+        .fixed();
+        text-align: center;
+        .mask{
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,.3);
+          z-index: 5;
+          .fixed();
+        }
+        .main{
+          .re();
+          padding: 30px 60px;
+          .bx();
+          display: inline-block;
+          width: 700px;
+          height: 400px;
+          background:#F2FCFF;
+          z-index: 1000;
+          margin-top: 300px;
+          .addTitle{
+            font-size: 16px;
+          }
+          .ant-divider-inner-text{
+            color: #2A8CF1;
+            font-size: 12px;
+          }
+          .group{
+            padding: 0 50px;
+          }
+          .ant-input{
+            width: 200px;
+          }
+          .btns{
+            margin-top: 60px;
+            padding:0 60px;
+            .ant-btn{
+              margin-right: 20px;
+            }
+          }
+        }
+      }
+    }
 }

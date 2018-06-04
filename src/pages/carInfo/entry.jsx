@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
 import Upload from '../../component/upload'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker , message } from 'antd';
+import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker , message,Spin ,Modal} from 'antd';
 import Avatar from '../../component/upload';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 
 
-
-function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
-}
 
 function CarDetail(props){//查看车辆详情
 
@@ -24,9 +21,9 @@ function CarDetail(props){//查看车辆详情
     { title: 'SIM卡类型', dataIndex: 'simTypeName', key: 'simTypeName', width: 150 ,align: 'center' },
     { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 150 ,align: 'center' },
     { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 150 ,align: 'center' },
-    // { title: '备注', dataIndex: 'comment', key: 'comment' ,align: 'center'  },
-    { title: '操作', dataIndex: '', key: 'action', render: (item) => <Button type="primary" onClick = {()=>{props.addCarInfo(item)}}>补全</Button> },
+    { title: '操作', dataIndex: '',width: 150, key: 'action', render: (item) => <Button type="primary" onClick = {()=>{props.addCarInfo(item)}}>补全</Button> },
   ];
+ 
   return(
     <div>
       <div className = 'clean top'>
@@ -34,88 +31,65 @@ function CarDetail(props){//查看车辆详情
         placeholder="请输入车牌号或车队名字"
         onSearch={value => props.searchCar(value) }
         enterButton/>
+        <Button className = 'fr' onClick = {()=>{props.searchCar('')}}>全部</Button>
       </div>
-      <Table  columns={columns} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} dataSource={props.carArr} scroll={{ x: 2000 }} pagination = {{defaultPageSize:10,total:props.total,onChange:props.pageChange}}/>
+      <Table columns={columns} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} dataSource={props.carArr} pagination = {{defaultPageSize:10,total:props.total,onChange:props.pageChange}}/>
     </div>
   );
 }
 
-// function UnabledItem(props){//禁用表单项
-//     return (
-//       <FormItem label = {props.label} className = 'formItem clean'>
-//         {props.tag && (<span className = 'tag'>{props.tag}</span>)}
-//         <Input disabled placeholder = {props.value} className = 'disabled'/>
-//       </FormItem>
-//     )
-// }
-
-
-
-
-// function SelectItem(props){//下拉表单项
-//    let opt = props.value.map((v,i)=>{
-//      return <Option value={v} key={i}>{v}</Option>
-//    })
-//     return (
-//       <FormItem label = {props.label} className = 'formItem clean'>
-//         <Select defaultValue={props.value[0]} style={{ width: 120 }} onChange={props.formChange.bind(this,props.link)}>
-//           {opt}
-//         </Select>
-//       </FormItem>
-//     )
-// }
  class AddNew extends Component {
- 
    constructor(props) {
      super(props)
      this.state = {
-      //  phone:'',//联系电话
-      //  address:'',//所属地区
-      //  terminalTypeNum:'',//终端类型号
-      //  factoryNumber:'',//厂家编号
-      //  terminalType:'',//终端类型
-      //  terminalOrder:'',//终端批次
-      //  systemPlatformOrder:'',//平台批次
-      //  systemPlatformNumber:'',//平台编号
-      //  callAPerson:'',//来电人
-      //  callDate:'',//来电时间
-      //  recordPerson:'',//记录人
-      //  carColor:'',//车牌颜色
-      //  navigationType:'',//导航类型
-      //  systemPlatform:'',//系统平台
-      //  manufacturer:'',//生产厂家
+      photoCodes:[],
+      product:[],
      }
    }
   
-  componentDidMount() {
-    // this.props.form.validateFields();
+  componentWillMount(){
+    $Funs.$AJAX('ziDian','get',{type:1},(res)=>{
+      this.setState({
+        product:res
+      })
+    })
   }
   handleSubmit=(e)=>{
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log(values)
       if (!err) {
-        values.carId = this.props.item.id;
-        values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
-        $Funs.$AJAX('car/newCar','post',values,(res)=>{
-          message.success('操作成功');
-          props.cancel()
-        })
+        confirm({
+          title: '提示',
+          content: '确认提交补全信息？',
+          okText:'确认',
+          cancelText:'取消',
+          onOk:()=> {
+            values.carId = this.props.item.id;
+            values.photoCodes = this.state.photoCodes;
+            values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
+            $Funs.$AJAX('car/newCar','post',values,(res)=>{
+              message.success('操作成功');
+              this.props.cancel()
+            })
+          },
+          onCancel() {
+          },
+        });
       }
     });
 
   }
-  handleSelect=(e)=>{
-    // this.props.form.setFieldsValue({
-    //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-    // });
+  getPic = (obj)=>{
+    let arr = this.state.photoCodes;
+    if(obj){
+      arr.push(obj) 
+    }
+    this.setState({
+      photoCodes:arr
+    },()=>{
+      console.log(this.state.photoCodes)
+    })
   }
-
-  // formChange = (link,e) =>{
-  //   this.setState({
-  //     [link]:e.target.value
-  //   })
-  // }
   render() {
     const { getFieldDecorator} = this.props.form;
     const formItemLayout = {
@@ -131,7 +105,7 @@ function CarDetail(props){//查看车辆详情
     return (
       <div className='addNew'>
         <Breadcrumb>
-          <Breadcrumb.Item><Link to="/carInfo/entry">车辆录入</Link></Breadcrumb.Item>
+          <Breadcrumb.Item><a onClick = {this.props.cancel}>车辆录入</a></Breadcrumb.Item>
           <Breadcrumb.Item>补全车辆信息</Breadcrumb.Item>
         </Breadcrumb>
         <div>
@@ -164,16 +138,17 @@ function CarDetail(props){//查看车辆详情
 
               </div>
               <div className = "row clean">
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="联系电话">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="联系电话">
                     {getFieldDecorator('phone', {
                       rules: [ {
                         required: true, message: '请输入联系电话',
+                        pattern: new RegExp(/^1[3|5|7|8|]\d{9}$/) ,message: '手机格式不正确',
                       }],
                     })(
                       <Input  />
                     )}
                   </FormItem>
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="所属地区">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="所属地区">
                     {getFieldDecorator('address', {
                       rules: [ {
                         required: true, message: '请输入所属地区',
@@ -207,18 +182,23 @@ function CarDetail(props){//查看车辆详情
                   <FormItem  className = 'formItem clean' label='SIM卡号'>
                     <Input  value={this.props.item.sim} disabled className = 'disabled'/>
                   </FormItem>
-
+                  {this.state.product.length > 0 &&
                   <FormItem className = 'formItem clean'{...formItemLayout} label="生产厂家">
                     {getFieldDecorator('manufacturer', {
                       rules: [ {
                         required: true, message: '请输入生产厂家',
                       }],
+                      initialValue:this.state.product[0]
                     })(
-                      <Input  />
+                      <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+                        { this.state.product.map((v,i)=>{
+                          return <Option value={v} key={i}>{v}</Option>
+                        })}
+                      </Select>
                     )}
                   </FormItem>
-
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型号">
+                  }
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端类型号">
                     {getFieldDecorator('terminalTypeNum', {
                       rules: [ {
                         required: true, message: '请输入终端类型号',
@@ -229,7 +209,7 @@ function CarDetail(props){//查看车辆详情
                   </FormItem>
                 </div>
                 <div className = "row clean">
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="厂家编号">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="厂家编号">
                     {getFieldDecorator('factoryNumber', {
                       rules: [ {
                         required: true, message: '请输入厂家编号',
@@ -238,7 +218,7 @@ function CarDetail(props){//查看车辆详情
                       <Input  />
                     )}
                   </FormItem>
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端类型">
                     {getFieldDecorator('terminalType', {
                       rules: [ {
                         required: true, message: '请输入终端类型',
@@ -247,7 +227,7 @@ function CarDetail(props){//查看车辆详情
                       <Input  />
                     )}
                   </FormItem>
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="终端批次">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端批次">
                     {getFieldDecorator('terminalOrder', {
                       rules: [ {
                         required: true, message: '请输入终端批次',
@@ -271,7 +251,7 @@ function CarDetail(props){//查看车辆详情
                     )}
                   </FormItem>
 
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="平台编号">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="平台编号">
                     {getFieldDecorator('systemPlatformNumber', {
                       rules: [ {
                         required: true, message: '请输入平台编号',
@@ -281,7 +261,7 @@ function CarDetail(props){//查看车辆详情
                     )}
                   </FormItem>
 
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="平台批次">
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="平台批次">
                     <span className = 'tag'>资料齐全</span>
                     {getFieldDecorator('systemPlatformOrder', {
                       rules: [ {
@@ -294,13 +274,13 @@ function CarDetail(props){//查看车辆详情
                 </div>
                 <div className = "row clean">
                   <FormItem label = '车辆登记证书' className = 'formItem clean'>
-                    <Avatar/>
+                    <Avatar type = '0' getPic={this.getPic}/>
                   </FormItem>
                   <FormItem label = '行驶证' className = 'formItem clean'>
-                    <Avatar/>
+                    <Avatar type = '1' getPic={this.getPic}/>
                   </FormItem>
                   <FormItem label = '车身照片' className = 'formItem clean'>
-                    <Avatar/>
+                    <Avatar type = '2' getPic={this.getPic}/>
                   </FormItem>
                 </div>
                 <div className = "row clean">
@@ -354,7 +334,8 @@ export default class Entry extends Component {
       carArr:[],
       total:'',
       search:'',
-      item:{}//选中的补全车辆信息
+      item:{},//选中的补全车辆信息,
+      loading:true,
     }
   }
   addCarInfo = (item)=>{
@@ -378,7 +359,11 @@ export default class Entry extends Component {
   }
   //搜索车辆
   searchCar = (v)=>{
-     this.setState({search:v},()=>{this.init()})
+     this.setState({
+       search:v,
+       loading:true
+      
+    },()=>{this.init()})
   }
 // 数据请求
   init=()=>{
@@ -390,7 +375,8 @@ export default class Entry extends Component {
       })
       this.setState({
         carArr: res.data,
-        total:res.count
+        total:res.count,
+        loading:false
       })
     })
   }
@@ -400,8 +386,11 @@ export default class Entry extends Component {
   render() {
     return (
       <div className = 'entry'>
-       {this.state.addFlag ? <AddForm cancel = {this.cancel}  item = {this.state.item}/> : <CarDetail addCarInfo = {this.addCarInfo}  carArr = {this.state.carArr} total = {this.state.total} pageChange = {this.pageChange} searchCar = {this.searchCar}></CarDetail>}
+        <Spin spinning = {this.state.loading} size='large'>
+          {this.state.addFlag ? <AddForm cancel = {this.cancel}  item = {this.state.item}/> : <CarDetail addCarInfo = {this.addCarInfo}  carArr = {this.state.carArr} total = {this.state.total} pageChange = {this.pageChange} searchCar = {this.searchCar} ></CarDetail>}
+        </Spin>
       </div>
+
     )
   }
 }

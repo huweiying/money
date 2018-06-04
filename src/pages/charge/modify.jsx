@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Table , Input , Button , Breadcrumb , Form , Select,message, DatePicker} from 'antd';
+import { Base64 } from 'js-base64';
+import { Table , Input , Button , Breadcrumb , Form , Select,message, DatePicker,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
+const confirm = Modal.confirm;
 const { TextArea } = Input;
 
 class TopForm extends Component {
@@ -28,9 +30,7 @@ class TopForm extends Component {
       if(data){
         //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
-        }
+      }
     });
   }
   clear = ()=>{
@@ -40,7 +40,7 @@ class TopForm extends Component {
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
     const rangeConfig = {
-      rules: [{ type: 'array',  message: 'Please select time!' }],
+      rules: [{ type: 'array',  message: '请选择时间!' }],
     };
     return (
       <Form className = 'topForm clean'>
@@ -83,7 +83,7 @@ class TopForm extends Component {
             </div>
             <div className = 'fr'>
               <Button type="primary" onClick={this.handleSearch}>查找</Button>
-              <Button type="primary" onClick={this.exportForm}>导出</Button>
+              <Button type="primary" onClick={this.props.exportForm}>导出</Button>
             </div>
           </Form>
     )
@@ -99,6 +99,9 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
+      exportForm: Form.createFormField({
+        value: props.exportForm,
+      }),
     }
   },
 })(TopForm)
@@ -113,22 +116,31 @@ class TMsgDetail extends Component{
   handleSubmit = ()=>{
     this.props.form.validateFields((err, values) => {
       if(!err){
-        values.invoiceNum = values.prefix + values.invoiceNum;
-        delete values.prefix;
-        values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
-        values.chargeTime = $Funs.formatDate(values.chargeTime);
-        values.id = this.props.detail.chargeid;
-        values.newCarId = this.props.detail.newCarId;
-        values.vehicleId = this.props.detail.vehicleId;
-        values.teamName = this.props.detail.teamName;
-        values.inputMan = $Funs.cook.get('id');
-        values.inputManName = $Funs.cook.get('name');
-        // values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
-        // console.log(values)
-        $Funs.$AJAX('charge','post',values,(res)=>{
-          message.success('操作成功');
-          this.props.cancel()
-        })      
+        confirm({
+          title: '提示',
+          content: '确认提交补全信息？',
+          okText:'确认',
+          cancelText:'取消',
+          onOk:()=> {
+            values.invoiceNum = values.prefix + values.invoiceNum;
+            delete values.prefix;
+            values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
+            values.chargeTime = $Funs.formatDate(values.chargeTime);
+            values.id = this.props.detail.chargeid;
+            values.newCarId = this.props.detail.newCarId;
+            values.vehicleId = this.props.detail.vehicleId;
+            values.teamName = this.props.detail.teamName;
+            values.inputMan = $Funs.cook.get('id');
+            values.inputManName = $Funs.cook.get('name');
+            $Funs.$AJAX('charge','post',values,(res)=>{
+              message.success('修改成功');
+              this.props.cancel()
+            })      
+          },
+          onCancel() {
+          },
+        });
+        
       }
     });
   }
@@ -261,6 +273,7 @@ export default class Modify extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading:true,
       showDiglog:false,
       currPage:1,
       pageSize:13,
@@ -268,6 +281,7 @@ export default class Modify extends Component {
       data:[],//table数据
       total:'',//总页数
       detail:{},//录入项对象
+      selectedRows:[]
     }
   }
   componentWillMount(){
@@ -289,7 +303,8 @@ export default class Modify extends Component {
       })
       this.setState({
         data : data,
-        total: res.count
+        total: res.count,
+        loading:false
       })
     })
   }
@@ -297,16 +312,19 @@ export default class Modify extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true
     },()=>{
       let data = this.state.keyWord;
-      data.currPage = page
       this.init(data)
     })
   }
@@ -320,6 +338,29 @@ export default class Modify extends Component {
     this.setState({
       showDiglog:false
     })
+  }
+  exportForm = ()=>{
+      if(this.state.selectedRows.length == 0){
+        message.error('未选择导出项');
+        return 
+      }
+      let exslDTO = {}
+      exslDTO.ids = this.state.selectedRows.map(v=>{
+        return v.chargeid 
+      })
+      exslDTO.maps = {
+        "teamName":'公司车队',
+        "vehicleId":'车牌号',
+        "moneyAmont":'付款金额',
+        "payType":'付款方式',
+        "chargeTime":'付款日期',
+        "deadlineDate":'有效期至',
+        "invoiceNum":'发票（或收据）号码',
+        "inputManName":'收款人',
+      }
+      exslDTO.type = 2;
+      let code = Base64.encode(JSON.stringify(exslDTO))
+      window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
     const columns = [
@@ -335,15 +376,19 @@ export default class Modify extends Component {
     ];
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        this.setState({
+          selectedRows:selectedRows
+        })
       },
     };
     
     return (
       <div className = 'modify'>
-      <SearchForm init={this.init} getSearch = {this.getSearch}/>
-        <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-        {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+        <Spin spinning = {this.state.loading} size='large'>
+          <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}/>
+          <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+          {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+        </Spin>
       </div>
     )
   }

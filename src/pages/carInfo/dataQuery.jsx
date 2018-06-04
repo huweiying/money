@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Table , Input , Button , Breadcrumb , Form , Select , DatePicker} from 'antd';
+import { Base64 } from 'js-base64';
+import { Table , Input , Button , Breadcrumb , Form , Select , DatePicker ,message ,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -24,8 +25,8 @@ class TopForm extends Component {
       if(data){
         //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
+        // data.currPage = 1;
+        // this.props.init(data)
         }
     });
   }
@@ -104,6 +105,7 @@ export default class DataQuery extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading:true,
       currPage:1,
       pageSize:13,
       keyWord:{},//搜索关键字
@@ -128,7 +130,8 @@ export default class DataQuery extends Component {
       })
       this.setState({
         data:data,
-        total:res.count
+        total:res.count,
+        loading:false
       })
     })
   }
@@ -136,25 +139,42 @@ export default class DataQuery extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true
     },()=>{
       let data = this.state.keyWord;
-      data.currPage = page
       this.init(data)
     })
   }
  
   exportForm = ()=>{
-    console.log(this.state.selectedRows)
-    $Funs.$AJAX('getChargeComplexToExcel','get',data,(res)=>{
-      
+    if(this.state.selectedRows.length == 0){
+      message.error('未选择导出项');
+      return 
+    }
+    let exslDTO = {}
+    exslDTO.ids = this.state.selectedRows.map(v=>{
+      return v.id 
     })
+    exslDTO.maps = {
+      "vehicleId":'车牌号',
+      "sim":'SIM卡号',
+      "manageNum":'终端号',
+      "teamName":'公司车队',
+      "changeTime":'变更时间',
+    }
+    exslDTO.type = 1;
+    let code = Base64.encode(JSON.stringify(exslDTO))
+    window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
     const columns = [
@@ -174,8 +194,10 @@ export default class DataQuery extends Component {
     
     return (
       <div className = 'dataQuery'>
-        <SearchForm init={this.init} exportForm = {this.exportForm} getSearch = {this.getSearch} />
-        <Table rowSelection={rowSelection} columns={columns} expandedRowRender={record => {return (<div><span>变更详情{record.changeDetail.map((v,i)=>{return (<p style={{ margin: 0 }} key = {i}>{v}</p>)})}</span></div>) }} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange ,current:this.state.currPage}}/>
+        <Spin spinning = {this.state.loading} size = 'large'>
+          <SearchForm init={this.init} exportForm = {this.exportForm} getSearch = {this.getSearch} />
+          <Table rowSelection={rowSelection} columns={columns} expandedRowRender={record => {return (<div><span>变更详情{record.changeDetail.map((v,i)=>{return (<p style={{ margin: 0 }} key = {i}>{v}</p>)})}</span></div>) }} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange ,current:this.state.currPage}}/>
+        </Spin>
       </div>
     )
   }

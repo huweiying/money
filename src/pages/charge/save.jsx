@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select,DatePicker ,message} from 'antd';
+import { Table , Input , Button , Form , Select,DatePicker ,message,Spin , Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 const { TextArea } = Input;
-
+const confirm = Modal.confirm;
 
 
 class TopForm extends Component {
@@ -22,8 +22,8 @@ class TopForm extends Component {
         if(data){
           //默认查找第一页开始
           this.props.getSearch(data);
-          data.currPage = 1;
-          this.props.init(data)
+          // data.currPage = 1;
+          // this.props.init(data)
         }
     });
   }
@@ -38,7 +38,7 @@ class TopForm extends Component {
       <Form className = 'topForm clean'>
             <div className = 'fl'>
               <FormItem label = '车牌号码：' className = 'formItem'>
-                {getFieldDecorator('carNum')(
+                {getFieldDecorator('vehicleId')(
                   <Input />
                 )}
               </FormItem>
@@ -46,7 +46,7 @@ class TopForm extends Component {
             </div>
             <div className = 'fl'>
               <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('carCompany')(
+                {getFieldDecorator('teamName')(
                   <Input />
                 )}
               </FormItem>
@@ -55,7 +55,7 @@ class TopForm extends Component {
             <div className = 'fl'>
               <a className = 'empty' onClick = {this.clear} >清空</a>
             </div>
-            <div className = 'fl'>
+            <div className = 'fr'>
               <Button type="primary" onClick={this.handleSearch}>查找</Button>
             </div>
           </Form>
@@ -111,24 +111,35 @@ class TMsgDetail extends Component{
   handleSubmit = ()=>{
     this.props.form.validateFields((err, values) => {
       if(!err){
-        values.invoiceNum = values.prefix + values.invoiceNum;
-        delete values.prefix;
-        values.newCarId = this.props.detail.newCarId;
-        values.vehicleId = this.props.detail.vehicleId;
-        values.teamName = this.props.detail.teamName;
-        values.inputMan = $Funs.cook.get('id');
-        values.inputManName = $Funs.cook.get('name');
-        values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
-        $Funs.$AJAX('charge','post',values,(res)=>{
-          message.success('操作成功');
-          this.props.cancel()
-        })      
+        confirm({
+          title: '提示',
+          content: '确认提交收费信息？',
+          okText:'确认',
+          cancelText:'取消',
+          onOk:() =>{
+            values.invoiceNum = values.prefix + values.invoiceNum;
+            delete values.prefix;
+            values.newCarId = this.props.detail.newCarId;
+            values.vehicleId = this.props.detail.vehicleId;
+            values.teamName = this.props.detail.teamName;
+            values.inputMan = $Funs.cook.get('id');
+            values.inputManName = $Funs.cook.get('name');
+            values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
+            $Funs.$AJAX('charge','post',values,(res)=>{
+              message.success('操作成功');
+              this.props.cancel()
+            })   
+          },
+          onCancel() {
+          },
+        });
+           
       }
     });
   }
   render(){
     const recodeColumns = [
-      { title: '公司车队', width: 150, dataIndex: 'teamName' , key:'teamName',align: 'center' },
+      { title: '公司车队', width: 250, dataIndex: 'teamName' , key:'teamName',align: 'center' },
       { title: '车牌号码', dataIndex: 'vehicleId',key:'vehicleId', width: 100 ,align: 'center' },
       { title: '收费日期', dataIndex: 'chargeTime',key:'chargeTime', width: 100 ,align: 'center' },
       { title: '收费金额', dataIndex: 'moneyAmont',key:'moneyAmont',  width: 100 ,align: 'center' },
@@ -259,6 +270,7 @@ export default class Save extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading:true,
       showDiglog:false,
       currPage:1,
       pageSize:13,
@@ -285,7 +297,8 @@ export default class Save extends Component {
       })
       this.setState({
         data : data,
-        total: res.count
+        total: res.count,
+        loading:false
       })
     })
   }
@@ -293,16 +306,19 @@ export default class Save extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true,
     },()=>{
       let data = this.state.keyWord;
-      data.currPage = page
       this.init(data)
     })
   }
@@ -334,9 +350,11 @@ export default class Save extends Component {
     
     return (
       <div className = 'save'>
-      <SearchForm init={this.init} getSearch = {this.getSearch} />
-        <Table  columns={columns} dataSource={this.state.data} scroll={{y:400}}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-        {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+        <Spin spinning = {this.state.loading} size='large'>
+        <SearchForm init={this.init} getSearch = {this.getSearch} />
+          <Table  columns={columns} dataSource={this.state.data} scroll={{y:400}}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+          {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+        </Spin>
       </div>
     )
   }
