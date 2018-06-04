@@ -1,95 +1,153 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select} from 'antd';
+import { Table, Input, Button, Form, Select, Pagination, Modal, notification } from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
+import Finds from "../../component/find"
+import Arrs from "../../assets/js/formArray"
 // import { renderRoutes } from 'react-router-config'
 const columns = [
-  { title: '车牌号码', width: 100, dataIndex: 'name',align: 'center' },
-  { title: '车辆ID', width: 100, dataIndex: 'age' ,align: 'center' },
-  { title: 'SIM卡号', dataIndex: 'address', width: 150 ,align: 'center' },
-  { title: '证明编号', dataIndex: 'address',  width: 150 ,align: 'center' },
-  { title: '打印时间', dataIndex: 'address',  width: 150 ,align: 'center' },
-  { title: '是否已作废', dataIndex: 'address', width: 150 ,align: 'center' },
+  { title: '车牌号码', width: 100, dataIndex: 'vehiclePlate', key: '', align: 'center' },
+  { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 150, align: 'center' },
+  { title: '证明编号', dataIndex: 'num', key: 'num', width: 150, align: 'center' },
+  { title: '打印时间', dataIndex: 'createTime', key: 'createTime', width: 150, align: 'center' },
+  { title: '是否已作废', dataIndex: 'nowstatus', key: 'nowstatus', width: 150, align: 'center' },
 ];
 
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: record => ({
-    disabled: record.name === 'Disabled User', // Column configuration not to be checked
-    name: record.name,
-  }),
-};
-const data = [];
-for (let i = 0; i < 11; i++) {
-  data.push({
-    key: i,
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
 
 export default class Invalid extends Component {
   constructor(props) {
     super(props)
-    
+    this.state = {
+      nav: [
+        { tit: '未作废', Selected: true, value: 0 },
+        { tit: '已作废', Selected: false, value: 1 },
+      ],
+      form:{},
+      navcur: 0
+    }
   }
-  handleChange(){}
-  
+  componentWillMount() {
+    this.list({
+      status: 0,
+      currPage: 1,
+      pageSize: 10
+    })
+  }
+  sub(e) {
+    let index = this.state.nav.findIndex(e => {
+      return e.Selected
+    })
+    let Arr = e;
+    Arr.status = index
+    Arr.currPage = 1;
+    Arr.pageSize = 10;
+    this.setState({
+      nowpage: 1,
+      form: Arr
+    })
+    this.list(Arr)
+  }
+  list(data) {
+    $Funs.$AJAX('printHistorys', 'get', data, res => {
+      res.data = res.data.map((v, i) => {
+        // $Funs.format(v.paymentDate)
+        v.createTime = $Funs.format(v.createTime)
+        v.key = i
+        return v
+      })
+      this.setState({
+        list: res.data,
+        total: res.count,
+      })
+    })
+  }
+  pageChange = (page) => {
+    let index = this.state.nav.findIndex(e => {
+      return e.Selected
+    })
+    this.setState({
+      nowpage: page,
+    })
+    let Brr = this.state.form;
+    Object.assign(Brr, {
+      currPage: page,
+      pageSize: 10,
+      status: this.state.nav[index].value,
+    });
+    this.list(Brr)
+  }
+  handleClick(i,e){
+    let arr=this.state.nav;
+    for(let val of arr){
+      val.Selected=false;
+    }
+    arr[i].Selected=true;
+    this.setState({
+      nav:arr,
+      navcur:arr[i].value
+    })
+    this.list({
+      status:arr[i].value,
+      currPage:1,
+      pageSize:10
+    })
+  }
+  rows = (type) => {
+    let Ids = this.state.ck, newArr = [];
+    for (let val of Ids) {
+      newArr.push(val.id)
+    }
+    Modal.confirm({
+      title: '申请作废',
+      content: '确认提交？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+        $Funs.$AJAX('printHistorys', 'patch', newArr, e => {
+          notification.open({
+            message: '作废成功',
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 500);
+        })
+      }
+    });
+  }
   render() {
- 
-    const topForm = (
-      <Form className = 'topForm clean'>
-        <div className = 'fl'>
-          <FormItem label = '车牌号码：' className = 'formItem'>
-            <Input placeholder = '' className = ''/>
-          </FormItem>
-          <FormItem label = '车队名：' className = 'formItem'>
-            <Input placeholder = '' className = ''/>
-          </FormItem>
-        </div>
-        <div className = 'fl'>
-          <FormItem label = 'SIM卡号：' className = 'formItem'>
-            <Input placeholder = '' className = ''/>
-          </FormItem>
-          <FormItem label = '付款时间：' className = 'formItem'>
-            <Select defaultValue="" style={{ width: 230 }} onChange={this.handleChange}>
-              <Option value="jack">Jack</Option>
-              <Option value="jack">Jack</Option>
-            </Select>
-          </FormItem>
-        </div>
-        <div className = 'fl'>
-          <FormItem label = '终端号：' className = 'formItem'>
-            <Select defaultValue="" style={{ width: 230 }} onChange={this.handleChange}>
-              <Option value="jack">Jack</Option>
-              <Option value="jack">Jack</Option>
-            </Select>
-          </FormItem>
-        </div>
-        <div className = 'fl'>
-          <a className = 'empty'>清空</a>
-        </div>
-        <div className = 'fl'>
-        <Button
-        type="primary"
-      >
-        查找
-      </Button>
-        </div>
-
-      </Form>
-    )
-   
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({
+          ck: selectedRows
+        })
+      },
+      getCheckboxProps: record => ({
+        disabled: record.name === 'Disabled User', // Column configuration not to be checked
+        name: record.name,
+      }),
+    };
     return (
-      <div className = 'invalid'>
-        { topForm}
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data} scroll={{ y:400}} pagination = {false}/>
-        <Button type="primary" className = 'submit fr' >作废该证明</Button>
+      <div className='invalid'>
+        <div className='nav clean'>
+          {
+            this.state.nav.map((e, i) => {
+              return (
+                <span className={e.Selected ? 'active' : ''} onClick={this.handleClick.bind(this, i)} key={i}>{e.tit}</span>
+              )
+            })
+          }
+        </div>
+        <Finds Formbody={Arrs.prove} sub={mode => this.sub(mode)} />
+        {
+          this.state.navcur==0 && <div className="fath">
+            <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.list} scroll={{ y: 400 }} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
+            <Button type="primary" className='submit fr' onClick={this.rows} >作废该证明</Button>
+          </div>
+          ||
+          <Table columns={columns} dataSource={this.state.list} scroll={{ y: 400 }} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
+       }
       </div>
     )
   }
