@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker ,Spin} from 'antd';
+import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker ,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 const { TextArea } = Input;
 
 // import { renderRoutes } from 'react-router-config'
@@ -40,8 +41,6 @@ class TopForm extends Component {
       if(data){
         //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
         }
     });
   }
@@ -118,6 +117,9 @@ class TMsgDetail extends Component{
   
   componentWillMount(){
     $Funs.$AJAX('user','get',{roles:2},(res)=>{
+      if(res.length == 0){
+        return
+      }
         this.setState({
             user:res,
             loading:false,
@@ -128,20 +130,32 @@ class TMsgDetail extends Component{
   handleSubmit = ()=>{
     this.props.form.validateFields((err, values) => {
       if(!err){
-          values.carframeId = this.props.detail.carframeId;
-          values.inputMan = $Funs.cook.get('id');
-          values.newCarId =  this.props.detail.newCarId;
-          values.oldVehicleId = this.props.detail.oldVehicleId;
-          values.operationType = Number(this.props.navIndex);
-          values.phone = this.props.detail.phone;
-          values.vehicleId = this.props.detail.vehicleId;
-          values.teamName = this.props.detail.teamName;
-          values.typeName = this.props.detail.typeName;
-          values.repairInstallType = Number(values.repairInstallType);
-        $Funs.$AJAX('repairInstall','post',values,(res)=>{
-          message.success('操作成功');
-          this.props.cancel()
-        })      
+        let msg = this.props.navIndex == 0 ? '确认提交添加安装信息？':'确认提交添加维修信息？'
+        confirm({
+          title: '提示',
+          content: msg,
+          okText:'确认',
+          cancelText:'取消',
+          onOk:()=> {
+              values.carframeId = this.props.detail.carframeId;
+              values.inputMan = $Funs.cook.get('id');
+              values.newCarId =  this.props.detail.newCarId;
+              values.oldVehicleId = this.props.detail.oldVehicleId;
+              values.operationType = Number(this.props.navIndex);
+              values.phone = this.props.detail.phone;
+              values.vehicleId = this.props.detail.vehicleId;
+              values.teamName = this.props.detail.teamName;
+              values.typeName = this.props.detail.typeName;
+              values.repairInstallType = Number(values.repairInstallType);
+            $Funs.$AJAX('repairInstall','post',values,(res)=>{
+              message.success('操作成功');
+              this.props.cancel()
+            })      
+          },
+          onCancel() {
+          },
+        });
+          
       }
     });
   }
@@ -189,7 +203,7 @@ class TMsgDetail extends Component{
                 <div className = ' clean'>
                     <FormItem className = 'formItem clean'{...formItemLayout} label="指派人员">
                         {getFieldDecorator('userId', {
-                            initialValue:this.state.user[0].name
+                            initialValue:this.state.user[0].id
                         })(
                         <Select  style={{ width: 200 }} >
                             {
@@ -290,7 +304,8 @@ export default class addNotice extends Component {
             })
             this.setState({
               data : data,
-              total: res.count
+              total: res.count,
+              loading:false
             })
         })
   }
@@ -298,16 +313,19 @@ export default class addNotice extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true,
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true
     },()=>{
       let data = this.state.keyWord;
-      data.currPage = page
       this.init(data)
     })
   }
@@ -325,7 +343,9 @@ export default class addNotice extends Component {
   navChange = (i)=>{//切换导航
     this.setState({
       navIndex:i,
-      currPage:1
+      currPage:1,
+      loading:true,
+      keyWord:{}
     },()=>{
         this.init({})
     })
@@ -344,12 +364,14 @@ export default class addNotice extends Component {
     
     return (
       <div className = 'addNotice'>
-        <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
-          <div>
-            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail}/>
-            <Table expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-            {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
-          </div>
+        <Spin spinning = {this.state.loading} size='large'>
+          <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
+            <div>
+              <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail}/>
+              <Table expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+              {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
+            </div>
+        </Spin>
       </div>
     )
   }

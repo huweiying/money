@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form ,Icon } from 'antd';
+import { Table , Input , Button , Form ,Icon ,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 // import { renderRoutes } from 'react-router-config'
@@ -36,8 +36,7 @@ class TopForm extends Component {
       if(data){
         //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
+
         }
     });
   }
@@ -47,9 +46,6 @@ class TopForm extends Component {
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
-    const rangeConfig = {
-      rules: [{ type: 'array',  message: 'Please select time!' }],
-    };
     return (
       <Form className = 'topForm clean'>
               <div className = 'fl'>
@@ -246,12 +242,17 @@ const MsgDetail = Form.create({
 class PicDetail extends Component{
   constructor(props) {
     super(props)
-    console.log(this.props)
     this.state = {
       currPage:1,
       pageSize:4,
-      total:this.props.detail.length
+      total:this.props.detail.length,
+      loading:true,
     }
+  }
+  componentDidMount(){
+    this.setState({
+      loading:false
+    })
   }
   next(isNext){
     if(isNext){//下一页
@@ -278,7 +279,7 @@ class PicDetail extends Component{
       data = this.props.detail.map((v,i)=>{
         if(v){
           return(
-            <div className = 'item fl'>
+            <div className = 'item fl' key={i}>
                 <p>{v.pictureType}</p>
                 <img src={v.picturePath} />
                 <p>{v.pictureTime}</p>
@@ -290,20 +291,26 @@ class PicDetail extends Component{
     return (
       <div className = 'picDialog'>
       <div className = 'mask'></div>
-          <div className = 'main'>
-            <Icon type="close" style={{ fontSize: 18, color: '#08c' }} className='close ' onClick = {this.props.cancel}/>
-            {data}
-            {
-            this.props.detail.length > 4 && (
-              <div className = 'toggle'>
-                <Icon type="left" style={{ fontSize: 24, color: '#08c' }} onClick = {this.next.bind(this,true)}/>
-                <Icon type="right" style={{  fontSize: 24, color: '#08c' }} onClick = {this.next.bind(this,false)}/>
-              </div>
-            )
-          }
-          
-        </div>
         
+          <div className="insetbox">
+          <Spin spinning = {this.state.loading} tip="Loading..."></Spin>
+              <div className = 'main'>
+            
+                <Icon type="close" style={{ fontSize: 18, color: '#08c' }} className='close' onClick = {this.props.cancel}/>
+                {data }
+                {
+                this.props.detail.length > 4 && (
+                  <div className = 'toggle'>
+                    <Icon type="left" style={{ fontSize: 24, color: '#08c' }} onClick = {this.next.bind(this,true)}/>
+                    <Icon type="right" style={{  fontSize: 24, color: '#08c' }} onClick = {this.next.bind(this,false)}/>
+                  </div>
+                )
+              }
+            
+              </div>
+            
+            
+            </div>
       </div>
     )
   }
@@ -316,6 +323,7 @@ export default class Recode extends Component {
   constructor(props) {
     super(props)
     this.state = {
+        loading:true,
         navIndex : 0,
         currPage:1,
         pageSize:13,
@@ -327,12 +335,13 @@ export default class Recode extends Component {
     }
   }
   componentWillMount(){
-    this.init({})
+    this.init()
   }
-  init=(data)=>{
+  init=(data={})=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('getInstallRecord','get',data,(res)=>{
+    let url = this.state.navIndex == 0 ? 'getInstallRecord' : 'getRepairRecord';
+    $Funs.$AJAX(url,'get',data,(res)=>{
       let data = res.data.map((v,i)=>{
         v.key = i;
         v.pictureTime = $Funs.formatDate(v.pictureTime)
@@ -340,7 +349,8 @@ export default class Recode extends Component {
       })
       this.setState({
         data : data,
-        total: res.count
+        total: res.count,
+        loading:false
       })
     })
   }
@@ -348,16 +358,19 @@ export default class Recode extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true,
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true
     },()=>{
       let data = this.state.keyWord;
-      data.currPage = page
       this.init(data)
     })
   }
@@ -371,7 +384,6 @@ export default class Recode extends Component {
       picDetail: true,
       detail:item
     },()=>{
-      console.log(this.state.detail)
     })
   }
   cancel =()=>{
@@ -381,7 +393,11 @@ export default class Recode extends Component {
   }
   navChange = (i)=>{//切换导航
     this.setState({
-      navIndex:i
+      navIndex:i,
+      currPage:1,
+      keyWord:{}
+    },()=>{
+      this.init()
     })
   }
   render() {
@@ -396,16 +412,15 @@ export default class Recode extends Component {
     
     return (
       <div className = 'recode'>
-        <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
-        { this.state.navIndex == 0 ? (
-          <div>
-            <SearchForm init={this.init} getSearch = {this.getSearch}/>
-            <Table  columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-            {this.state.picDetail && <PicDetail detail = {this.state.detail} cancel = {this.cancel}/>}
-          </div>
-        ): ''
-      }
-
+        <Spin spinning = {this.state.loading} size='large'>
+          <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
+            <div>
+              <SearchForm init={this.init} getSearch = {this.getSearch}/>
+              <Table  columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+              {this.state.picDetail && <PicDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+            </div>
+          
+        </Spin>
       </div>
     )
   }

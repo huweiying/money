@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker } from 'antd';
+import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker,Spin } from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -51,9 +51,7 @@ class TopForm extends Component {
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
-    const rangeConfig = {
-      rules: [{ type: 'array',  message: 'Please select time!' }],
-    };
+ 
     return (
       <Form className = 'topForm clean'>
               <div className = 'fl'>
@@ -265,6 +263,7 @@ export default class addNotice extends Component {
   constructor(props) {
     super(props)
     this.state = {
+        loading:true,
         navIndex : 0,
         currPage:1,
         pageSize:13,
@@ -291,7 +290,8 @@ export default class addNotice extends Component {
             })
             this.setState({
               data : data,
-              total: res.count
+              total: res.count,
+              loading:false
             })
         })
     
@@ -301,16 +301,19 @@ export default class addNotice extends Component {
     if(data){
       this.setState({
         keyWord:data,
-        currPage:1
+        currPage:1,
+        loading:true,
+      },()=>{
+        this.init(data)
       })
     }
   }
   pageChange = (page)=>{
     this.setState({
       currPage:page,
+      loading:true
     },()=>{
       let data = this.state.keyWord;
-      data.currPage = page
       this.init(data)
     })
   }
@@ -328,14 +331,14 @@ export default class addNotice extends Component {
   navChange = (i)=>{//切换导航
     this.setState({
       navIndex:i,
-      currPage:1
+      currPage:1,
+      loading:true
     },()=>{
         this.init({})
     })
   }
   postChoose = (items)=>{
-    console.log(items)
-    if(!items){
+    if(items.length == 0 ){
       message.error('请选择需要发送通知的车辆');
     }else{
       $Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
@@ -368,12 +371,14 @@ export default class addNotice extends Component {
     
     return (
       <div className = 'addNotice'>
+      <Spin spinning = {this.state.loading} size='large'>
         <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
           <div>
             <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} postChoose = {()=>{this.postChoose(choose)}}/>
             <Table  rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
             {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
           </div>
+      </Spin>
       </div>
     )
   }

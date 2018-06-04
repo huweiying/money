@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select,message,Modal} from 'antd';
+import { Table , Input , Button , Form , Select,message,Modal,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 const { TextArea } = Input;
+const confirm = Modal.confirm;
 // import { renderRoutes } from 'react-router-config'
 
 class TopForm extends Component {
@@ -21,8 +22,8 @@ class TopForm extends Component {
           if(data){
             //默认查找第一页开始
             this.props.getSearch(data);
-            data.currPage = 1;
-            this.props.init(data)
+            // data.currPage = 1;
+            // this.props.init(data)
           }
       });
     }
@@ -83,16 +84,25 @@ class TopForm extends Component {
     handleSubmit = ()=>{
       this.props.form.validateFields((err, values) => {
         if(!err){
-            values.newCarId = this.props.detail.newCarId;
-            values.vehicleId = this.props.detail.vehicleId;
-            values.oldVehicleId = this.props.detail.oldVehicleId;
-            values.teamName = this.props.detail.teamName;
-            values.inputMan = $Funs.cook.get('id');
-            console.log(values)
-            $Funs.$AJAX('stop','post',values,(res)=>{
-                message.success('操作成功');
-                this.props.cancel()
-            })      
+          confirm({
+            title: '提示',
+            content: '确认提交报停信息？',
+            okText:'确认',
+            cancelText:'取消',
+            onOk:()=> {
+              values.newCarId = this.props.detail.newCarId;
+              values.vehicleId = this.props.detail.vehicleId;
+              values.oldVehicleId = this.props.detail.oldVehicleId;
+              values.teamName = this.props.detail.teamName;
+              values.inputMan = $Funs.cook.get('id');
+              $Funs.$AJAX('stop','post',values,(res)=>{
+                  message.success('操作成功');
+                  this.props.cancel()
+              })      
+            },
+            onCancel() {
+            },
+          });
         }
       });
     }
@@ -172,6 +182,7 @@ class TopForm extends Component {
     constructor(props) {
         super(props)
         this.state={
+            loading:true,
             showDiglog:false,
             currPage:1,
             pageSize:13,
@@ -195,7 +206,8 @@ class TopForm extends Component {
           })
           this.setState({
             data : data,
-            total: res.count
+            total: res.count,
+            loading:false
           })
         })
       }
@@ -204,24 +216,30 @@ class TopForm extends Component {
           this.setState({
             keyWord:data,
             currPage:1
+          },()=>{
+            this.init(data)
           })
         }
       }
       pageChange = (page)=>{
         this.setState({
           currPage:page,
+          loading:true
         },()=>{
           let data = this.state.keyWord;
-          data.currPage = page
           this.init(data)
         })
       }
       handleOk = (id)=>{
-        console.log(id)
-        $Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
+        this.setState({
+          loading:true
+        },()=>{
+          $Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
             message.success('操作成功');
             this.init();
         })
+        })
+        
       }
       edit = (item,i)=>{
           if(i == 0){//报停
@@ -252,14 +270,16 @@ class TopForm extends Component {
             { title: '终端类型', dataIndex: 'terminalType',key:'terminalType', width: 150 ,align: 'center' },
             { title: '是否报停', dataIndex: 'stop',key:'stop', width: 100 ,align: 'center' },
             { title: '报停理由', dataIndex: 'stopReason',key:'stopReason', width: 250 ,align: 'center' },
-            { title: '操作', dataIndex: '', key: 'action', width: 100 ,align: 'center' , render: (item) =>{if(item.stop == '否'){return (<Button type="primary" onClick = {()=>{this.edit(item,0)}}>报停</Button>)}else{return (<Button type="primary" onClick = {()=>{this.edit(item,1)}}>恢复</Button>)}} }
+            { title: '操作', dataIndex: '', key: 'action', width: 100 ,align: 'center' , render: (item) =>{if(item.stop == '否'){return (<Button type="danger" onClick = {()=>{this.edit(item,0)}}>报停</Button>)}else{return (<Button onClick = {()=>{this.edit(item,1)}}>恢复</Button>)}} }
           ];
           
         return (
             <div className = 'stop'>
+              <Spin spinning = {this.state.loading} size='large'>
                 <SearchForm init={this.init} getSearch = {this.getSearch} />
                 <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }} scroll={{ y:400}} />
                 {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+              </Spin>
             </div>
         )
     }

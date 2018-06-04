@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select , Breadcrumb,message, DatePicker} from 'antd';
+import { Table , Input , Button , Form , Select , Breadcrumb,message, DatePicker,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 const RangePicker = DatePicker.RangePicker;
+const confirm = Modal.confirm;
 const { TextArea } = Input;
 // import { renderRoutes } from 'react-router-config'
 
@@ -31,8 +32,7 @@ class TopForm extends Component {
       if(data){
         //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
+      
         }
     });
   }
@@ -122,12 +122,63 @@ function SelectItem(props){//下拉表单项
 class TChgForm extends Component {
   constructor(props) {
     super(props)
-    
+    this.state = {
+      terminalType:[],
+      simTypeName:[],
+    }
   }
-  handleSubmit(){
+  componentWillMount(){
+    $Funs.$AJAX('ziDian','get',{type:3},(res)=>{
+      this.setState({
+        terminalType:res
+      },()=>{
+        $Funs.$AJAX('ziDian','get',{type:4},(res)=>{
+          this.setState({
+            simTypeName:res
+          })
+        })
+      })
+    })
+  }
+  handleSubmit=()=>{
     this.props.form.validateFields((err, values) => {
       if(!err){
-        console.log(values)
+        confirm({
+          title: '提示',
+          content: '确认提交更改信息？',
+          okText:'确认',
+          cancelText:'取消',
+          onOk:() => {
+            let informationChangeDto = {
+              relocationChangeDto:{},
+              transferChangeDto:{},
+              terminalChangeDto:{},
+              simChangeDto:{}
+            };
+            informationChangeDto.inputMan = $Funs.cook.get('id');
+            informationChangeDto.newCarId = this.props.detail.newCarId;
+            let keys = Object.keys(values)
+            keys.forEach((v,i)=>{
+              if(v.split('_')[0] == 1){
+                informationChangeDto.relocationChangeDto[v.split('_')[1]] = values[v];
+              }else if(v.split('_')[0] == 2){
+                informationChangeDto.transferChangeDto[v.split('_')[1]] = values[v];
+              }else if(v.split('_')[0] == 3){
+                informationChangeDto.terminalChangeDto[v.split('_')[1]] = values[v];
+              }else{
+                informationChangeDto.simChangeDto[v.split('_')[1]] = values[v];
+              }
+            })
+            console.log(informationChangeDto)
+            $Funs.$AJAX('informationChange','post',informationChangeDto,(res)=>{
+              message.success('操作成功');
+              this.props.cancel();
+            })
+          },
+          onCancel() {
+          },
+        });
+        
       }
     });
   }
@@ -160,10 +211,8 @@ class TChgForm extends Component {
                 <UnabledItem label='原车牌号' value={this.props.detail.oldVehicleId}/>
                 <UnabledItem label='历史车牌号' value=''/>
                 <FormItem className = 'formItem clean'{...formItemLayout} label="新车牌号">
-                    {getFieldDecorator('newVehicleId', {
-                      rules: [ {
-                        required: true, message: '请输入新车牌号',
-                      }],
+                    {getFieldDecorator('1_newVehicleId', {
+                    
                     })(
                       <Input  />
                     )}
@@ -172,19 +221,17 @@ class TChgForm extends Component {
               <div className = 'row clean'>
                 <UnabledItem label='原车架号' value={this.props.detail.carframeId}/>
                 <FormItem className = 'formItem clean'{...formItemLayout} label="新车架号">
-                    {getFieldDecorator('newCarframeId', {
-                      rules: [ {
-                        required: true, message: '请输入新车架号',
-                      }],
+                    {getFieldDecorator('1_newCarframeId', {
+                     
                     })(
                       <Input  />
                     )}
                 </FormItem>
                 <UnabledItem label='原联系方式' value={this.props.detail.phone}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新联系方式">
-                    {getFieldDecorator('newPhone', {
+                <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="新联系方式">
+                    {getFieldDecorator('1_newPhone', {
                       rules: [ {
-                        required: true, message: '请输入新联系方式',
+                        pattern: new RegExp(/^1[3|5|7|8|]\d{9}$/) ,message: '手机格式不正确',
                       }],
                     })(
                       <Input  />
@@ -196,21 +243,17 @@ class TChgForm extends Component {
               <p>过户信息</p>
               <div className = 'row clean'>
                 <UnabledItem label='原公司名' value={this.props.detail.teamName}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新公司名">
-                    {getFieldDecorator('newTeamname', {
-                      rules: [ {
-                        required: true, message: '请输入新公司名',
-                      }],
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新公司名">
+                    {getFieldDecorator('2_newTeamname', {
+                    
                     })(
                       <Input  />
                     )}
                 </FormItem>
                 <UnabledItem label='原车牌号' value={this.props.detail.oldVehicleId}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新车牌号">
-                    {getFieldDecorator('newCarframeId', {
-                      rules: [ {
-                        required: true, message: '请输入新车牌号',
-                      }],
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新车牌号">
+                    {getFieldDecorator('2_newVehicleId', {
+                     
                     })(
                       <Input  />
                     )}
@@ -218,20 +261,18 @@ class TChgForm extends Component {
               </div>
               <div className = 'row clean'>
                 <UnabledItem label='原车架号' value={this.props.detail.carframeId}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新车架号">
-                    {getFieldDecorator('newCarframeId', {
-                      rules: [ {
-                        required: true, message: '请输入新车架号',
-                      }],
+                <FormItem className = 'formItem clean'{...formItemLayout}   label="新车架号">
+                    {getFieldDecorator('2_newCarframeId', {
+                  
                     })(
                       <Input  />
                     )}
                 </FormItem>
                 <UnabledItem label='原联系方式' value={this.props.detail.phone}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新联系方式">
-                    {getFieldDecorator('newPhone', {
+                <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="新联系方式">
+                    {getFieldDecorator('2_newPhone', {
                       rules: [ {
-                        required: true, message: '请输入新联系方式',
+                        pattern: new RegExp(/^1[3|5|7|8|]\d{9}$/) ,message: '手机格式不正确',
                       }],
                     })(
                       <Input  />
@@ -243,21 +284,17 @@ class TChgForm extends Component {
               <p>终端变更信息</p>
               <div className = 'row clean'>
                 <UnabledItem label='原SIM卡号' value={this.props.detail.sim}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新SIM卡号">
-                    {getFieldDecorator('newSim', {
-                      rules: [ {
-                        required: true, message: '请输入新SIM卡号',
-                      }],
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新SIM卡号">
+                    {getFieldDecorator('3_newSim', {
+                    
                     })(
                       <Input  />
                     )}
                 </FormItem>
                 <UnabledItem label='原车牌号' value={this.props.detail.oldVehicleId}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新车牌号">
-                    {getFieldDecorator('newVehicleId', {
-                      rules: [ {
-                        required: true, message: '请输入新车牌号',
-                      }],
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新车牌号">
+                    {getFieldDecorator('3_newVehicleId', {
+                      
                     })(
                       <Input  />
                     )}
@@ -265,20 +302,22 @@ class TChgForm extends Component {
               </div>
               <div className = 'row clean'>
                 <UnabledItem label='原终端号' value={this.props.detail.manageNum}/>
-                  <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
-                    {getFieldDecorator('newTerminalType', {
-                      initialValue:'马良车辆监控导航系统'
+                  { this.state.terminalType.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
+                    {getFieldDecorator('3_newTerminalType', {
+                      initialValue:this.state.terminalType[0]
                     })(
                       <Select  style={{ width: 120 }}>
-                        <Option value="马良车辆监控导航系统">马良车辆监控导航系统</Option>
+                        {
+                          this.state.terminalType.map((v,i)=>{
+                            <Option value={v} key={i}>{i}</Option>
+                          })
+                        }
                       </Select>
                     )}
-                  </FormItem>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新终端号">
-                    {getFieldDecorator('newManageNum', {
-                      rules: [ {
-                        required: true, message: '请输入新终端号',
-                      }],
+                  </FormItem>}
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新终端号">
+                    {getFieldDecorator('3_newManageNum', {
+                   
                     })(
                       <Input  />
                     )}
@@ -289,21 +328,24 @@ class TChgForm extends Component {
               <p>SIM卡变更信息</p>
               <div className = 'row clean'>
                 <UnabledItem label='原SIM卡类型' value={this.props.detail.simTypeName}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label='新SIM卡类型'>
-                    {getFieldDecorator('simTypeName', {
-                      initialValue:'马良车辆监控导航系统'
+                { this.state.simTypeName.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新SIM卡类型'>
+                    {getFieldDecorator('4_simTypeName', {
+                      initialValue:this.state.simTypeName[0]
                     })(
                       <Select  style={{ width: 120 }}>
-                        <Option value="马良车辆监控导航系统">马良车辆监控导航系统</Option>
+                        {
+                          this.state.simTypeName.map((v,i)=>{
+                            <Option value={v} key={i}>{v}</Option>
+
+                          })
+                        }
                       </Select>
                     )}
-                  </FormItem>
+                  </FormItem>}
                 <UnabledItem label='原SIM卡号' value={this.props.detail.sim}/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新SIM卡号">
-                    {getFieldDecorator('newSim', {
-                      rules: [ {
-                        required: true, message: '请输入新SIM卡号',
-                      }],
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新SIM卡号">
+                    {getFieldDecorator('4_newSim', {
+                 
                     })(
                       <Input  />
                     )}
@@ -312,20 +354,22 @@ class TChgForm extends Component {
               <div className = 'row clean'>
                 <UnabledItem label='车牌号' value={this.props.detail.vehicleId}/>
                 <UnabledItem label='原终端号' value='123213'/>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新终端类型">
-                    {getFieldDecorator('newTerminalType', {
-                      rules: [ {
-                        required: true, message: '请输入新终端类型',
-                      }],
+                { this.state.terminalType.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
+                    {getFieldDecorator('4_newTerminalType', {
+                      initialValue:this.state.terminalType[0]
                     })(
-                      <Input  />
+                      <Select  style={{ width: 120 }}>
+                        {
+                          this.state.terminalType.map((v,i)=>{
+                            <Option value={v} key={i}>{i}</Option>
+                          })
+                        }
+                      </Select>
                     )}
-                </FormItem>
-                <FormItem className = 'formItem clean'{...formItemLayout} label="新终端号">
-                    {getFieldDecorator('newManageNum', {
-                      rules: [ {
-                        required: true, message: '请输入新终端号',
-                      }],
+                  </FormItem>}
+                <FormItem className = 'formItem clean'{...formItemLayout}  label="新终端号">
+                    {getFieldDecorator('4_newManageNum', {
+                  
                     })(
                       <Input  />
                     )}
@@ -334,7 +378,7 @@ class TChgForm extends Component {
             </div>
               <FormItem className = 'btns'>
                 <Button type="primary"  htmlType="submit" >确认修改</Button>
-                <Button>取消</Button>
+                <Button onClick = {this.props.cancel}>取消</Button>
               </FormItem>
           </Form>
         </div>
@@ -363,6 +407,7 @@ export default class Change extends Component {
     constructor(props) {
       super(props)
       this.state = {
+        loading:true,
         isChange:false,
         currPage:1,
         pageSize:13,
@@ -385,7 +430,8 @@ export default class Change extends Component {
         })
         this.setState({
           data : data,
-          total: res.count
+          total: res.count,
+          loading:false
         })
       })
     }
@@ -393,16 +439,19 @@ export default class Change extends Component {
       if(data){
         this.setState({
           keyWord:data,
-          currPage:1
+          currPage:1,
+          loading:true,
+        },()=>{
+          this.init(data)
         })
       }
     }
     pageChange = (page)=>{
       this.setState({
         currPage:page,
+        loading:true
       },()=>{
         let data = this.state.keyWord;
-        data.currPage = page
         this.init(data)
       })
     }
@@ -431,12 +480,14 @@ export default class Change extends Component {
       
         return (
             <div className = 'change'>
+              <Spin spinning = {this.state.loading} size='large'>
               {this.state.isChange ? <ChgForm detail = {this.state.detail} cancel = {this.cancel}/> :
                 <div>
                   <SearchForm init={this.init} getSearch = {this.getSearch}/>
                   <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
                 </div>
               }
+              </Spin>
             </div>
         )
     }

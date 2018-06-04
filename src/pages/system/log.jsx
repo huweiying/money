@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select,message, DatePicker} from 'antd';
+import { Table , Input , Button , Form , Select,message, DatePicker,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -82,6 +82,7 @@ class TopForm extends Component {
     constructor(props) {
         super(props)
         this.state={
+            loading:true,
             showDiglog:false,
             currPage:1,
             pageSize:13,
@@ -105,7 +106,8 @@ class TopForm extends Component {
           })
           this.setState({
             data : data,
-            total: res.count
+            total: res.count,
+            loading:false
           })
         })
       }
@@ -113,21 +115,23 @@ class TopForm extends Component {
         if(data){
           this.setState({
             keyWord:data,
-            currPage:1
+            currPage:1,
+            loading:true,
+          },()=>{
+            this.init(data)
           })
         }
       }
       pageChange = (page)=>{
         this.setState({
           currPage:page,
+          loading:true
         },()=>{
           let data = this.state.keyWord;
-          data.currPage = page
           this.init(data)
         })
       }
       handleOk = (id)=>{
-        console.log(id)
         $Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
             message.success('操作成功');
             this.init();
@@ -164,9 +168,11 @@ class TopForm extends Component {
           
         return (
             <div className = 'log'>
+            <Spin spinning = {this.state.loading} size = 'large'>
                 <SearchForm init={this.init} getSearch = {this.getSearch} />
                 <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }} scroll={{ y:400}} />
                 {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+            </Spin>
             </div>
         )
     }

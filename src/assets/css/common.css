@@ -123,6 +123,9 @@ ul {
 .ant-table-tbody > tr > td {
   padding: 9px;
 }
+.ant-table-placeholder {
+  z-index: 0;
+}
 .ant-table-body {
   min-height: 500px;
   background: #fff;
@@ -234,6 +237,7 @@ header .loginInfo img {
   width: 20px;
   height: 20px;
   margin-left: 10px;
+  cursor: pointer;
 }
 header .top_nav {
   width: 100%;
@@ -401,6 +405,7 @@ header .select .subNav {
 .container .topForm .formItem input {
   width: 230px;
   height: 34px;
+  line-height: 34px;
   padding-left: 75px;
   box-sizing: border-box;
 }
@@ -431,6 +436,7 @@ header .select .subNav {
 }
 .container .entry .addNew .ant-form-item-label {
   text-align: left;
+  width: 150px;
 }
 .container .entry .addNew .ant-upload-select-picture-card {
   margin-right: 0px;
@@ -521,10 +527,14 @@ header .select .subNav {
   margin-top: 30px;
   margin-left: 60px;
 }
+.container .dataQuery .topForm .ant-calendar-picker .ant-input,
+.container .query .topForm .ant-calendar-picker .ant-input,
+.container .modify .topForm .ant-calendar-picker .ant-input {
+  padding: 0px;
+}
 .container .dataQuery .topForm .ant-input,
 .container .query .topForm .ant-input,
 .container .modify .topForm .ant-input {
-  padding: 0px;
   height: 34px;
 }
 .container .dataQuery .topForm .ant-input .ant-calendar-range-picker-input:first-child,
@@ -541,7 +551,7 @@ header .select .subNav {
 .container .dataQuery .topForm .ant-calendar-range-picker-input,
 .container .query .topForm .ant-calendar-range-picker-input,
 .container .modify .topForm .ant-calendar-range-picker-input {
-  width: 155px !important;
+  width: 160px !important;
 }
 .container .prove .topForm .ant-btn {
   margin-left: 100px;
@@ -615,7 +625,7 @@ header .select .subNav {
 .container .save .topForm .ant-btn,
 .container .modify .topForm .ant-btn,
 .container .addNotice .topForm .ant-btn {
-  margin-left: 100px;
+  margin-right: 100px;
   margin-top: 10px;
   width: 140px;
   height: 36px;
@@ -727,12 +737,26 @@ header .select .subNav {
   width: 140px;
   height: 36px;
 }
-.container .query .topForm .ant-btn,
-.container .log .topForm .ant-btn {
-  margin-right: 50px;
+.container .query .topForm .ant-btn {
+  margin-right: 0px;
   margin-top: 30px;
   width: 140px;
   height: 36px;
+}
+.container .log .topForm .ant-btn {
+  margin-right: 50px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .log #deadlineDate .ant-input {
+  padding: 0px;
+}
+.container .log #deadlineDate .ant-input input {
+  line-height: 32px !important;
+  height: 32px !important;
+  width: 180px;
+  padding-left: 59px;
 }
 .container .stop .topForm .ant-btn {
   margin-right: 50px;
@@ -891,7 +915,7 @@ header .select .subNav {
   margin-bottom: 10px;
 }
 .container .change .chgForm .addForm .row {
-  margin: 3px 0;
+  margin: 20px 0;
   width: 100%;
 }
 .container .change .chgForm .addForm .row .note {
@@ -932,6 +956,14 @@ header .select .subNav {
   width: 140px;
   height: 36px;
 }
+.container .recode .picDialog {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 250;
+}
 .container .recode .picDialog .mask {
   position: fixed;
   background: rgba(0, 0, 0, 0.3);
@@ -940,17 +972,27 @@ header .select .subNav {
   width: 100%;
   height: 100%;
 }
+.container .recode .picDialog .insetbox {
+  height: 460px;
+  position: fixed;
+  width: 100%;
+  top: 50%;
+  margin-top: -230px;
+  text-align: center;
+}
+.container .recode .picDialog .insetbox .ant-spin-spinning {
+  position: absolute!important;
+  left: 50%;
+  margin-left: -10px;
+  top: 220px;
+}
 .container .recode .picDialog .main {
+  display: inline-block;
   height: 460px;
   background: #F2FCFF;
   padding: 23px;
   box-sizing: border-box;
-  z-index: 10;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -230px;
-  margin-left: -500px;
+  z-index: 30;
 }
 .container .recode .picDialog .main .close {
   cursor: pointer;
@@ -1018,18 +1060,101 @@ header .select .subNav {
   padding: 0 20px;
   box-sizing: border-box;
 }
-.container .person .main {
+.container .person .top .ant-btn {
+  margin-left: 10px;
+}
+.container .person .main_con {
   margin-top: 20px;
 }
-.container .person .main .left {
+.container .person .main_con .left {
   background: #fff;
   height: 600px;
 }
-.container .person .main .title {
+.container .person .main_con .title {
   text-align: center;
-  background: #7EA9F7;
   font-size: 12px;
+  font-family: '微软雅黑';
+  font-size: 14px;
   color: #fff;
+  font-weight: normal;
+  background: #7EA9F7;
   height: 38px;
   line-height: 38px;
+}
+.container .person .main_con .title i {
+  font-size: 18px;
+  position: relative;
+  top: 0px;
+  left: 60px;
+  cursor: pointer;
+}
+.container .person .main_con .topTitle {
+  text-align: center;
+  font-size: 18px;
+  height: 38px;
+  line-height: 38px;
+}
+.container .person .main_con .right {
+  width: 1150px;
+}
+.container .person .main_con .right .ant-table-wrapper {
+  margin-top: 0px;
+}
+.container .person .formItem {
+  margin: 20px;
+}
+.container .person .diaBtns {
+  margin-top: 20px;
+}
+.container .person .diaBtns .ant-btn {
+  margin: 0 10px;
+}
+.container .person .depModal {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  text-align: center;
+}
+.container .person .depModal .mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.container .person .depModal .main {
+  position: relative;
+  top: 0;
+  left: 0;
+  padding: 30px 60px;
+  box-sizing: border-box;
+  display: inline-block;
+  width: 700px;
+  height: 400px;
+  background: #F2FCFF;
+  z-index: 1000;
+  margin-top: 300px;
+}
+.container .person .depModal .main .addTitle {
+  font-size: 16px;
+}
+.container .person .depModal .main .ant-divider-inner-text {
+  color: #2A8CF1;
+  font-size: 12px;
+}
+.container .person .depModal .main .group {
+  padding: 0 50px;
+}
+.container .person .depModal .main .ant-input {
+  width: 200px;
+}
+.container .person .depModal .main .btns {
+  margin-top: 60px;
+  padding: 0 60px;
+}
+.container .person .depModal .main .btns .ant-btn {
+  margin-right: 20px;
 }

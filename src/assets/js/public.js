@@ -17,7 +17,7 @@ const cook = {
     cook.set(name, "", -1);
   }
 };
-const Basse_Port = "http://192.168.1.78:8899/api/v1/";
+const Basse_Port = "http://192.168.1.82:8899/api/v1/";
 window.$Funs = {
   cook: cook,
   Basse_Port: Basse_Port,
@@ -44,6 +44,12 @@ window.$Funs = {
             .set("Authorization","Bearer "+token)
             .set("Content-Type", "application/json");
         }
+        if (type == "DELETE") {
+          $put = $http
+            .delete(Basse_Port + newUrl, data)
+            .set("Authorization","Bearer "+token)
+            .set("Content-Type", "application/json");
+        }
         if (type == "post") {
           $put = $http
             .post(Basse_Port + newUrl, data)
@@ -63,6 +69,7 @@ window.$Funs = {
           }
         });
       } else {
+        
         // window.location.href = cook.get("index") ;
       }
     });
