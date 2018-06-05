@@ -25,9 +25,9 @@ export default class Index extends Component {
         </div>
         { this.state.roles && <div className = 'navIndex'>
           <div  className = 'clean row'>
-            {(this.state.roles !=2 ||this.state.roles !=3 ) && <NavLink to='/carInfo/entry' onClick = {()=>{this.props.handleNav(1)}}><img src={require('../../assets/img/car.png')}/>车辆基本信息</NavLink>}
-            {(this.state.roles !=2 ||this.state.roles !=1 ) && <NavLink to='/print/prove' onClick = {()=>{this.props.handleNav(2)}}><img src={require('../../assets/img/print.png')}/>打印审核</NavLink>}
-            {(this.state.roles !=2 ||this.state.roles !=1 ) && <NavLink to='/charge/save' onClick = {()=>{this.props.handleNav(3)}}><img src={require('../../assets/img/coast.png')}/>收费管理</NavLink>}
+            <NavLink to='/carInfo/entry' onClick = {()=>{this.props.handleNav(1)}}><img src={require('../../assets/img/car.png')}/>车辆基本信息</NavLink>
+            {(this.state.roles !=1 ) && <NavLink to='/print/prove' onClick = {()=>{this.props.handleNav(2)}}><img src={require('../../assets/img/print.png')}/>打印审核</NavLink>}
+            {(this.state.roles !=1 ) && <NavLink to='/charge/save' onClick = {()=>{this.props.handleNav(3)}}><img src={require('../../assets/img/coast.png')}/>收费管理</NavLink>}
           </div>
           {this.state.roles == 0 && <div className = 'clean row'>
             <NavLink to='/information/stop'  onClick = {()=>{this.props.handleNav(4)}}><img src={require('../../assets/img/msg.png')}/>信息管理</NavLink>

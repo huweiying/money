@@ -174,6 +174,11 @@ class TMsgDetail extends Component {
               label="职业等级"
             >
               {getFieldDecorator("jurisdiction", {
+                rules: [
+                  {
+                    required: true,
+                  }
+                ],
                 initialValue: this.props.detail.jurisdiction
                   ? String(this.props.detail.jurisdiction)
                   : "0"
@@ -199,9 +204,67 @@ class TMsgDetail extends Component {
                   }
                 ],
                 initialValue: this.props.detail.name
-              })(<Input />)}
+              })(<Input style={{width:200}}/>)}
             </FormItem>
           </div>
+          <div className="clean">
+          <FormItem
+            className="formItem clean"
+            {...formItemLayout}
+            label="职位名称"
+          >
+            {getFieldDecorator("roles", {
+              rules:[
+                {
+                  required:true
+                }
+              ],
+              initialValue: "0"
+            })(
+              <Select style={{ width: 200 }} onChange={this.handleSelect}>
+                <Option value="0">管理员</Option>
+                <Option value="1">操作员</Option>
+                <Option value="2">安装师傅</Option>
+                <Option value="3">财务</Option>
+                <Option value="4">其他</Option>
+              </Select>
+            )}
+          </FormItem>
+          {!this.props.isEdit && (
+            <FormItem
+              className="formItem clean"
+              {...formItemLayout}
+              label="密码"
+            >
+              {getFieldDecorator("password", {
+                rules: [
+                  {
+                    required: true,
+                    message: "请输入密码"
+                  }
+                ],
+              })(<Input style={{width:200}}/>)}
+            </FormItem>
+          )}
+          {this.props.isEdit && (
+            <FormItem
+              className="formItem clean"
+              {...formItemLayout}
+              label="在职状态"
+            >
+              {getFieldDecorator("status", {
+                initialValue: String(this.props.detail.status)
+              })(
+                <Select style={{ width: 200 }} onChange={this.handleSelect}>
+                  <Option value="0">在职</Option>
+                  <Option value="1">调休</Option>
+                  <Option value="2">外派</Option>
+                  <Option value="3">离职</Option>
+                </Select>
+              )}
+            </FormItem>
+          )}
+        </div>
           <div className="clean">
             <FormItem
               className="formItem clean department"
@@ -212,7 +275,6 @@ class TMsgDetail extends Component {
                 rules: [
                   {
                     required: true,
-                    message: "请输入员工姓名"
                   }
                 ],
                 initialValue: this.props.nav[0].id
@@ -221,7 +283,7 @@ class TMsgDetail extends Component {
                   <Select
                     style={{ width: 200 }}
                     onChange={this.handleDepartmentChange.bind(this, 0)}
-                    defaultValue={this.props.detail.department}
+                    // defaultValue={this.props.detail.department}
                   >
                     {department}
                   </Select>
@@ -262,61 +324,10 @@ class TMsgDetail extends Component {
                   }
                 ],
                 initialValue: this.props.detail.userName
-              })(<Input />)}
+              })(<Input style={{width:200}}/>)}
             </FormItem>
           </div>
-          <div className="clean">
-            <FormItem
-              className="formItem clean"
-              {...formItemLayout}
-              label="职位名称"
-            >
-              {getFieldDecorator("roles", {
-                initialValue: "0"
-              })(
-                <Select style={{ width: 200 }} onChange={this.handleSelect}>
-                  <Option value="0">管理员</Option>
-                  <Option value="1">操作员</Option>
-                  <Option value="2">安装师傅</Option>
-                </Select>
-              )}
-            </FormItem>
-            {!this.props.isEdit && (
-              <FormItem
-                className="formItem clean"
-                {...formItemLayout}
-                label="密码"
-              >
-                {getFieldDecorator("password", {
-                  rules: [
-                    {
-                      required: true,
-                      message: "请输入密码"
-                    }
-                  ],
-                  initialValue: ""
-                })(<Input />)}
-              </FormItem>
-            )}
-            {this.props.isEdit && (
-              <FormItem
-                className="formItem clean"
-                {...formItemLayout}
-                label="在职状态"
-              >
-                {getFieldDecorator("status", {
-                  initialValue: String(this.props.detail.status)
-                })(
-                  <Select style={{ width: 200 }} onChange={this.handleSelect}>
-                    <Option value="0">在职</Option>
-                    <Option value="1">调休</Option>
-                    <Option value="2">外派</Option>
-                    <Option value="3">离职</Option>
-                  </Select>
-                )}
-              </FormItem>
-            )}
-          </div>
+         
         </Form>
         <div className="diaBtns fr">
           <Button type="primary" onClick={this.handleSubmit}>
@@ -460,6 +471,7 @@ export default class Person extends Component {
     });
   };
   init = obj => {
+    let arr = ['管理员','操作员','安装师傅','财务','其他']
     if (this.state.nav[0].groupListDtoList.length == 0) {
       $Funs.$AJAX("user/" + $Funs.cook.get("id"), "get", obj, res => {
         let data = res.data.map((v, i) => {
@@ -472,8 +484,8 @@ export default class Person extends Component {
                 : v.status == 2
                   ? "外派"
                   : "离职";
-          v.roles =
-            v.roles == 0 ? "管理员" : v.roles == 1 ? "操作员" : "安装师傅";
+          v.roles = arr[v.roles];
+            // v.roles == 0 ? "管理员" : (v.roles == 1 ? "操作员" : (v.roles == 2 ? "安装师傅": "" ));
           v.level =
             v.jurisdiction == 0
               ? "LV1"
