@@ -575,6 +575,261 @@ header .select .subNav {
 .container .prove .topForm .ant-calendar-picker-input input:nth-child(3) {
   padding-left: 0px !important;
 }
+.container .prove .topForm .printbox .ant-form-item-children .ant-calendar-picker-input {
+  padding-left: 40px;
+  padding-top: 0;
+}
+.container .prove .topForm .printbox .ant-form-item-children .ant-calendar-picker-input .ant-calendar-range-picker-separator {
+  line-height: 30px;
+}
+.container .prove .topForm .printbox .ant-form-item-children .ant-calendar-picker-input input {
+  width: 40%;
+  padding-left: 20px;
+}
+.container .prove .topForm .pribox {
+  font-family: "\5B8B\4F53";
+  margin-top: 40px;
+  overflow: hidden;
+}
+.container .prove .topForm .pribox .lfbox,
+.container .prove .topForm .pribox .rtbox {
+  width: 580px;
+  overflow: hidden;
+  background: #fff;
+  padding: 30px 0 40px 0;
+  position: relative;
+}
+.container .prove .topForm .pribox .lfbox span,
+.container .prove .topForm .pribox .rtbox span {
+  border-bottom: 1px solid #000;
+  padding: 0 6px;
+}
+.container .prove .topForm .pribox .lfbox .absoubox,
+.container .prove .topForm .pribox .rtbox .absoubox {
+  position: absolute;
+  right: -40px;
+  text-align: center;
+  padding: 5px 0;
+  width: 24px;
+  border: 1px solid #000;
+}
+.container .prove .topForm .pribox .lfbox .conent,
+.container .prove .topForm .pribox .rtbox .conent {
+  position: relative;
+  padding: 0 50px;
+}
+.container .prove .topForm .pribox .lfbox {
+  float: left;
+}
+.container .prove .topForm .pribox .lfbox .tit {
+  line-height: 16px;
+  font-size: 16px;
+  font-family: Adobe Heiti Std R;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.container .prove .topForm .pribox .lfbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.container .prove .topForm .pribox .lfbox .say .p {
+  text-indent: 2em;
+  line-height: 28px;
+}
+.container .prove .topForm .pribox .lfbox .say .p span {
+  text-indent: 0;
+}
+.container .prove .topForm .pribox .lfbox .bot {
+  text-align: right;
+  color: #000;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.container .prove .topForm .pribox .lfbox .middsolide {
+  line-height: 60px;
+  text-align: center;
+  font-size: 14px;
+  margin: 50px 0 30px 0;
+  position: relative;
+}
+.container .prove .topForm .pribox .lfbox .middsolide i {
+  position: absolute;
+  border-top: 1px dashed #000;
+  display: block;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  top: 30px;
+}
+.container .prove .topForm .pribox .rtbox {
+  float: right;
+}
+.container .prove .topForm .pribox .rtbox .bz {
+  margin: 30px 0 40px 0;
+}
+.container .prove .topForm .pribox .rtbox .mtit {
+  margin: 50px 0 10px 0;
+}
+.container .prove .topForm .pribox .rtbox .conent {
+  padding: 0 20px;
+}
+.container .prove .topForm .pribox .rtbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.container .prove .topForm .pribox .rtbox .say .p {
+  text-indent: 2em;
+  line-height: 34px;
+}
+.container .prove .topForm .pribox .rtbox .say .p span {
+  text-indent: 0;
+}
+.container .prove .topForm .pribox .rtbox .tit {
+  font-size: 20px;
+  text-align: center;
+}
+.container .prove .topForm .pribox .rtbox .say {
+  margin: 20px 0 30px 0;
+}
+.container .prove .topForm .pribox .rtbox table {
+  width: 100%;
+  margin: 10px 0 5px 0;
+}
+.container .prove .topForm .pribox .rtbox table th {
+  height: 88px;
+  border: 1px solid #000;
+  text-align: center;
+  padding: 0 5px;
+  font-weight: 400;
+}
+.container .prove .topForm .pribox .rtbox table td {
+  border: 1px solid #000;
+  text-align: center;
+  padding: 20px 5px;
+}
+.container .prove .topForm .pribox .rtbox .bot {
+  text-align: right;
+  margin-top: 20px;
+  margin-right: 30px;
+}
+.container .prove .topForm .pribox .bhnum {
+  height: 12px;
+  font-size: 12px;
+  text-align: right;
+}
+.container .prove .topForm .noprint .lfbox,
+.container .prove .topForm .noprint .rtbox {
+  height: 422px;
+}
+.container .prove .topForm .noprint .lfbox .say,
+.container .prove .topForm .noprint .rtbox .say {
+  margin-top: 5px;
+}
+.container .prove .topForm .noprint .lfbox .mtit,
+.container .prove .topForm .noprint .rtbox .mtit {
+  margin-top: 0;
+}
+.container .prove .topForm .noprint .hide {
+  display: none;
+}
+.container .prove .topForm .noprint .rtbox .say {
+  margin-bottom: 10px;
+}
+.container .prove .topForm .privemain .ckbox {
+  margin: 24px 0 30px 0;
+}
+.container .prove .topForm .privemain .ckbox .ant-radio-group {
+  width: 100%;
+}
+.container .prove .topForm .privemain .ckbox .ant-radio-wrapper {
+  width: 580px;
+  text-align: center;
+  font-size: 21px;
+}
+.container .prove .topForm .privemain .ckbox .ant-radio-wrapper:nth-last-child(1) {
+  float: right;
+}
+.container .prove .topForm .privemain .button {
+  width: 100%;
+  text-align: center;
+}
+.container .prove .topForm .privemain .button a {
+  width: 113px;
+  height: 39px;
+  background: #ffffff;
+  display: inline-block;
+  margin-right: 90px;
+  line-height: 39px;
+}
+.container .prove .topForm .privemain .button a:nth-last-child(1) {
+  margin: 0;
+}
+.container .prove .topForm #printimg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 111;
+  overflow: hidden;
+  font-family: '宋体';
+  background: rgba(0, 0, 0, 0.4);
+}
+.container .prove .topForm #printimg img {
+  width: 100%;
+}
+@media print {
+  .container .prove .topForm body {
+    height: auto;
+  }
+  .container .prove .topForm div {
+    margin-bottom: 0;
+  }
+  .container .prove .topForm #print {
+    margin: 0;
+    padding: 0;
+  }
+  .container .prove .topForm h1 {
+    color: #000;
+    background: none;
+  }
+  .container .prove .topForm body,
+  .container .prove .topForm article {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .container .prove .topForm img {
+    width: 100%;
+  }
+  @page {
+    size: 21cm 29.7cm;
+    /*A4*/
+    margin: 0cm!important;
+  }
+  @page :left {
+    margin-left: -20cm;
+  }
+  @page :right {
+    margin-left: -20cm;
+  }
+}
+.container .prove .topForm .message {
+  position: absolute;
+  right: 20px;
+  bottom: -30px;
+  padding-right: 24px;
+  background: url("../img/message.png") no-repeat right 1px;
+  background-size: 16px 16px;
+}
+.container .prove .topForm .message a.context {
+  color: #000;
+}
+.container .prove .topForm .message a.context:hover {
+  color: #1890ff;
+}
 .container .prove .history {
   margin-top: 20px;
   width: 750px;
@@ -585,11 +840,6 @@ header .select .subNav {
 }
 .container .prove .history .ant-table {
   box-shadow: none;
-}
-.container .prove .ant-table-body-outer {
-  position: relative;
-  top: 8px;
-  left: 0px;
 }
 .container .prove .ant-table-body-outer {
   margin-bottom: 0px !important;

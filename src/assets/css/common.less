@@ -563,6 +563,270 @@ header{
         }
     
       }
+      .printbox {
+    .ant-form-item-children {
+        .ant-calendar-picker-input {
+            padding-left: 40px;
+            padding-top: 0;
+            .ant-calendar-range-picker-separator {
+                line-height: 30px;
+            }
+            input {
+                width: 40%;
+                padding-left: 20px;
+            }
+        }
+    }
+}
+
+.pribox {
+    font-family:"\5B8B\4F53";
+    margin-top: 40px;
+    overflow: hidden;
+    .lfbox,
+    .rtbox {
+        width: 580px;
+        overflow: hidden;
+        background: #fff;
+        padding: 30px 0 40px 0;
+        position: relative;
+        span{
+            border-bottom:1px solid #000;
+            padding: 0 6px;
+        }
+        .absoubox {
+            position: absolute;
+            right: -40px;
+            text-align: center;
+            padding:5px 0;
+            width: 24px;
+            border: 1px solid #000;
+        }
+        .conent {
+            position: relative;
+            padding: 0 50px;
+        }
+    }
+    .lfbox {
+        float: left;
+        .tit {
+            line-height: 16px;
+            font-size: 16px;
+            font-family: Adobe Heiti Std R;
+            color: rgba(0, 0, 0, 1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .say {
+            position: relative;
+            font-size: 14px;
+            .p {
+                text-indent: 2em;
+                line-height: 28px;
+                span{
+                    text-indent: 0;
+                }
+            }
+        }
+        .bot {
+            text-align: right;
+            color: #000;
+            margin-top: 20px;
+            font-size: 12px;
+          
+        }
+        .middsolide{
+            line-height: 60px;
+            text-align: center;
+            font-size: 14px;
+            margin: 50px 0 30px 0;
+            position: relative;
+            i {
+                position: absolute;
+                border-top: 1px dashed #000;
+                display: block;
+                height: 1px;
+                width: 100%;
+                left: 0;
+                top: 30px;
+            }
+        }
+    }
+    .rtbox {
+        .bz{
+            margin:30px 0 40px 0;
+        }
+        .mtit{
+            margin:50px 0 10px 0;
+        }
+        float: right;
+        .conent{
+            padding:0 20px;
+        }
+        .say {
+            position: relative;
+            font-size: 14px;
+            .p {
+                text-indent: 2em;
+                line-height: 34px;
+                span{
+                    text-indent: 0;
+                }
+            }
+        }
+        .tit {
+            font-size: 20px;
+            text-align: center;
+        }
+        .say {
+            margin: 20px 0 30px 0;
+        }
+        table {
+            width: 100%;
+            margin: 10px 0 5px 0;
+            th {
+                height: 88px;
+                border: 1px solid #000;
+                text-align: center;
+                padding: 0 5px;
+                font-weight: 400;
+            }
+            td {
+                border: 1px solid #000;
+                text-align: center;
+                padding:20px 5px;
+            }
+        }
+        .bot{
+          text-align: right;
+          margin-top:20px;
+          margin-right: 30px;
+        }
+    }
+    .bhnum {
+        height: 12px;
+        font-size: 12px;
+        text-align: right;
+    }
+}
+.noprint{
+  .lfbox,.rtbox{
+    height:422px;
+    .say{
+        margin-top:5px;
+    }
+    .mtit{
+        margin-top:0;
+    }
+  }
+  .hide{
+    display: none;
+  }
+  .rtbox{
+      .say{
+          margin-bottom: 10px;
+      }
+  }
+}
+.privemain{
+  .ckbox{
+    margin:24px 0 30px 0;
+    .ant-radio-group{
+      width:100%;
+    }
+    .ant-radio-wrapper{
+      width:580px;
+      text-align: center;
+      font-size: 21px;
+      
+    }
+   
+    .ant-radio-wrapper:nth-last-child(1){
+      float:right;
+    }
+  }
+  .button{
+    width:100%;
+    text-align: center;
+    a{
+      width:113px;
+      height:39px;
+      background:rgba(255,255,255,1);
+      display: inline-block;
+      margin-right:90px;
+      line-height: 39px;
+    }
+    a:nth-last-child(1){
+      margin:0;
+    }
+  }
+
+}
+#printimg{
+    position: fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index: 111;
+    overflow: hidden;
+    font-family: '宋体';
+    background: rgba(0,0,0,0.4);
+    img{
+        width:100%;
+    }
+}
+@media 
+print {
+    
+    body {height: auto;}
+  div{
+    margin-bottom: 0;
+  }
+  #print{
+    margin:0;
+    padding:0;
+  }
+  h1 {
+    color: #000;
+    background: none;
+  }
+  body,
+  article {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  img{
+    width:100%;
+  }
+  @page
+  {
+    size: 21cm 29.7cm;   /*A4*/
+    margin:0cm!important;
+  }
+  @page :left {
+    margin-left: -20cm;
+  }
+  @page :right {
+    margin-left: -20cm;
+  }
+}
+.message{
+    position: absolute;
+    right:20px;
+    bottom:-30px;
+    padding-right:24px;
+    background: url("../img/message.png") no-repeat right 1px;
+    background-size:16px 16px;
+    a.context{
+    color:#000;
+   }    
+   a.context:hover{
+     color:#1890ff;
+   }
+}
     }
     
     .history{
@@ -576,9 +840,9 @@ header{
         box-shadow: none;
       }
     }
-    .ant-table-body-outer{
-      .re(8px,0px);
-    }
+    // .ant-table-body-outer{
+    //   .re(0px,0px);
+    // }
     .ant-table-body-outer{
       margin-bottom: 0px !important;
     }
