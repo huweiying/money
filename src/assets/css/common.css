@@ -112,10 +112,6 @@ ul {
   display: block;
   padding: 5px;
   margin: 0 10px;
-  cursor: pointer;
-}
-.nav span:hover {
-  border-bottom: 2px solid #2A8CF1;
 }
 .nav .active {
   border-bottom: 2px solid #2A8CF1;
@@ -409,12 +405,8 @@ header .select .subNav {
 .container .topForm .formItem input {
   width: 230px;
   height: 34px;
-<<<<<<< HEAD
-  padding-left: 80px;
-=======
   line-height: 34px;
   padding-left: 75px;
->>>>>>> a5f68eb06555f2a6bc7301a1e28394893f601cdc
   box-sizing: border-box;
 }
 .container .topForm .empty {
@@ -561,11 +553,27 @@ header .select .subNav {
 .container .modify .topForm .ant-calendar-range-picker-input {
   width: 160px !important;
 }
+.container .prove .topForm .ant-calendar-picker {
+  width: 380px !important;
+}
 .container .prove .topForm .ant-btn {
   margin-left: 100px;
   margin-top: 25px;
   width: 140px;
   height: 36px;
+}
+.container .prove .topForm .ant-calendar-picker-input {
+  padding: 0px;
+}
+.container .prove .topForm .ant-calendar-picker-input input {
+  height: 32px;
+  line-height: 32px;
+}
+.container .prove .topForm .ant-calendar-picker-input .ant-calendar-range-picker-input {
+  width: 180px;
+}
+.container .prove .topForm .ant-calendar-picker-input input:nth-child(3) {
+  padding-left: 0px !important;
 }
 .container .prove .history {
   margin-top: 20px;
@@ -577,6 +585,14 @@ header .select .subNav {
 }
 .container .prove .history .ant-table {
   box-shadow: none;
+}
+.container .prove .ant-table-body-outer {
+  position: relative;
+  top: 8px;
+  left: 0px;
+}
+.container .prove .ant-table-body-outer {
+  margin-bottom: 0px !important;
 }
 .container .prove .apply {
   margin-top: 20px;
@@ -612,15 +628,26 @@ header .select .subNav {
   width: 140px;
   height: 36px;
 }
+.container .invalid .topForm .ant-calendar-picker-input {
+  padding: 0px;
+}
+.container .invalid .topForm .ant-calendar-picker-input input {
+  height: 32px;
+  line-height: 32px;
+}
+.container .invalid .topForm .ant-calendar-picker-input .ant-calendar-range-picker-input {
+  width: 180px;
+}
+.container .invalid .topForm .ant-calendar-picker-input input:nth-child(3) {
+  padding-left: 0px !important;
+}
 .container .invalid .submit {
   margin-top: 30px;
-}
-.container .audit .ant-form-item {
-  margin-bottom: 0px;
 }
 .container .audit .topForm .ant-btn-primary {
   margin-left: 400px;
   width: 120px;
+  margin-top: 10px;
 }
 .container .audit .footer {
   margin-top: 10px;
@@ -1064,18 +1091,6 @@ header .select .subNav {
   width: 140px;
   height: 36px;
 }
-<<<<<<< HEAD
-.printbox .ant-form-item-children .ant-calendar-picker-input {
-  padding-left: 40px;
-  padding-top: 0;
-}
-.printbox .ant-form-item-children .ant-calendar-picker-input .ant-calendar-range-picker-separator {
-  line-height: 30px;
-}
-.printbox .ant-form-item-children .ant-calendar-picker-input input {
-  width: 40%;
-  padding-left: 20px;
-=======
 .container .person .top {
   padding: 0 20px;
   box-sizing: border-box;
@@ -1177,5 +1192,4 @@ header .select .subNav {
 }
 .container .person .depModal .main .btns .ant-btn {
   margin-right: 20px;
->>>>>>> a5f68eb06555f2a6bc7301a1e28394893f601cdc
 }

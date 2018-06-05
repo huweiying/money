@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table, Input, Button, Form, Select, Pagination, Modal, notification, Breadcrumb ,Radio} from 'antd';
+import { Table, Input, Button, Form, Select, Pagination, Modal, message, Breadcrumb ,Radio,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -8,6 +8,7 @@ import Finds from "../../component/find"
 import Arrs from "../../assets/js/formArray"
 import domtoimage from "dom-to-image";
 // import { renderRoutes } from 'react-router-config'
+
 
 const itemColumns = [
   { title: '证明编号', dataIndex: 'num', key: 'it-num', width: 150, align: 'center' },
@@ -20,6 +21,7 @@ class MainList extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      loading:true,
       list: [],
       status: ['未审核', '审核中', '已通过', '未通过'],
       nowpage: 1, //当前页  个坑逼框架
@@ -46,38 +48,44 @@ class MainList extends Component {
     Arr.pageSize = 10;
     this.setState({
       form: Arr,
-      nowpage: 1
+      nowpage: 1,
+      loading:true
+    },()=>{
+      this.list(Arr)
     })
-    this.list(Arr)
   }
   list(data) {
     $Funs.$AJAX('proves', 'get', data, res => {
       res.data = res.data.map((v, i) => {
         // $Funs.format(v.paymentDate)
-        v.paymentDate = $Funs.format(v.paymentDate)
-        v.deadlineDate = $Funs.format(v.deadlineDate)
-        v.nowstatus = this.state.status[v.status]
+        v.paymentDate = $Funs.formatDate(v.paymentDate)
+        v.deadlineDate = $Funs.formatDate(v.deadlineDate)
+        v.nowstatus = this.state.status[v.status];
+        v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
         v.key = i
         return v
       })
       this.setState({
         list: res.data,
         total: res.count,
+        loading:false
       })
     })
   }
   pageChange = (page) => {
     this.setState({
-      nowpage: page
+      nowpage: page,
+      loading:true,
+    },()=>{
+      let Brr = this.state.form;
+      Object.assign(Brr, {
+        currPage: page,
+        pageSize: 10
+      });
+      this.list(Brr)
     })
-    let Brr = this.state.form;
-    Object.assign(Brr, {
-      currPage: page,
-      pageSize: 10
-    });
-    this.list(Brr)
   }
-  sh(id, man, index) {
+  sh(id,index) {
     let data = this.state.list, _this = this;
     Modal.confirm({
       title: '申请打印',
@@ -85,20 +93,19 @@ class MainList extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        $Funs.$AJAX("prove/" + id + "/" + man, "post", null, e => {
+        $Funs.$AJAX("prove/" + id + "/" + $Funs.cook.get('name'), "post", null, e => {
           data[index].nowstatus = '审核中'
           data[index].status = 1
           _this.setState({
             list: data
           })
-          notification.open({
-            message: '已提交审核',
-          });
+          message.success('提交成功')
         })
       }
     });
   }
   look = (list, carnum, id, status) => {
+    console.log(list,carnum,id,status)
     this.setState({
       close: false,
       car: {
@@ -119,9 +126,7 @@ class MainList extends Component {
       cancelText: '取消',
       onOk() {
         $Funs.$AJAX('prove/'+id+'/delete', 'post', null, e => {
-          notification.open({
-            message: '取消成功',
-          });
+          message.success('已取消')
           setTimeout(() => {
             location.reload();
           }, 500);
@@ -144,24 +149,24 @@ class MainList extends Component {
       { title: 'SIM卡号', width: 100, dataIndex: 'sim', key: 'sim', align: 'center' },
       { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 150, align: 'center' },
       { title: '公司车队', dataIndex: 'teamName', key: 'teamName', width: 150, align: 'center' },
-      { title: '付款时间', dataIndex: 'paymentDate', key: 'paymentDate', width: 150, align: 'center' },
-      { title: '有效期', dataIndex: 'deadlineDate', key: 'deadlineDate', width: 150, align: 'center' },
+      { title: '付款时间', dataIndex: 'paymentDate', key: 'paymentDate', width: 100, align: 'center' },
+      { title: '有效期', dataIndex: 'deadlineDate', key: 'deadlineDate', width: 100, align: 'center' },
       { title: '车辆类型', dataIndex: 'typeName', key: 'typeName', width: 150, align: 'center' },
-      { title: '审核状态', dataIndex: 'nowstatus', key: 'nowstatus', width: 150, align: 'center' },
+      { title: '审核状态', dataIndex: 'nowstatus', key: 'nowstatus', width: 100, align: 'center' },
       { title: '联系方式', dataIndex: 'phone', key: 'phone', width: 150, align: 'center' },
       { title: '终端说明', dataIndex: 'deviceName', key: 'deviceName', width: 150, align: 'center' },
-      { title: '车牌颜色', dataIndex: 'carColor', key: 'carColor', width: 150, align: 'center' },
+      { title: '车牌颜色', dataIndex: 'carColor', key: 'carColor', width: 100, align: 'center' },
       { title: '发票号', dataIndex: 'invoiceNum', key: 'invoiceNum', width: 150, align: 'center' },
-      { title: '安装时间', dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate', width: 150, align: 'center' },
+      { title: '安装时间', dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate', width: 100, align: 'center' },
       {
         title: '操作', key: 'operation', width: 150, align: 'center', fixed: 'right', render: (res, index) => {
           if (res.status == 0 || res.status == 3) {
             return (
-              <Button type="primary" onClick={() => this.sh(res.id, res.inputMan, res.key)}>审查</Button>
+              <Button type="primary" onClick={(item) => this.sh(res.id, res.key)}>申请</Button>
             )
           } else {
             return (
-              <Button type="primary" onClick={() => this.look(res.printHistoryDTOS, res.vehiclePlate, res.id, res.status)}>查看详情</Button>
+              <Button  onClick={() => this.look(res.printHistoryDTOS, res.vehiclePlate, res.id, res.status)}>详情</Button>
             )
           }
         }
@@ -182,8 +187,9 @@ class MainList extends Component {
     }
     return (
       <div className='prove'>
+      <Spin spinning={this.state.loading} size='large'>
         <Finds Formbody={Arrs.prove} sub={mode => this.sub(mode)} />
-        <Table columns={columns} dataSource={this.state.list} scroll={{ x: 2500, y: 540 }} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
+        <Table columns={columns} dataSource={this.state.list} scroll={{ x: 2100}} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
         {
           this.state.close == false &&
           <div className='clean'>
@@ -201,6 +207,7 @@ class MainList extends Component {
             </div>
           </div>
         }
+        </Spin>
       </div>
     )
   }
@@ -378,15 +385,14 @@ export default class Prove extends Component {
     this.state = {
       show: 0,
       details:{},
-      printimg:null
+      printimg:null,
     }
   }
   want=(type,id,ts)=>{
-    console.log(ts)
     if(id && !ts){
       $Funs.$AJAX("prove/"+id,"get",null,e=>{
         this.setState({
-          details:e
+          details:e,
         })
       })
     }
@@ -401,7 +407,6 @@ export default class Prove extends Component {
         {
           this.state.show == 0 && <MainList want={this.want.bind(this,1)}  /> || <Details want={this.want.bind(this,0,9)} details={this.state.details}/>
         }
-      
       </div>
     )
   }

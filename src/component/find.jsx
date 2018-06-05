@@ -28,8 +28,11 @@ class findbox extends Component {
     }
     handleReset=()=>{         // 重置按钮
         document.getElementById("form").reset()
+        console.log(this.state.form)
         this.setState({
             form:{}
+        },()=>{
+            this.props.sub(this.state.form)
         })
     }
     render() {
@@ -37,17 +40,17 @@ class findbox extends Component {
         return (
             <Form className='topForm clean printbox' id="form">             
                 {
-                    Arr.map(item => {
-                        return <div className='fl'>
+                    Arr.map((item,i) => {
+                        return <div className='fl' key={i}>
                             {
-                                item.inputlist.map(ele => {
+                                item.inputlist.map((ele,i) => {
                                     return (
-                                        <FormItem label={ele.name + ':'} className='formItem'>
+                                        <FormItem label={ele.name + ':'} className='formItem' key={i}>
                                         {
                                             ele.oftype == 'input' &&  <Input placeholder={'请输入' + ele.name} className='' onChange={this.setStateByKey.bind(this, ele.key,ele.oftype) } /> ||
                                             ele.oftype == 'select' && 
-                                                ele.Select.map(v => {
-                                                    return <Option value={v.value}>{v.name}</Option>
+                                                ele.Select.map((v,i) => {
+                                                    return <Option value={v.value} key={i}>{v.name}</Option>
                                                 }) ||
                                             ele.oftype == 'RangePicker' && <RangePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.setStateByKey.bind(this, ele.another,ele.oftype)}/>
                                         }

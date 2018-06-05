@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select,Modal,notification} from 'antd';
+import { Table , Input , Button , Form , Select,Modal,message,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -26,7 +26,9 @@ export default class Audit extends Component {
              {tit:'已审批',Selected:false,value:1},
            ],
            navcur:0,
-           form:{}
+           form:{},
+           ck:[],
+           loading:true
         }
     }
     componentWillMount() {
@@ -51,19 +53,25 @@ export default class Audit extends Component {
       this.list(Arr)
     }
     list(data){
-      $Funs.$AJAX('printApplyFors','get',data,res=>{
-        res.data = res.data.map((v,i)=>{
-         // $Funs.format(v.paymentDate)
-          // v.paymentDate=$Funs.format(v.paymentDate)
-          // v.deadlineDate=$Funs.format(v.deadlineDate)
-          v.key = i
-          return v
-        })
-        this.setState({
-          list: res.data,
-          total:res.count,
+      this.setState({
+        loading:true
+      },()=>{
+        $Funs.$AJAX('printApplyFors','get',data,res=>{
+          res.data = res.data.map((v,i)=>{
+           // $Funs.format(v.paymentDate)
+            // v.paymentDate=$Funs.format(v.paymentDate)
+            // v.deadlineDate=$Funs.format(v.deadlineDate)
+            v.key = i
+            return v
+          })
+          this.setState({
+            list: res.data,
+            total:res.count,
+            loading:false
+          })
         })
       })
+      
     }
     pageChange=(page)=>{ 
       let index = this.state.nav.findIndex(e => {
@@ -97,20 +105,22 @@ export default class Audit extends Component {
       })
     }
     rows=(type)=>{
-      let Ids=this.state.ck,newArr=[];
+      if(this.state.ck.length == 0){
+        message.error('请选择审批内容！')
+      }
+      let Ids = this.state.ck,newArr=[];
       for(let val of Ids){
         newArr.push(val.id)
       }
+      console.log(newArr)
       Modal.confirm({
-        title: '申请打印',
-        content: '确认提交？',
+        title: '打印审批',
+        content: '确认提交该操作？',
         okText: '确认',
         cancelText: '取消',
         onOk(){
           $Funs.$AJAX('printApplyFors?status='+type,'patch',newArr,e=>{
-            notification.open({
-              message: '审核通过',
-            });
+            message.success('操作成功')
             setTimeout(() => {
               location.reload();
             }, 500);
@@ -121,7 +131,6 @@ export default class Audit extends Component {
     render() {
         const rowSelection= {
           onChange: (selectedRowKeys, selectedRows) => {
-            console.log(selectedRowKeys, selectedRows)
             this.setState({
               ck:selectedRows
             })
@@ -143,6 +152,7 @@ export default class Audit extends Component {
                   })
                 }
               </div>
+              <Spin spinning={this.state.loading} size='large'>
                 <Finds Formbody={Arrs.audit} sub={mode => this.sub(mode)} />
                 {/*<TopForm />*/}
                 {
@@ -155,6 +165,7 @@ export default class Audit extends Component {
                   </div>
                   || <Table columns={columns} dataSource={this.state.list} scroll={{y:400 }}  pagination = {{defaultPageSize:10,current:this.state.nowpage,total:this.state.total,onChange:this.pageChange}} />
                 }
+              </Spin>
             </div>
         )
     }

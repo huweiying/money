@@ -20,14 +20,15 @@ export default {
             oftype: "div",
             inputlist: [
                 { className: 'formItem', oftype: 'input', name: 'SIM卡号', value: '', key: 'sim' },
-                { className: 'formItem', oftype: 'RangePicker', name: '付款时间', value: '', key: 'time', another:["paymentDate1","paymentDate2"] }
+                { className: 'formItem', oftype: 'input', name: '终端号', value: '', key: 'manageNum' },
+                
             ]
         },
         {
             className: 'fl',
             oftype: "div",
             inputlist: [
-                { className: 'formItem', oftype: 'input', name: '终端号', value: '', key: 'manageNum' },
+                { className: 'formItem', oftype: 'RangePicker', name: '付款时间', value: '', key: 'time', another:["paymentDate1","paymentDate2"] }
             ]
         },
         //   {

@@ -71,27 +71,30 @@ class THeader extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    let navArr = this.state.navArr;
-    if(nextProps.navIdx == this.props.navIdx && this.props.location.pathname != '/'){return} 
-    if(nextProps.navIdx == 0){return}//首页不添加
-    navArr.push(nav[nextProps.navIdx])
-    navArr = [...new Set(navArr)]//数组去重
-    navArr.map(v=>{
-      v.active = false;
-      return v
-    })
-    navArr[navArr.length-1].active = true//当前激活nav
-    let child = navArr[navArr.length-1].child;
-    if(child){
-      child = child.map((v,i)=>{
-        v.active = false
+    if(this.props.navIdx != nextProps.navIdx && this.props.location.pathname == '/'){//index跳转执行
+      let navArr = this.state.navArr;
+      navArr.push(nav[nextProps.navIdx])
+      navArr = [...new Set(navArr)]//数组去重
+      navArr.map(v=>{
+        v.active = false;
         return v
       })
-      child[0].active = true;
+      navArr[navArr.length-1].active = true//当前激活nav
+      let child = navArr[navArr.length-1].child;
+      if(child){
+        child = child.map((v,i)=>{
+          v.active = false
+          return v
+        })
+        child[0].active = true;
+      }
+      this.setState({
+        navArr:navArr
+      })
+    }else{
+
     }
-    this.setState({
-      navArr:navArr
-    })
+    
   }
   navchange = (i) =>{
     let navArr = this.state.navArr
@@ -101,16 +104,26 @@ class THeader extends Component {
     })
     navArr[i].active = true;
     if(!navArr[i].child){
+      this.setState({
+        navArr:navArr
+      },()=>{
+      })
       return
+    }else{
+      navArr[i].child = navArr[i].child.map(v=>{
+        v.active = false;
+        return v
+      })
+      for(let val of navArr[i].child){
+        val.active=false;
+      }
+      navArr[i].child[0].active = true;
+      this.setState({
+        navArr:navArr
+      },()=>{
+      })
     }
-    navArr[i].child = navArr[i].child.map(v=>{
-      v.active = false;
-      return v
-    })
-    navArr[i].child[0].active = true
-    this.setState({
-      navArr:navArr
-    })
+  
   }
   subchange = (i) =>{//子路由下标
     let navArr = this.state.navArr;
@@ -126,6 +139,7 @@ class THeader extends Component {
       return  v
     })
     navArr[index].child = child;
+    let href = child.href;
     this.setState({
       navArr:navArr
     })

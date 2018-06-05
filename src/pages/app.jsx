@@ -18,7 +18,6 @@ import { message} from 'antd';
     if(!$Funs.cook.get('userName')){//未登录
       this.props.history.push('/login')
     }else{//已登录
-      console.log(this.props.location.pathname)
       if(this.props.location.pathname == '/'){
         return
       }else{

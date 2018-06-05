@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table, Input, Button, Form, Select, Pagination, Modal, notification } from 'antd';
+import { Table, Input, Button, Form, Select, Pagination, Modal, message ,Spin } from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -25,6 +25,7 @@ export default class Invalid extends Component {
         { tit: '已作废', Selected: false, value: 1 },
       ],
       form:{},
+      loading:true,
       navcur: 0
     }
   }
@@ -45,9 +46,11 @@ export default class Invalid extends Component {
     Arr.pageSize = 10;
     this.setState({
       nowpage: 1,
-      form: Arr
+      form: Arr,
+      loading:false
+    },()=>{
+      this.list(Arr)
     })
-    this.list(Arr)
   }
   list(data) {
     $Funs.$AJAX('printHistorys', 'get', data, res => {
@@ -60,6 +63,7 @@ export default class Invalid extends Component {
       this.setState({
         list: res.data,
         total: res.count,
+        loading:false
       })
     })
   }
@@ -69,14 +73,16 @@ export default class Invalid extends Component {
     })
     this.setState({
       nowpage: page,
+      loading:true
+    },()=>{
+      let Brr = this.state.form;
+      Object.assign(Brr, {
+        currPage: page,
+        pageSize: 10,
+        status: this.state.nav[index].value,
+      });
+      this.list(Brr)
     })
-    let Brr = this.state.form;
-    Object.assign(Brr, {
-      currPage: page,
-      pageSize: 10,
-      status: this.state.nav[index].value,
-    });
-    this.list(Brr)
   }
   handleClick(i,e){
     let arr=this.state.nav;
@@ -86,12 +92,14 @@ export default class Invalid extends Component {
     arr[i].Selected=true;
     this.setState({
       nav:arr,
-      navcur:arr[i].value
-    })
-    this.list({
-      status:arr[i].value,
-      currPage:1,
-      pageSize:10
+      navcur:arr[i].value,
+      loading:true
+    },()=>{
+      this.list({
+        status:arr[i].value,
+        currPage:1,
+        pageSize:10
+      })
     })
   }
   rows = (type) => {
@@ -106,9 +114,7 @@ export default class Invalid extends Component {
       cancelText: '取消',
       onOk() {
         $Funs.$AJAX('printHistorys', 'patch', newArr, e => {
-          notification.open({
-            message: '作废成功',
-          });
+          message.success('操作成功')
           setTimeout(() => {
             location.reload();
           }, 500);
@@ -129,7 +135,7 @@ export default class Invalid extends Component {
       }),
     };
     return (
-      <div className='invalid'>
+      <div className='invalid prove'>
         <div className='nav clean'>
           {
             this.state.nav.map((e, i) => {
@@ -139,6 +145,7 @@ export default class Invalid extends Component {
             })
           }
         </div>
+        <Spin spinning={this.state.loading} size='large'>
         <Finds Formbody={Arrs.prove} sub={mode => this.sub(mode)} />
         {
           this.state.navcur==0 && <div className="fath">
@@ -148,6 +155,7 @@ export default class Invalid extends Component {
           ||
           <Table columns={columns} dataSource={this.state.list} scroll={{ y: 400 }} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
        }
+       </Spin>
       </div>
     )
   }
