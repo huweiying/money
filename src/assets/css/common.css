@@ -9,9 +9,6 @@ body {
   overflow-x: hidden;
   background: #F1FCFF;
 }
-p {
-  margin: 0;
-}
 .login {
   background: url('../img/login.png') no-repeat;
   width: 100%;
@@ -122,39 +119,26 @@ ul {
 }
 .ant-table-header {
   margin-bottom: -10px !important;
+  padding: 0 !important;
 }
 .ant-table-thead > tr > th,
 .ant-table-tbody > tr > td {
   padding: 9px;
 }
-.ant-table-placeholder {
-  z-index: 0;
-}
-.ant-table-body {
-  min-height: 500px;
-  background: #fff;
-}
 .bx {
   box-sizing: border-box;
 }
+.ant-table-body {
+  background: #fff;
+}
 .ant-table {
   box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.6);
-}
-.ant-table-thead > tr > th.ant-table-selection-column,
-.ant-table-tbody > tr > td.ant-table-selection-column {
-  min-width: 0px;
-  width: 8px;
-}
-.ant-table-expand-icon-th,
-.ant-table-row-expand-icon-cell {
-  width: 40px;
-  min-width: 0px;
 }
 a {
   text-decoration: none;
   font-family: '微软雅黑';
   font-size: 14px;
-  color: #1890ff;
+  color: #333;
   font-weight: normal;
 }
 a:focus {
@@ -162,10 +146,6 @@ a:focus {
 }
 li {
   list-style: none;
-}
-.comment {
-  width: 780px !important;
-  overflow: hidden;
 }
 .dialog .mask {
   position: fixed;
@@ -175,19 +155,6 @@ li {
   width: 100%;
   height: 100%;
 }
-.dialog .ant-table-body {
-  min-height: 220px;
-}
-.dialog span {
-  cursor: pointer;
-}
-.dialog .title {
-  text-align: center;
-  font-family: '微软雅黑';
-  font-size: 18px;
-  color: #323232;
-  font-weight: normal;
-}
 .dialog .main {
   width: 1000px;
   height: 460px;
@@ -195,7 +162,7 @@ li {
   padding: 23px;
   box-sizing: border-box;
   z-index: 10;
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   margin-top: -230px;
@@ -241,7 +208,6 @@ header .loginInfo img {
   width: 20px;
   height: 20px;
   margin-left: 10px;
-  cursor: pointer;
 }
 header .top_nav {
   width: 100%;
@@ -402,19 +368,10 @@ header .select .subNav {
 .container .topForm .formItem .ant-form-item-control {
   line-height: 34px;
 }
-.container .topForm .formItem .ant-select-selection__rendered {
-  padding-left: 70px;
-  box-sizing: border-box;
-}
 .container .topForm .formItem input {
   width: 230px;
   height: 34px;
-<<<<<<< HEAD
   padding-left: 80px;
-=======
-  line-height: 34px;
-  padding-left: 75px;
->>>>>>> a5f68eb06555f2a6bc7301a1e28394893f601cdc
   box-sizing: border-box;
 }
 .container .topForm .empty {
@@ -441,17 +398,6 @@ header .select .subNav {
 }
 .container .entry .addNew {
   padding-top: 10px;
-}
-.container .entry .addNew .ant-form-item-label {
-  text-align: left;
-  width: 150px;
-}
-.container .entry .addNew .ant-upload-select-picture-card {
-  margin-right: 0px;
-}
-.container .entry .addNew .ant-upload-select-picture-card img {
-  width: 200px;
-  height: 100px;
 }
 .container .entry .addNew h2 {
   text-align: center;
@@ -520,46 +466,11 @@ header .select .subNav {
 .container .info .ant-spin-container {
   margin-top: 20px;
 }
-.container .info .first {
-  margin: 0px 8px;
-}
-.container .info .first img {
-  width: 300px;
-  height: 380px;
-}
-.container .dataQuery .topForm .ant-btn,
-.container .query .topForm .ant-btn,
-.container .modify .topForm .ant-btn {
+.container .dataQuery .ant-btn {
   width: 140px;
   height: 38px;
-  margin-top: 30px;
   margin-left: 60px;
-}
-.container .dataQuery .topForm .ant-calendar-picker .ant-input,
-.container .query .topForm .ant-calendar-picker .ant-input,
-.container .modify .topForm .ant-calendar-picker .ant-input {
-  padding: 0px;
-}
-.container .dataQuery .topForm .ant-input,
-.container .query .topForm .ant-input,
-.container .modify .topForm .ant-input {
-  height: 34px;
-}
-.container .dataQuery .topForm .ant-input .ant-calendar-range-picker-input:first-child,
-.container .query .topForm .ant-input .ant-calendar-range-picker-input:first-child,
-.container .modify .topForm .ant-input .ant-calendar-range-picker-input:first-child {
-  padding-left: 70px;
-  box-sizing: border-box;
-}
-.container .dataQuery .topForm .ant-input input,
-.container .query .topForm .ant-input input,
-.container .modify .topForm .ant-input input {
-  padding: 0px;
-}
-.container .dataQuery .topForm .ant-calendar-range-picker-input,
-.container .query .topForm .ant-calendar-range-picker-input,
-.container .modify .topForm .ant-calendar-range-picker-input {
-  width: 160px !important;
+  margin-top: 25px;
 }
 .container .prove .topForm .ant-btn {
   margin-left: 100px;
@@ -630,200 +541,65 @@ header .select .subNav {
   height: 42px;
   width: 120px;
 }
-.container .save .topForm .ant-btn,
-.container .modify .topForm .ant-btn,
-.container .addNotice .topForm .ant-btn {
-  margin-right: 100px;
-  margin-top: 10px;
-  width: 140px;
-  height: 36px;
-}
-.container .save .code .ant-form-explain,
-.container .modify .code .ant-form-explain,
-.container .addNotice .code .ant-form-explain {
-  width: 200px;
-}
-.container .save .code .ant-col-sm-8,
-.container .modify .code .ant-col-sm-8,
-.container .addNotice .code .ant-col-sm-8 {
-  width: 150px;
-}
-.container .save .code #invoiceNum,
-.container .modify .code #invoiceNum,
-.container .addNotice .code #invoiceNum {
-  width: 150px;
-}
-.container .save .dialog .ant-table-wrapper,
-.container .modify .dialog .ant-table-wrapper,
-.container .addNotice .dialog .ant-table-wrapper {
+.container .save .dialog .ant-table-wrapper {
   margin-top: 0px;
 }
-.container .save .dialog .diaBtns,
-.container .modify .dialog .diaBtns,
-.container .addNotice .dialog .diaBtns {
+.container .save .dialog .diaBtns {
   width: 200px;
   position: absolute;
   top: 74%;
   left: 83%;
 }
-.container .save .dialog .diaBtns .ant-btn,
-.container .modify .dialog .diaBtns .ant-btn,
-.container .addNotice .dialog .diaBtns .ant-btn {
+.container .save .dialog .diaBtns .ant-btn {
   width: 120px;
   height: 36px;
   margin: 5px auto;
 }
-.container .save .dialog .formItem,
-.container .modify .dialog .formItem,
-.container .addNotice .dialog .formItem {
+.container .save .dialog .formItem {
   margin: 20px;
   float: left;
   position: relative;
   top: 0;
   left: 0;
 }
-.container .save .dialog .formItem textarea.ant-input,
-.container .modify .dialog .formItem textarea.ant-input,
-.container .addNotice .dialog .formItem textarea.ant-input {
+.container .save .dialog .formItem textarea.ant-input {
   width: 700px;
 }
-.container .save .dialog .formItem .ant-form-item-label,
-.container .modify .dialog .formItem .ant-form-item-label,
-.container .addNotice .dialog .formItem .ant-form-item-label {
+.container .save .dialog .formItem .ant-form-item-label {
   position: absolute;
   top: -29px;
   left: 0px;
 }
-.container .save .dialog .formItem input,
-.container .modify .dialog .formItem input,
-.container .addNotice .dialog .formItem input {
+.container .save .dialog .formItem input {
   text-align: center;
   width: 200px;
 }
-.container .save .dialog .formItem .ant-select,
-.container .modify .dialog .formItem .ant-select,
-.container .addNotice .dialog .formItem .ant-select {
-  width: 200px;
+.container .save .dialog .formItem .ant-select {
+  width: 200px !important;
 }
-.container .save .dialog .formItem .ant-upload.ant-upload-select-picture-card,
-.container .modify .dialog .formItem .ant-upload.ant-upload-select-picture-card,
-.container .addNotice .dialog .formItem .ant-upload.ant-upload-select-picture-card {
+.container .save .dialog .formItem .ant-upload.ant-upload-select-picture-card {
   width: 210px;
   margin-top: 5px;
 }
-.container .save .dialog .formItem .pay,
-.container .modify .dialog .formItem .pay,
-.container .addNotice .dialog .formItem .pay {
+.container .save .dialog .formItem .pay {
   box-sizing: border-box;
   padding-right: 80px;
 }
-.container .save .dialog .formItem .unit,
-.container .modify .dialog .formItem .unit,
-.container .addNotice .dialog .formItem .unit {
+.container .save .dialog .formItem .unit {
   position: absolute;
   top: -10px;
   left: 130px;
 }
-.container .save .dialog .confirm,
-.container .modify .dialog .confirm,
-.container .addNotice .dialog .confirm {
+.container .save .dialog .confirm {
   float: right;
   margin-top: 10px;
 }
-.container .modify .title {
-  text-align: center;
-  font-family: '微软雅黑';
-  font-size: 18px;
-  color: #323232;
-  font-weight: normal;
-  margin: 10px 0;
-}
-.container .modify .topForm .ant-btn {
-  margin-left: 0px;
-  margin-right: 50px;
-  margin-top: 30px;
-  width: 140px;
-  height: 36px;
-}
-.container .query .topForm .ant-btn {
-  margin-right: 0px;
-  margin-top: 30px;
-  width: 140px;
-  height: 36px;
-}
+.container .query .topForm .ant-btn,
 .container .log .topForm .ant-btn {
-  margin-right: 50px;
+  margin-left: 300px;
   margin-top: 10px;
   width: 140px;
   height: 36px;
-}
-.container .log #deadlineDate .ant-input {
-  padding: 0px;
-}
-.container .log #deadlineDate .ant-input input {
-  line-height: 32px !important;
-  height: 32px !important;
-  width: 180px;
-  padding-left: 59px;
-}
-.container .stop .topForm .ant-btn {
-  margin-right: 50px;
-  margin-top: 10px;
-  width: 140px;
-  height: 36px;
-}
-.container .stop .dialog .ant-table-wrapper {
-  margin-top: 0px;
-}
-.container .stop .dialog .diaBtns {
-  width: 200px;
-  position: absolute;
-  top: 74%;
-  left: 83%;
-}
-.container .stop .dialog .diaBtns .ant-btn {
-  width: 120px;
-  height: 36px;
-  margin: 5px auto;
-}
-.container .stop .dialog .formItem {
-  margin: 20px;
-  float: left;
-  position: relative;
-  top: 0;
-  left: 0;
-}
-.container .stop .dialog .formItem textarea.ant-input {
-  width: 700px;
-}
-.container .stop .dialog .formItem .ant-form-item-label {
-  position: absolute;
-  top: -29px;
-  left: 0px;
-}
-.container .stop .dialog .formItem input {
-  text-align: center;
-  width: 200px;
-}
-.container .stop .dialog .formItem .ant-select {
-  width: 200px;
-}
-.container .stop .dialog .formItem .ant-upload.ant-upload-select-picture-card {
-  width: 210px;
-  margin-top: 5px;
-}
-.container .stop .dialog .formItem .pay {
-  box-sizing: border-box;
-  padding-right: 80px;
-}
-.container .stop .dialog .formItem .unit {
-  position: absolute;
-  top: -10px;
-  left: 130px;
-}
-.container .stop .dialog .confirm {
-  float: right;
-  margin-top: 10px;
 }
 .container .maintenance .ant-btn {
   width: 120px;
@@ -887,14 +663,10 @@ header .select .subNav {
   width: 210px;
   margin-top: 5px;
 }
-.container .change .topForm .ant-btn {
+.container .change .ant-btn {
   margin-top: 30px;
   width: 120px;
   margin-right: 50px;
-}
-.container .change .ant-form-item-label {
-  text-align: left;
-  width: 100px;
 }
 .container .change .chgForm h2 {
   text-align: center;
@@ -920,10 +692,9 @@ header .select .subNav {
   font-weight: normal;
   padding: 10px 20px;
   border-bottom: 2px solid #323232;
-  margin-bottom: 10px;
 }
 .container .change .chgForm .addForm .row {
-  margin: 20px 0;
+  margin: 3px 0;
   width: 100%;
 }
 .container .change .chgForm .addForm .row .note {
@@ -959,104 +730,10 @@ header .select .subNav {
   width: 210px !important;
 }
 .container .recode .topForm .ant-btn {
-  margin-right: 100px;
+  margin-left: 300px;
   margin-top: 10px;
   width: 140px;
   height: 36px;
-}
-.container .recode .picDialog {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 250;
-}
-.container .recode .picDialog .mask {
-  position: fixed;
-  background: rgba(0, 0, 0, 0.3);
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-}
-.container .recode .picDialog .insetbox {
-  height: 460px;
-  position: fixed;
-  width: 100%;
-  top: 50%;
-  margin-top: -230px;
-  text-align: center;
-}
-.container .recode .picDialog .insetbox .ant-spin-spinning {
-  position: absolute!important;
-  left: 50%;
-  margin-left: -10px;
-  top: 220px;
-}
-.container .recode .picDialog .main {
-  display: inline-block;
-  height: 460px;
-  background: #F2FCFF;
-  padding: 23px;
-  box-sizing: border-box;
-  z-index: 30;
-}
-.container .recode .picDialog .main .close {
-  cursor: pointer;
-}
-.container .recode .picDialog .main .toggle {
-  position: relative;
-  top: 30px;
-  left: 94%;
-}
-.container .recode .picDialog .main i {
-  cursor: pointer;
-  margin: 0 5px;
-}
-.container .recode .picDialog .main .detail {
-  width: 760px;
-  height: 350px;
-  margin-top: 10px;
-  box-sizing: border-box;
-  padding: 10px 0;
-  background: #fff;
-  box-shadow: 0px 2px 14px #ccc inset;
-}
-.container .recode .picDialog .main .item {
-  width: 290px;
-  height: 100%;
-  padding: 0px 20px;
-  box-sizing: border-box;
-}
-.container .recode .picDialog .main .item p {
-  margin: 5px 0;
-}
-.container .recode .picDialog .main .item img {
-  width: 100%;
-  height: 300px;
-}
-.container .nav {
-  cursor: pointer;
-}
-.container .addNotice .topForm .ant-btn {
-  margin-right: 50px !important;
-  margin-left: 0px;
-  width: 140px;
-  height: 36px;
-}
-.container .addNotice .dialog .detail {
-  padding: 20px 0;
-}
-.container .addNotice .dialog .ant-form-item-label {
-  text-align: left;
-}
-.container .addNotice .dialog .formItem {
-  margin: 10px 20px;
-}
-.container .addNotice .dialog .location input {
-  width: 450px;
-  text-align: left;
 }
 .container .notice .topForm .ant-btn {
   margin-right: 50px;
@@ -1064,7 +741,6 @@ header .select .subNav {
   width: 140px;
   height: 36px;
 }
-<<<<<<< HEAD
 .printbox .ant-form-item-children .ant-calendar-picker-input {
   padding-left: 40px;
   padding-top: 0;
@@ -1075,107 +751,248 @@ header .select .subNav {
 .printbox .ant-form-item-children .ant-calendar-picker-input input {
   width: 40%;
   padding-left: 20px;
-=======
-.container .person .top {
-  padding: 0 20px;
-  box-sizing: border-box;
 }
-.container .person .top .ant-btn {
-  margin-left: 10px;
+.pribox {
+  font-family: "\5B8B\4F53";
+  margin-top: 40px;
+  overflow: hidden;
 }
-.container .person .main_con {
-  margin-top: 20px;
-}
-.container .person .main_con .left {
+.pribox .lfbox,
+.pribox .rtbox {
+  width: 580px;
+  overflow: hidden;
   background: #fff;
-  height: 600px;
-}
-.container .person .main_con .title {
-  text-align: center;
-  font-size: 12px;
-  font-family: '微软雅黑';
-  font-size: 14px;
-  color: #fff;
-  font-weight: normal;
-  background: #7EA9F7;
-  height: 38px;
-  line-height: 38px;
-}
-.container .person .main_con .title i {
-  font-size: 18px;
+  padding: 30px 0 40px 0;
   position: relative;
-  top: 0px;
-  left: 60px;
-  cursor: pointer;
 }
-.container .person .main_con .topTitle {
+.pribox .lfbox span,
+.pribox .rtbox span {
+  border-bottom: 1px solid #000;
+  padding: 0 6px;
+}
+.pribox .lfbox .absoubox,
+.pribox .rtbox .absoubox {
+  position: absolute;
+  right: -40px;
   text-align: center;
-  font-size: 18px;
-  height: 38px;
-  line-height: 38px;
+  padding: 5px 0;
+  width: 24px;
+  border: 1px solid #000;
 }
-.container .person .main_con .right {
-  width: 1150px;
-}
-.container .person .main_con .right .ant-table-wrapper {
-  margin-top: 0px;
-}
-.container .person .formItem {
-  margin: 20px;
-}
-.container .person .diaBtns {
-  margin-top: 20px;
-}
-.container .person .diaBtns .ant-btn {
-  margin: 0 10px;
-}
-.container .person .depModal {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  text-align: center;
-}
-.container .person .depModal .mask {
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 5;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-.container .person .depModal .main {
+.pribox .lfbox .conent,
+.pribox .rtbox .conent {
   position: relative;
-  top: 0;
-  left: 0;
-  padding: 30px 60px;
-  box-sizing: border-box;
-  display: inline-block;
-  width: 700px;
-  height: 400px;
-  background: #F2FCFF;
-  z-index: 1000;
-  margin-top: 300px;
-}
-.container .person .depModal .main .addTitle {
-  font-size: 16px;
-}
-.container .person .depModal .main .ant-divider-inner-text {
-  color: #2A8CF1;
-  font-size: 12px;
-}
-.container .person .depModal .main .group {
   padding: 0 50px;
 }
-.container .person .depModal .main .ant-input {
-  width: 200px;
+.pribox .lfbox {
+  float: left;
 }
-.container .person .depModal .main .btns {
-  margin-top: 60px;
-  padding: 0 60px;
+.pribox .lfbox .tit {
+  line-height: 16px;
+  font-size: 16px;
+  font-family: Adobe Heiti Std R;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
 }
-.container .person .depModal .main .btns .ant-btn {
-  margin-right: 20px;
->>>>>>> a5f68eb06555f2a6bc7301a1e28394893f601cdc
+.pribox .lfbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.pribox .lfbox .say .p {
+  text-indent: 2em;
+  line-height: 28px;
+}
+.pribox .lfbox .say .p span {
+  text-indent: 0;
+}
+.pribox .lfbox .bot {
+  text-align: right;
+  color: #000;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.pribox .lfbox .middsolide {
+  line-height: 60px;
+  text-align: center;
+  font-size: 14px;
+  margin: 50px 0 30px 0;
+  position: relative;
+}
+.pribox .lfbox .middsolide i {
+  position: absolute;
+  border-top: 1px dashed #000;
+  display: block;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  top: 30px;
+}
+.pribox .rtbox {
+  float: right;
+}
+.pribox .rtbox .bz {
+  margin: 30px 0 40px 0;
+}
+.pribox .rtbox .mtit {
+  margin: 50px 0 10px 0;
+}
+.pribox .rtbox .conent {
+  padding: 0 20px;
+}
+.pribox .rtbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.pribox .rtbox .say .p {
+  text-indent: 2em;
+  line-height: 34px;
+}
+.pribox .rtbox .say .p span {
+  text-indent: 0;
+}
+.pribox .rtbox .tit {
+  font-size: 20px;
+  text-align: center;
+}
+.pribox .rtbox .say {
+  margin: 20px 0 30px 0;
+}
+.pribox .rtbox table {
+  width: 100%;
+  margin: 10px 0 5px 0;
+}
+.pribox .rtbox table th {
+  height: 88px;
+  border: 1px solid #000;
+  text-align: center;
+  padding: 0 5px;
+  font-weight: 400;
+}
+.pribox .rtbox table td {
+  border: 1px solid #000;
+  text-align: center;
+  padding: 20px 5px;
+}
+.pribox .rtbox .bot {
+  text-align: right;
+  margin-top: 20px;
+  margin-right: 30px;
+}
+.pribox .bhnum {
+  height: 12px;
+  font-size: 12px;
+  text-align: right;
+}
+.noprint .lfbox,
+.noprint .rtbox {
+  height: 422px;
+}
+.noprint .lfbox .say,
+.noprint .rtbox .say {
+  margin-top: 5px;
+}
+.noprint .lfbox .mtit,
+.noprint .rtbox .mtit {
+  margin-top: 0;
+}
+.noprint .hide {
+  display: none;
+}
+.noprint .rtbox .say {
+  margin-bottom: 10px;
+}
+.privemain .ckbox {
+  margin: 24px 0 30px 0;
+}
+.privemain .ckbox .ant-radio-group {
+  width: 100%;
+}
+.privemain .ckbox .ant-radio-wrapper {
+  width: 580px;
+  text-align: center;
+  font-size: 21px;
+}
+.privemain .ckbox .ant-radio-wrapper:nth-last-child(1) {
+  float: right;
+}
+.privemain .button {
+  width: 100%;
+  text-align: center;
+}
+.privemain .button a {
+  width: 113px;
+  height: 39px;
+  background: #ffffff;
+  display: inline-block;
+  margin-right: 90px;
+  line-height: 39px;
+}
+.privemain .button a:nth-last-child(1) {
+  margin: 0;
+}
+#printimg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 111;
+  overflow: hidden;
+  font-family: '宋体';
+  background: rgba(0, 0, 0, 0.4);
+}
+#printimg img {
+  width: 100%;
+}
+@media print {
+  body {
+    height:  auto;
+  }
+  div {
+    margin-bottom: 0;
+  }
+  #print {
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    color: #000;
+    background: none;
+  }
+  body,
+  article {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  img {
+    width: 100%;
+  }
+  @page {
+    size: 21cm 29.7cm;
+    /*A4*/
+    margin: 0cm!important;
+  }
+  @page :left {
+    margin-left: -20cm;
+  }
+  @page :right {
+    margin-left: -20cm;
+  }
+}
+.message {
+  position: absolute;
+  right: 20px;
+  bottom: -30px;
+  padding-right: 24px;
+  background: url("../img/message.png") no-repeat right 1px;
+  background-size: 16px 16px;
+}
+.message a.context {
+  color: #000;
+}
+.message a.context:hover {
+  color: #1890ff;
 }
