@@ -1,0 +1,1499 @@
+@import '~antd/dist/antd.css';
+body {
+  margin: 0;
+  padding: 0;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+  overflow-x: hidden;
+  background: #F1FCFF;
+}
+p {
+  margin: 0;
+}
+.login {
+  background: url('../img/login.png') no-repeat;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.login .ant-spin-container {
+  width: 100vw;
+  height: 100vh;
+}
+.login .item {
+  margin: 20px 0;
+}
+.login .repass {
+  width: 400px;
+  height: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -200px;
+  background: #fff;
+}
+.login .repass .title {
+  width: 100%;
+  height: 63px;
+  background: linear-gradient(#6ba0d4, #1E75CE);
+  line-height: 63px;
+}
+.login .repass .title img {
+  width: 145px;
+  height: 24px;
+  margin-left: 20px;
+}
+.login .repass .item {
+  padding: 0 50px;
+  position: relative;
+}
+.login .repass .item button {
+  float: right;
+}
+.login .repass .item:nth-child(1) input {
+  background: url("../img/user.png") no-repeat 260px center;
+  background-size: 30px auto;
+}
+.login .repass .ant-btn-primary {
+  margin: 0 auto;
+  display: block;
+}
+.login .repass a {
+  position: absolute;
+  top: 87%;
+  left: 80%;
+}
+.login .login_box {
+  width: 400px;
+  height: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -200px;
+  background: #fff;
+}
+.login .login_box .title {
+  width: 100%;
+  height: 63px;
+  background: linear-gradient(#6ba0d4, #1E75CE);
+  line-height: 63px;
+}
+.login .login_box .title img {
+  width: 145px;
+  height: 24px;
+  margin-left: 20px;
+}
+.login .login_box .inner {
+  text-align: center;
+}
+.login .login_box .inner img {
+  width: 26px;
+  height: 26px;
+  position: relative;
+  top: 0;
+  left: -35px;
+}
+.login .login_box .ant-btn {
+  width: 180px;
+  height: 40px;
+  margin-top: 20px;
+}
+.login .login_box a {
+  font-family: '微软雅黑';
+  font-size: 12px;
+  color: #999;
+  font-weight: normal;
+  margin-left: 30px;
+}
+ul {
+  padding: 0;
+  margin: 0;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.clean:after {
+  content: '';
+  display: table;
+  clear: both;
+  overflow: hidden;
+}
+#root ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+#root ::-webkit-scrollbar-track {
+  background: #f6f6f6;
+  border-radius: 4px;
+}
+#root ::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+#root ::-webkit-scrollbar-thumb:hover {
+  background: #747474;
+}
+#root ::-webkit-scrollbar-corner {
+  background: #f6f6f6;
+}
+.nav {
+  margin-bottom: 20px;
+}
+.nav span {
+  float: left;
+  display: block;
+  padding: 5px;
+  margin: 0 10px;
+}
+.nav .active {
+  border-bottom: 2px solid #2A8CF1;
+}
+.ant-table-header {
+  margin-bottom: -10px !important;
+}
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+  padding: 9px;
+}
+.ant-table-placeholder {
+  z-index: 0;
+}
+.ant-table-body {
+  min-height: 500px;
+  background: #fff;
+}
+.bx {
+  box-sizing: border-box;
+}
+.ant-table {
+  box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.6);
+}
+.ant-table-thead > tr > th.ant-table-selection-column,
+.ant-table-tbody > tr > td.ant-table-selection-column {
+  min-width: 0px;
+  width: 8px;
+}
+.ant-table-expand-icon-th,
+.ant-table-row-expand-icon-cell {
+  width: 40px;
+  min-width: 0px;
+}
+a {
+  text-decoration: none;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #1890ff;
+  font-weight: normal;
+}
+a:focus {
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+.comment {
+  width: 780px !important;
+  overflow: hidden;
+}
+.dialog .mask {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+.dialog .ant-table-body {
+  min-height: 220px;
+}
+.dialog span {
+  cursor: pointer;
+}
+.dialog .title {
+  text-align: center;
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #323232;
+  font-weight: normal;
+}
+.dialog .main {
+  width: 1000px;
+  height: 460px;
+  background: #F2FCFF;
+  padding: 23px;
+  box-sizing: border-box;
+  z-index: 10;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -230px;
+  margin-left: -500px;
+}
+.dialog .main .detail {
+  width: 760px;
+  height: 350px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  padding: 10px 0;
+  background: #fff;
+  box-shadow: 0px 2px 14px #ccc inset;
+}
+header {
+  width: 1920px;
+  height: 200px;
+  background: url('../img/top_bg.png') no-repeat 0 0;
+  background-size: 100% 100%;
+  position: relative;
+  margin-bottom: 36px;
+}
+header .logo {
+  background: url('../img/top_title.png') no-repeat 0 0;
+  background-size: 100% 100%;
+  width: 260px;
+  height: 30px;
+  position: absolute;
+  top: 48px;
+  left: 121px;
+}
+header .loginInfo {
+  float: right;
+  margin-top: 25px;
+  vertical-align: middle;
+  margin-right: 100px;
+  font-family: '微软雅黑';
+  font-size: 16px;
+  color: #fff;
+  font-weight: normal;
+}
+header .loginInfo img {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+header .top_nav {
+  width: 100%;
+  height: 36px;
+  position: absolute;
+  top: 164px;
+  left: 0px;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #fff;
+  font-weight: normal;
+}
+header .top_nav a {
+  color: #ddd;
+}
+header .top_nav .select {
+  background: #ccc !important;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+}
+header .top_nav .navItem {
+  float: left;
+  border: 1px solid #ccc;
+  width: 195px;
+  background: transparent;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+}
+header .top_nav .nav {
+  float: left;
+}
+header .top_nav .nav b {
+  position: absolute;
+  top: 7px;
+  left: 160px;
+  width: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+header .top_nav .nav b:hover {
+  color: #999;
+}
+header .subNav {
+  background: #eee;
+  width: 1920px;
+  height: 35px;
+  position: absolute;
+  top: 36px;
+  left: 0px;
+}
+header .subNav a {
+  float: left;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #333;
+  font-weight: normal;
+  width: 195px;
+  height: 34px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+}
+header .subNav .subActive {
+  background: #fff;
+}
+header .select .subNav {
+  display: block;
+}
+.navIndex {
+  width: 1440px;
+  margin: 40px auto;
+}
+.navIndex .row {
+  margin: 60px 50px;
+}
+.navIndex a {
+  float: left;
+  padding-top: 130px;
+  line-height: 70px;
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #000;
+  font-weight: bold;
+  text-align: center;
+  width: 300px;
+  background: #fff;
+  margin: 0 72px;
+  box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.28);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.navIndex img {
+  width: 120px;
+  position: absolute;
+  top: 10%;
+  left: 30%;
+}
+.msg {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.msg .msgBar {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 40px;
+}
+.msg .msgBar .context {
+  cursor: pointer;
+  margin: 0 12px;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+}
+.container {
+  width: 1440px;
+  margin: 60px auto;
+}
+.container .ant-table-wrapper {
+  margin-top: 20px;
+}
+.container .topForm {
+  width: 100%;
+  background: #fff;
+  box-shadow: 0px 0px 28px rgba(181, 194, 197, 0.6);
+  padding: 5px 46px;
+  box-sizing: border-box;
+}
+.container .topForm .ant-form-item {
+  margin: 10px 0px;
+}
+.container .topForm .formItem {
+  position: relative;
+  top: 0;
+  left: 0;
+  font-family: '微软雅黑';
+  font-size: 12px;
+  color: #323232;
+  font-weight: normal;
+  margin-right: 40px;
+}
+.container .topForm .formItem .ant-form-item-label {
+  line-height: 34px;
+  z-index: 10;
+  position: absolute;
+  top: 0px;
+  left: 10px;
+}
+.container .topForm .formItem .ant-form-item-control {
+  line-height: 34px;
+}
+.container .topForm .formItem .ant-select-selection__rendered {
+  padding-left: 70px;
+  box-sizing: border-box;
+}
+.container .topForm .formItem input {
+  width: 230px;
+  height: 34px;
+  line-height: 34px;
+  padding-left: 75px;
+  box-sizing: border-box;
+}
+.container .topForm .empty {
+  font-family: '微软雅黑';
+  font-size: 12px;
+  color: #5977FF;
+  font-weight: normal;
+  line-height: 34px;
+  position: relative;
+  top: 10px;
+  left: 0;
+}
+.container .entry .top {
+  margin: 10px 0px;
+}
+.container .entry .search {
+  width: 230px;
+  float: left;
+  margin-left: 20px;
+}
+.container .entry .add {
+  float: right;
+  margin-right: 20px;
+}
+.container .entry .addNew {
+  padding-top: 10px;
+}
+.container .entry .addNew .ant-form-item-label {
+  text-align: left;
+  width: 150px;
+}
+.container .entry .addNew .ant-upload-select-picture-card {
+  margin-right: 0px;
+}
+.container .entry .addNew .ant-upload-select-picture-card img {
+  width: 200px;
+  height: 100px;
+}
+.container .entry .addNew h2 {
+  text-align: center;
+  color: #323232;
+}
+.container .entry .addNew .addForm {
+  width: 1440px;
+  padding: 40px 141px;
+  background: #fff;
+  box-shadow: 8px 0px 28px rgba(98, 98, 98, 0.2);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .entry .addNew .addForm .row {
+  margin: 3px 0;
+  width: 100%;
+}
+.container .entry .addNew .addForm .row .note {
+  margin: 0 30px;
+}
+.container .entry .addNew .addForm .btns {
+  position: absolute;
+  top: 79.5%;
+  left: 70%;
+}
+.container .entry .addNew .addForm .btns button {
+  display: block;
+  width: 200px;
+  margin: 20px 0;
+}
+.container .entry .addNew .addForm .formItem {
+  margin: 30px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .entry .addNew .addForm .formItem .ant-form-item-label {
+  position: absolute;
+  top: -32px;
+  left: 0px;
+}
+.container .entry .addNew .addForm .formItem .tag {
+  position: absolute;
+  right: 0;
+  top: -42px;
+}
+.container .entry .addNew .addForm .formItem input {
+  text-align: center;
+  width: 210px;
+}
+.container .entry .addNew .addForm .formItem .ant-select {
+  width: 210px !important;
+}
+.container .entry .addNew .addForm .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .info .ant-btn {
+  width: 140px;
+  height: 38px;
+  margin-left: 120px;
+  margin-top: 20px;
+}
+.container .info .ant-spin-container {
+  margin-top: 20px;
+}
+.container .info .first {
+  margin: 0px 8px;
+}
+.container .info .first img {
+  width: 300px;
+  height: 380px;
+}
+.container .dataQuery .topForm .ant-btn,
+.container .query .topForm .ant-btn,
+.container .modify .topForm .ant-btn {
+  width: 140px;
+  height: 38px;
+  margin-top: 30px;
+  margin-left: 60px;
+}
+.container .dataQuery .topForm .ant-calendar-picker .ant-input,
+.container .query .topForm .ant-calendar-picker .ant-input,
+.container .modify .topForm .ant-calendar-picker .ant-input {
+  padding: 0px;
+}
+.container .dataQuery .topForm .ant-input,
+.container .query .topForm .ant-input,
+.container .modify .topForm .ant-input {
+  height: 34px;
+}
+.container .dataQuery .topForm .ant-input .ant-calendar-range-picker-input:first-child,
+.container .query .topForm .ant-input .ant-calendar-range-picker-input:first-child,
+.container .modify .topForm .ant-input .ant-calendar-range-picker-input:first-child {
+  padding-left: 70px;
+  box-sizing: border-box;
+}
+.container .dataQuery .topForm .ant-input input,
+.container .query .topForm .ant-input input,
+.container .modify .topForm .ant-input input {
+  padding: 0px;
+}
+.container .dataQuery .topForm .ant-calendar-range-picker-input,
+.container .query .topForm .ant-calendar-range-picker-input,
+.container .modify .topForm .ant-calendar-range-picker-input {
+  width: 160px !important;
+}
+.container .prove .topForm .ant-calendar-picker {
+  width: 380px !important;
+}
+.container .prove .topForm .ant-btn {
+  margin-left: 100px;
+  margin-top: 25px;
+  width: 140px;
+  height: 36px;
+}
+.container .prove .topForm .ant-calendar-picker-input {
+  padding: 0px;
+}
+.container .prove .topForm .ant-calendar-picker-input input {
+  height: 32px;
+  line-height: 32px;
+}
+.container .prove .topForm .ant-calendar-picker-input .ant-calendar-range-picker-input {
+  width: 180px;
+}
+.container .prove .topForm .ant-calendar-picker-input input:nth-child(3) {
+  padding-left: 0px !important;
+  width: auto!important;
+}
+.container .prove .history {
+  margin-top: 20px;
+  width: 750px;
+  height: 300px;
+  padding: 15px;
+  box-sizing: border-box;
+  background: #fff;
+}
+.container .prove .history .ant-table {
+  box-shadow: none;
+}
+.container .prove .history p {
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #323232;
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+.container .prove .history .ant-table-body {
+  min-height: 130px !important;
+}
+.container .prove .ant-table-body-outer {
+  margin-bottom: 0px !important;
+}
+.container .prove .apply {
+  margin-top: 20px;
+  height: 300px;
+  width: 670px;
+  box-sizing: border-box;
+  text-align: center;
+  background: #fff;
+}
+.container .prove .apply .applyBtn {
+  width: 320px;
+  margin: 100px auto 0px;
+}
+.container .prove .apply .applyBtn .ant-btn {
+  width: 140px;
+  height: 42px;
+}
+.container .prove .apply .isApply {
+  margin: 20px auto 0px;
+  width: 325px;
+  height: 42px;
+  line-height: 42px;
+  text-align: center;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #323232;
+  font-weight: normal;
+  background: #EDF7FA;
+}
+.container .invalid .topForm .ant-btn {
+  margin-left: 100px;
+  margin-top: 25px;
+  width: 140px;
+  height: 36px;
+}
+.container .invalid .topForm .ant-calendar-picker-input {
+  padding: 0px;
+}
+.container .invalid .topForm .ant-calendar-picker-input input {
+  height: 32px;
+  line-height: 32px;
+}
+.container .invalid .topForm .ant-calendar-picker-input .ant-calendar-range-picker-input {
+  width: 180px;
+}
+.container .invalid .topForm .ant-calendar-picker-input input:nth-child(3) {
+  padding-left: 0px !important;
+}
+.container .invalid .submit {
+  margin-top: 30px;
+}
+.container .audit .topForm .ant-btn-primary {
+  margin-left: 400px;
+  width: 120px;
+  margin-top: 10px;
+}
+.container .audit .footer {
+  margin-top: 10px;
+}
+.container .audit .footer .ant-btn {
+  margin-left: 20px;
+  height: 42px;
+  width: 120px;
+}
+.container .save .topForm .ant-btn,
+.container .modify .topForm .ant-btn,
+.container .addNotice .topForm .ant-btn {
+  margin-right: 100px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .save .code .ant-form-explain,
+.container .modify .code .ant-form-explain,
+.container .addNotice .code .ant-form-explain {
+  width: 200px;
+}
+.container .save .code .ant-col-sm-8,
+.container .modify .code .ant-col-sm-8,
+.container .addNotice .code .ant-col-sm-8 {
+  width: 150px;
+}
+.container .save .code #invoiceNum,
+.container .modify .code #invoiceNum,
+.container .addNotice .code #invoiceNum {
+  width: 150px;
+}
+.container .save .dialog .ant-table-wrapper,
+.container .modify .dialog .ant-table-wrapper,
+.container .addNotice .dialog .ant-table-wrapper {
+  margin-top: 0px;
+}
+.container .save .dialog .diaBtns,
+.container .modify .dialog .diaBtns,
+.container .addNotice .dialog .diaBtns {
+  width: 200px;
+  position: absolute;
+  top: 74%;
+  left: 83%;
+}
+.container .save .dialog .diaBtns .ant-btn,
+.container .modify .dialog .diaBtns .ant-btn,
+.container .addNotice .dialog .diaBtns .ant-btn {
+  width: 120px;
+  height: 36px;
+  margin: 5px auto;
+}
+.container .save .dialog .formItem,
+.container .modify .dialog .formItem,
+.container .addNotice .dialog .formItem {
+  margin: 20px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .save .dialog .formItem textarea.ant-input,
+.container .modify .dialog .formItem textarea.ant-input,
+.container .addNotice .dialog .formItem textarea.ant-input {
+  width: 700px;
+}
+.container .save .dialog .formItem .ant-form-item-label,
+.container .modify .dialog .formItem .ant-form-item-label,
+.container .addNotice .dialog .formItem .ant-form-item-label {
+  position: absolute;
+  top: -29px;
+  left: 0px;
+}
+.container .save .dialog .formItem input,
+.container .modify .dialog .formItem input,
+.container .addNotice .dialog .formItem input {
+  text-align: center;
+  width: 200px;
+}
+.container .save .dialog .formItem .ant-select,
+.container .modify .dialog .formItem .ant-select,
+.container .addNotice .dialog .formItem .ant-select {
+  width: 200px;
+}
+.container .save .dialog .formItem .ant-upload.ant-upload-select-picture-card,
+.container .modify .dialog .formItem .ant-upload.ant-upload-select-picture-card,
+.container .addNotice .dialog .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .save .dialog .formItem .pay,
+.container .modify .dialog .formItem .pay,
+.container .addNotice .dialog .formItem .pay {
+  box-sizing: border-box;
+  padding-right: 80px;
+}
+.container .save .dialog .formItem .unit,
+.container .modify .dialog .formItem .unit,
+.container .addNotice .dialog .formItem .unit {
+  position: absolute;
+  top: -10px;
+  left: 130px;
+}
+.container .save .dialog .confirm,
+.container .modify .dialog .confirm,
+.container .addNotice .dialog .confirm {
+  float: right;
+  margin-top: 10px;
+}
+.container .modify .title {
+  text-align: center;
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #323232;
+  font-weight: normal;
+  margin: 10px 0;
+}
+.container .modify .topForm .ant-btn {
+  margin-left: 0px;
+  margin-right: 50px;
+  margin-top: 30px;
+  width: 140px;
+  height: 36px;
+}
+.container .query .topForm .ant-btn {
+  margin-right: 0px;
+  margin-top: 30px;
+  width: 140px;
+  height: 36px;
+}
+.container .log .topForm .ant-btn {
+  margin-right: 50px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .log #deadlineDate .ant-input {
+  padding: 0px;
+}
+.container .log #deadlineDate .ant-input input {
+  line-height: 32px !important;
+  height: 32px !important;
+  width: 180px;
+  padding-left: 59px;
+}
+.container .stop .topForm .ant-btn {
+  margin-right: 50px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .stop .dialog .ant-table-wrapper {
+  margin-top: 0px;
+}
+.container .stop .dialog .diaBtns {
+  width: 200px;
+  position: absolute;
+  top: 74%;
+  left: 83%;
+}
+.container .stop .dialog .diaBtns .ant-btn {
+  width: 120px;
+  height: 36px;
+  margin: 5px auto;
+}
+.container .stop .dialog .formItem {
+  margin: 20px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .stop .dialog .formItem textarea.ant-input {
+  width: 700px;
+}
+.container .stop .dialog .formItem .ant-form-item-label {
+  position: absolute;
+  top: -29px;
+  left: 0px;
+}
+.container .stop .dialog .formItem input {
+  text-align: center;
+  width: 200px;
+}
+.container .stop .dialog .formItem .ant-select {
+  width: 200px;
+}
+.container .stop .dialog .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .stop .dialog .formItem .pay {
+  box-sizing: border-box;
+  padding-right: 80px;
+}
+.container .stop .dialog .formItem .unit {
+  position: absolute;
+  top: -10px;
+  left: 130px;
+}
+.container .stop .dialog .confirm {
+  float: right;
+  margin-top: 10px;
+}
+.container .maintenance .ant-btn {
+  width: 120px;
+  margin-top: 10px;
+  margin-right: 50px;
+}
+.container .maintenance .edit {
+  width: 1440px;
+  padding: 40px 141px;
+  background: #fff;
+  box-shadow: 8px 0px 28px rgba(98, 98, 98, 0.2);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .maintenance .edit h2 {
+  text-align: center;
+}
+.container .maintenance .edit .row {
+  margin: 3px 0;
+  width: 100%;
+}
+.container .maintenance .edit .row .note {
+  margin: 0 30px;
+}
+.container .maintenance .edit .btns {
+  position: absolute;
+  top: 79.5%;
+  left: 70%;
+}
+.container .maintenance .edit .btns button {
+  display: block;
+  width: 200px;
+  margin: 20px 0;
+}
+.container .maintenance .edit .formItem {
+  margin: 10px 30px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .maintenance .edit .formItem .ant-form-item-label {
+  position: absolute;
+  top: -32px;
+  left: 0px;
+}
+.container .maintenance .edit .formItem .tag {
+  position: absolute;
+  right: 0;
+  top: -42px;
+}
+.container .maintenance .edit .formItem input {
+  text-align: center;
+  width: 210px;
+}
+.container .maintenance .edit .formItem .ant-select {
+  width: 210px !important;
+}
+.container .maintenance .edit .formItem .ant-upload.ant-upload-select-picture-card {
+  width: 210px;
+  margin-top: 5px;
+}
+.container .change .topForm .ant-btn {
+  margin-top: 30px;
+  width: 120px;
+  margin-right: 50px;
+}
+.container .change .ant-form-item-label {
+  text-align: left;
+  width: 100px;
+}
+.container .change .chgForm h2 {
+  text-align: center;
+}
+.container .change .chgForm .addForm {
+  text-align: center;
+  width: 1440px;
+  padding: 40px 141px;
+  background: #fff;
+  box-shadow: 8px 0px 28px rgba(98, 98, 98, 0.2);
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .change .chgForm .addForm p {
+  position: relative;
+  top: -10px;
+  left: 0;
+  display: inline-block;
+  font-family: '微软雅黑';
+  font-size: 16px;
+  color: #323232;
+  font-weight: normal;
+  padding: 10px 20px;
+  border-bottom: 2px solid #323232;
+  margin-bottom: 10px;
+}
+.container .change .chgForm .addForm .row {
+  margin: 20px 0;
+  width: 100%;
+}
+.container .change .chgForm .addForm .row .note {
+  margin: 0 30px;
+}
+.container .change .chgForm .addForm .btns {
+  position: absolute;
+  top: 80.5%;
+  left: 87%;
+}
+.container .change .chgForm .addForm .btns button {
+  display: block;
+  width: 120px;
+  margin: 20px 0;
+}
+.container .change .chgForm .addForm .formItem {
+  margin: 10px 30px;
+  float: left;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+.container .change .chgForm .addForm .formItem .ant-form-item-label {
+  position: absolute;
+  top: -32px;
+  left: 0px;
+}
+.container .change .chgForm .addForm .formItem input {
+  text-align: center;
+  width: 210px;
+}
+.container .change .chgForm .addForm .formItem .ant-select {
+  width: 210px !important;
+}
+.container .recode .topForm .ant-btn {
+  margin-right: 100px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .recode .picDialog {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 250;
+}
+.container .recode .picDialog .mask {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.3);
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+.container .recode .picDialog .insetbox {
+  height: 460px;
+  position: fixed;
+  width: 100%;
+  top: 50%;
+  margin-top: -230px;
+  text-align: center;
+}
+.container .recode .picDialog .insetbox .ant-spin-spinning {
+  position: absolute!important;
+  left: 50%;
+  margin-left: -10px;
+  top: 220px;
+}
+.container .recode .picDialog .main {
+  display: inline-block;
+  height: 460px;
+  background: #F2FCFF;
+  padding: 23px;
+  box-sizing: border-box;
+  z-index: 30;
+}
+.container .recode .picDialog .main .close {
+  cursor: pointer;
+}
+.container .recode .picDialog .main .toggle {
+  position: relative;
+  top: 30px;
+  left: 94%;
+}
+.container .recode .picDialog .main i {
+  cursor: pointer;
+  margin: 0 5px;
+}
+.container .recode .picDialog .main .detail {
+  width: 760px;
+  height: 350px;
+  margin-top: 10px;
+  box-sizing: border-box;
+  padding: 10px 0;
+  background: #fff;
+  box-shadow: 0px 2px 14px #ccc inset;
+}
+.container .recode .picDialog .main .item {
+  width: 290px;
+  height: 100%;
+  padding: 0px 20px;
+  box-sizing: border-box;
+}
+.container .recode .picDialog .main .item p {
+  margin: 5px 0;
+}
+.container .recode .picDialog .main .item img {
+  width: 100%;
+  height: 300px;
+}
+.container .nav {
+  cursor: pointer;
+}
+.container .addNotice .topForm .ant-btn {
+  margin-right: 50px !important;
+  margin-left: 0px;
+  width: 140px;
+  height: 36px;
+}
+.container .addNotice .dialog .detail {
+  padding: 20px 0;
+}
+.container .addNotice .dialog .ant-form-item-label {
+  text-align: left;
+}
+.container .addNotice .dialog .formItem {
+  margin: 10px 20px;
+}
+.container .addNotice .dialog .location input {
+  width: 450px;
+  text-align: left;
+}
+.container .notice .topForm .ant-btn {
+  margin-right: 50px;
+  margin-top: 10px;
+  width: 140px;
+  height: 36px;
+}
+.container .person .top {
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+.container .person .top .ant-btn {
+  margin-left: 10px;
+}
+.container .person .main_con {
+  margin-top: 20px;
+}
+.container .person .main_con .left {
+  background: #fff;
+  height: 600px;
+}
+.container .person .main_con .title {
+  text-align: center;
+  font-size: 12px;
+  font-family: '微软雅黑';
+  font-size: 14px;
+  color: #fff;
+  font-weight: normal;
+  background: #7EA9F7;
+  height: 38px;
+  line-height: 38px;
+}
+.container .person .main_con .title i {
+  font-size: 18px;
+  position: relative;
+  top: 0px;
+  left: 60px;
+  cursor: pointer;
+}
+.container .person .main_con .topTitle {
+  text-align: center;
+  font-size: 18px;
+  height: 38px;
+  line-height: 38px;
+}
+.container .person .main_con .right {
+  width: 1150px;
+}
+.container .person .main_con .right .ant-table-wrapper {
+  margin-top: 0px;
+}
+.container .person .formItem {
+  margin: 20px;
+}
+.container .person .diaBtns {
+  position: absolute;
+  top: 380px;
+  left: 800px;
+}
+.container .person .diaBtns .ant-btn {
+  margin: 0 10px;
+}
+.container .person .depModal {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  text-align: center;
+}
+.container .person .depModal .mask {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.container .person .depModal .main {
+  position: relative;
+  top: 0;
+  left: 0;
+  padding: 30px 60px;
+  box-sizing: border-box;
+  display: inline-block;
+  width: 700px;
+  height: 400px;
+  background: #F2FCFF;
+  z-index: 1000;
+  margin-top: 300px;
+}
+.container .person .depModal .main .addTitle {
+  font-size: 16px;
+}
+.container .person .depModal .main .ant-divider-inner-text {
+  color: #2A8CF1;
+  font-size: 12px;
+}
+.container .person .depModal .main .group {
+  padding: 0 50px;
+}
+.container .person .depModal .main .ant-input {
+  width: 200px;
+}
+.container .person .depModal .main .btns {
+  margin-top: 60px;
+  padding: 0 60px;
+}
+.container .person .depModal .main .btns .ant-btn {
+  margin-right: 20px;
+}
+.container .printbox .ant-form-item-children .ant-calendar-picker-input {
+  padding-left: 40px;
+  padding-top: 0;
+}
+.container .printbox .ant-form-item-children .ant-calendar-picker-input .ant-calendar-range-picker-separator {
+  line-height: 30px;
+}
+.container .printbox .ant-form-item-children .ant-calendar-picker-input input {
+  width: 40%;
+  padding-left: 20px;
+}
+.container .pribox {
+  font-family: "\5B8B\4F53";
+  margin-top: 40px;
+  overflow: hidden;
+}
+.container .pribox .lfbox,
+.container .pribox .rtbox {
+  width: 580px;
+  overflow: hidden;
+  background: #fff;
+  padding: 30px 0 40px 0;
+  position: relative;
+}
+.container .pribox .lfbox span,
+.container .pribox .rtbox span {
+  border-bottom: 1px solid #000;
+  padding: 0 6px;
+}
+.container .pribox .lfbox .absoubox,
+.container .pribox .rtbox .absoubox {
+  position: absolute;
+  right: -40px;
+  text-align: center;
+  padding: 5px 0;
+  width: 24px;
+  border: 1px solid #000;
+}
+.container .pribox .lfbox .conent,
+.container .pribox .rtbox .conent {
+  position: relative;
+  padding: 0 50px;
+}
+.container .pribox .lfbox {
+  float: left;
+}
+.container .pribox .lfbox .tit {
+  line-height: 16px;
+  font-size: 16px;
+  font-family: Adobe Heiti Std R;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.container .pribox .lfbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.container .pribox .lfbox .say .p {
+  text-indent: 2em;
+  line-height: 28px;
+}
+.container .pribox .lfbox .say .p span {
+  text-indent: 0;
+}
+.container .pribox .lfbox .bot {
+  text-align: right;
+  color: #000;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.container .pribox .lfbox .middsolide {
+  line-height: 60px;
+  text-align: center;
+  font-size: 14px;
+  margin: 50px 0 30px 0;
+  position: relative;
+}
+.container .pribox .lfbox .middsolide i {
+  position: absolute;
+  border-top: 1px dashed #000;
+  display: block;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  top: 30px;
+}
+.container .pribox .rtbox {
+  float: right;
+}
+.container .pribox .rtbox .bz {
+  margin: 30px 0 40px 0;
+}
+.container .pribox .rtbox .mtit {
+  margin: 50px 0 10px 0;
+}
+.container .pribox .rtbox .conent {
+  padding: 0 20px;
+}
+.container .pribox .rtbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.container .pribox .rtbox .say .p {
+  text-indent: 2em;
+  line-height: 34px;
+}
+.container .pribox .rtbox .say .p span {
+  text-indent: 0;
+}
+.container .pribox .rtbox .tit {
+  font-size: 20px;
+  text-align: center;
+}
+.container .pribox .rtbox .say {
+  margin: 20px 0 30px 0;
+}
+.container .pribox .rtbox table {
+  width: 100%;
+  margin: 10px 0 5px 0;
+}
+.container .pribox .rtbox table th {
+  height: 88px;
+  border: 1px solid #000;
+  text-align: center;
+  padding: 0 5px;
+  font-weight: 400;
+}
+.container .pribox .rtbox table td {
+  border: 1px solid #000;
+  text-align: center;
+  padding: 20px 5px;
+}
+.container .pribox .rtbox .bot {
+  text-align: right;
+  margin-top: 20px;
+  margin-right: 30px;
+}
+.container .pribox .bhnum {
+  height: 12px;
+  font-size: 12px;
+  text-align: right;
+}
+.container .noprint .lfbox,
+.container .noprint .rtbox {
+  height: 422px;
+}
+.container .noprint .lfbox .say,
+.container .noprint .rtbox .say {
+  margin-top: 5px;
+}
+.container .noprint .lfbox .mtit,
+.container .noprint .rtbox .mtit {
+  margin-top: 0;
+}
+.container .noprint .hide {
+  display: none;
+}
+.container .noprint .rtbox .say {
+  margin-bottom: 10px;
+}
+.container .privemain .ckbox {
+  margin: 24px 0 30px 0;
+}
+.container .privemain .ckbox .ant-radio-group {
+  width: 100%;
+}
+.container .privemain .ckbox .ant-radio-wrapper {
+  width: 580px;
+  text-align: center;
+  font-size: 21px;
+}
+.container .privemain .ckbox .ant-radio-wrapper:nth-last-child(1) {
+  float: right;
+}
+.container .privemain .button {
+  width: 100%;
+  text-align: center;
+}
+.container .privemain .button a {
+  width: 113px;
+  height: 39px;
+  background: #ffffff;
+  display: inline-block;
+  margin-right: 90px;
+  line-height: 39px;
+}
+.container .privemain .button a:nth-last-child(1) {
+  margin: 0;
+}
+.container #printimg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 111;
+  overflow: hidden;
+  font-family: '宋体';
+  background: rgba(0, 0, 0, 0.4);
+}
+.container #printimg img {
+  width: 100%;
+}
+@media print {
+  .container body {
+    height: auto;
+  }
+  .container div {
+    margin-bottom: 0;
+  }
+  .container #print {
+    margin: 0;
+    padding: 0;
+  }
+  .container h1 {
+    color: #000;
+    background: none;
+  }
+  .container body,
+  .container article {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .container img {
+    width: 100%;
+  }
+  @page {
+    size: 21cm 29.7cm;
+    /*A4*/
+    margin: 0cm!important;
+  }
+  @page :left {
+    margin-left: -20cm;
+  }
+  @page :right {
+    margin-left: -20cm;
+  }
+}
+.message {
+  position: absolute;
+  right: 40px;
+  bottom: -30px;
+  padding-right: 24px;
+  background: url("../img/message.png") no-repeat right 1px;
+  background-size: 16px 16px;
+}
+.message a.context {
+  color: #000;
+}
+.message a.context:hover {
+  color: #1890ff;
+}
