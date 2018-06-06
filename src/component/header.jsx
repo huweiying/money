@@ -72,8 +72,6 @@ class THeader extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(this.props.navIdx)
-    console.log(nextProps.navIdx)
     if(this.props.location.pathname == '/'){
       // if(this.props.navIdx != nextProps.navIdx  ){//index跳转执行
         let navArr = this.state.navArr;
@@ -81,7 +79,7 @@ class THeader extends Component {
           return v.id == nextProps.navIdx
         })
         if(isExit.length != 0){//已存在
-          navArr.map((v,i)=>{
+          navArr.map((v,i)=>{ 
             if(v.id != nextProps.navIdx){
               v.active = false
             }else{//当前导航
@@ -116,7 +114,6 @@ class THeader extends Component {
             navArr:navArr
           })
         }
-        
  
     }
     
