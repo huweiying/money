@@ -14,7 +14,7 @@ const itemColumns = [
   { title: '证明编号', dataIndex: 'num', key: 'it-num', width: 150, align: 'center' },
   { title: '打印时间', dataIndex: 'createTime', key: 'it-createTime', width: 200, align: 'center' },
   { title: '打印说明', dataIndex: 'type', width: 150, key: 'it-type', align: 'center' },
-  { title: '是否作废', dataIndex: 'status', width: 150, key: 'it-status', align: 'center' }
+  { title: '是否作废', dataIndex: 'status', width: 150, key: 'status', align: 'center' }
 ];
 
 class MainList extends Component {
@@ -24,6 +24,7 @@ class MainList extends Component {
       loading:true,
       list: [],
       status: ['未审核', '审核中', '已通过', '未通过'],
+      Bstatus: ['未作废', '已作废',],
       nowpage: 1, //当前页  个坑逼框架
       form: {},
       car: {     //查看详情 -- 底下列表 和 车牌
@@ -105,6 +106,9 @@ class MainList extends Component {
     });
   }
   look = (list, carnum, id, status) => {
+    for(let val of list){
+      val.status=this.state.Bstatus[val.status];
+    }
     this.setState({
       close: false,
       car: {
@@ -116,6 +120,7 @@ class MainList extends Component {
         id: id
       }
     },() => {
+      
       window.scroll(0,2000) 
     })
   }

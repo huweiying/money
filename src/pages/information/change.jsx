@@ -169,7 +169,6 @@ class TChgForm extends Component {
                 informationChangeDto.simChangeDto[v.split('_')[1]] = values[v];
               }
             })
-            console.log(informationChangeDto)
             $Funs.$AJAX('informationChange','post',informationChangeDto,(res)=>{
               message.success('操作成功');
               this.props.cancel();

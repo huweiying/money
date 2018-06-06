@@ -34,7 +34,7 @@ const nav = [
   ]},
   {id:6,name:'人员管理',href:'/person',active:false},
 ]
-let navArr = []
+let navArr = [{id:0,name:'首页',href:'/',exact:true,active:false}]
 
 
 class THeader extends Component {
@@ -42,13 +42,11 @@ class THeader extends Component {
     super(props);
     this.state = ({
       reNew:true,
-      navArr:[{id:0,name:'首页',href:'/',exact:true,active:false}]
     })
     
   }
   componentWillMount(){
     let roles = $Funs.cook.get('roles');
-    let navArr = this.state.navArr;
     let url = this.props.location.pathname.split('/');
     if(this.props.location.pathname == '/'){
       navArr[0].active = true;
@@ -66,49 +64,59 @@ class THeader extends Component {
       })
     }
     navArr.push(newNav)
-    this.setState({
-      navArr:navArr
-    })
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.navIdx != nextProps.navIdx && this.props.location.pathname == '/'){//index跳转执行
-      let navArr = this.state.navArr;
-      navArr.push(nav[nextProps.navIdx])
-      navArr = [...new Set(navArr)]//数组去重
-      navArr.map(v=>{
-        v.active = false;
-        return v
-      })
-      navArr[navArr.length-1].active = true//当前激活nav
-      let child = navArr[navArr.length-1].child;
-      if(child){
-        child = child.map((v,i)=>{
-          v.active = false
-          return v
+    if(this.props.location.pathname == '/'){
+      // if(this.props.navIdx != nextProps.navIdx  ){//index跳转执行
+        let isExit = navArr.filter((v,i)=>{
+          return v.id == nextProps.navIdx
         })
-        child[0].active = true;
-      }
-      this.setState({
-        navArr:navArr
-      })
-    }else{
-
+        if(isExit.length != 0){//已存在
+          navArr.map((v,i)=>{ 
+            if(v.id != nextProps.navIdx){
+              v.active = false
+            }else{//当前导航
+              v.active = true
+              if(v.child){
+                v.child.map((item,i)=>{
+                  i == 0 ? item.active = true : item.active = false
+                })
+              }
+            }
+          })
+      
+        }else{
+          navArr.push(nav[nextProps.navIdx])
+          navArr = [...new Set(navArr)]//数组去重
+          navArr.map(v=>{
+            v.active = false;
+            return v
+          })
+          navArr[navArr.length-1].active = true//当前激活nav
+          let child = navArr[navArr.length-1].child;
+          if(child){
+            child = child.map((v,i)=>{
+              v.active = false
+              return v
+            })
+            child[0].active = true;
+          }
+        }
+ 
     }
+    
     
   }
   navchange = (i) =>{
-    let navArr = this.state.navArr
+    console.log(i)
     navArr = navArr.map((v)=>{
       v.active = false;
       return v
     })
     navArr[i].active = true;
+    console.log(navArr)
     if(!navArr[i].child){
-      this.setState({
-        navArr:navArr
-      },()=>{
-      })
       return
     }else{
       navArr[i].child = navArr[i].child.map(v=>{
@@ -119,15 +127,10 @@ class THeader extends Component {
         val.active=false;
       }
       navArr[i].child[0].active = true;
-      this.setState({
-        navArr:navArr
-      },()=>{
-      })
     }
   
   }
   subchange = (i) =>{//子路由下标
-    let navArr = this.state.navArr;
     let index = '';
     let item = navArr.find((v,i)=>{
       index = i
@@ -167,22 +170,21 @@ class THeader extends Component {
   }
   close = (id)=>{
     if(id == 0){return}
-    let navArr = this.state.navArr;
     let idx = navArr.findIndex(v=>{
       return v.id == id
     })
     navArr.splice(idx,1)
     let href = navArr[navArr.length - 1].href;
     navArr[navArr.length - 1].active = true;
-    this.setState({
-      navArr:navArr
-    })
-    this.props.history.push(href)
+    if(this.props.location.pathname != '/'){
+      console.log(navArr)
+      this.props.history.push(href)
+    }
   }
 
   render() {
     const { match, location, history } = this.props
-    const navs = this.state.navArr.map((v,i)=>{
+    const navs = navArr.map((v,i)=>{
       return (
         <div  key={i} className="nav">
           <div style={{position:'relative'}}>
