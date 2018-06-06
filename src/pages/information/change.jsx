@@ -308,7 +308,7 @@ class TChgForm extends Component {
                       <Select  style={{ width: 120 }}>
                         {
                           this.state.terminalType.map((v,i)=>{
-                            <Option value={v} key={i}>{i}</Option>
+                            return <Option value={v} key={i}>{v}</Option>
                           })
                         }
                       </Select>
@@ -334,7 +334,7 @@ class TChgForm extends Component {
                       <Select  style={{ width: 120 }}>
                         {
                           this.state.simTypeName.map((v,i)=>{
-                            <Option value={v} key={i}>{v}</Option>
+                            return <Option value={v} key={i}>{v}</Option>
 
                           })
                         }
@@ -360,7 +360,7 @@ class TChgForm extends Component {
                       <Select  style={{ width: 120 }}>
                         {
                           this.state.terminalType.map((v,i)=>{
-                            <Option value={v} key={i}>{i}</Option>
+                            return <Option value={v} key={i}>{v}</Option>
                           })
                         }
                       </Select>
