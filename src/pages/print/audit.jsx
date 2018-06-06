@@ -61,6 +61,7 @@ export default class Audit extends Component {
            // $Funs.format(v.paymentDate)
             // v.paymentDate=$Funs.format(v.paymentDate)
             // v.deadlineDate=$Funs.format(v.deadlineDate)
+            v.paymentDate = $Funs.formatDate(v.paymentDate)
             v.key = i
             return v
           })
@@ -107,12 +108,12 @@ export default class Audit extends Component {
     rows=(type)=>{
       if(this.state.ck.length == 0){
         message.error('请选择审批内容！')
+        return
       }
       let Ids = this.state.ck,newArr=[];
       for(let val of Ids){
         newArr.push(val.id)
       }
-      console.log(newArr)
       Modal.confirm({
         title: '打印审批',
         content: '确认提交该操作？',

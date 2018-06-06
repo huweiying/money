@@ -1,5 +1,6 @@
 import AsyncComponents from "../component/AsyncComponents";
 const Login=AsyncComponents(()=> import("../pages/login")) 
+const repass=AsyncComponents(()=> import("../pages/repass")) 
 const Register=AsyncComponents(()=> import("../pages/register"))
 const App=AsyncComponents(()=> import("../pages/app"))
 
@@ -27,6 +28,10 @@ const Routers = [
     path:'/register',
     component:Register,
     routes:[]
+  },
+  {
+    path:'/repass',
+    component:repass,
   },
   {
     path:'/',

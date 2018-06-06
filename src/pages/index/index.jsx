@@ -18,11 +18,7 @@ export default class Index extends Component {
   render() {
     return (
       <div className = 'msg'>
-        <div className = 'msgBar'>
-            <Badge count={5} className = 'fr'>
-              <a href="#" className="context">有新的即将过期的消息，请及时处理</a>
-            </Badge>
-        </div>
+  
         { this.state.roles && <div className = 'navIndex'>
           <div  className = 'clean row'>
             <NavLink to='/carInfo/entry' onClick = {()=>{this.props.handleNav(1)}}><img src={require('../../assets/img/car.png')}/>车辆基本信息</NavLink>

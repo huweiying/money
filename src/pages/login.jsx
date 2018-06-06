@@ -23,6 +23,9 @@ class TLogin extends Component {
   handlePsd=(e)=>{
     this.setState({psd:e.target.value})
   }
+  repass=()=>{
+    this.props.history.push('/repass')
+  }
   login=()=>{
     if(this.state.user == ''){
       message.error('请输入用户名');
@@ -66,7 +69,7 @@ class TLogin extends Component {
                   <img src={require('../assets/img/lock.png')} />
                 </div>
                 <Button type="primary" onClick = {this.login}>登录</Button>
-                <a>忘记密码？</a>
+                <a href="javascript:void(0);" onClick={this.repass}>忘记密码？</a>
             </div>
           </div>
         </Spin>

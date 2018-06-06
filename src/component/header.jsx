@@ -1,5 +1,6 @@
 import React, { Component  } from 'react'
 import { NavLink,Link,withRouter } from 'react-router-dom'
+import  Message from './message'
 import { Modal} from 'antd';
 const confirm = Modal.confirm;
 const nav = [
@@ -208,6 +209,7 @@ class THeader extends Component {
         </div>
         <div className = 'top_nav'>
           {navs}
+          <Message />
         </div>
       </header>
     )

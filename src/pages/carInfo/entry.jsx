@@ -44,13 +44,17 @@ function CarDetail(props){//查看车辆详情
      this.state = {
       photoCodes:[],
       product:[],
+      zdType:[],
      }
    }
   
   componentWillMount(){
     $Funs.$AJAX('ziDian','get',{type:1},(res)=>{
-      this.setState({
-        product:res
+      $Funs.$AJAX('ziDian','get',{type:3},(data)=>{
+        this.setState({
+          zdType:data,
+          product:res
+        })
       })
     })
   }
@@ -218,13 +222,18 @@ function CarDetail(props){//查看车辆详情
                       <Input  />
                     )}
                   </FormItem>
-                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端类型">
+                  <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型">
                     {getFieldDecorator('terminalType', {
                       rules: [ {
                         required: true, message: '请输入终端类型',
                       }],
+                      initialValue:this.state.zdType[0]
                     })(
-                      <Input  />
+                      <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+                        { this.state.zdType.map((v,i)=>{
+                          return <Option value={v} key={i}>{v}</Option>
+                        })}
+                      </Select>
                     )}
                   </FormItem>
                   <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端批次">

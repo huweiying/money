@@ -204,7 +204,7 @@ export default class Info extends Component {
       { title: '车牌号', dataIndex: 'vehicleId', key: 'vehicleId', width: 100 ,align: 'center' },
       { title: 'SIM', dataIndex: 'simTypeName', key: 'simTypeName', width: 100 ,align: 'center' },
       { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 100 ,align: 'center' },
-      { title: '证件详情', key: 'photoCodes', render: (item) => item.photoCodes && <a onClick = {()=>{this.photoDetail(item)}}>点击查看</a> , width: 100 ,align: 'center' },
+      { title: '证件详情', key: 'photoCodes', render: (item) => (item.photoCodes && item.photoCodes.length !=0) && <a onClick = {()=>{this.photoDetail(item)}}>点击查看</a> , width: 100 ,align: 'center' },
       { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 100 ,align: 'center' },
       { title: '是否报停', dataIndex: 'stop', key: 'stop' ,width: 100 ,align: 'center'  },
     ];

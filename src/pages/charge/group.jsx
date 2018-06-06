@@ -80,7 +80,8 @@ export default class Group extends Component {
             showData:data
           })
         } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败`);
+          console.log(info.file.response.message)
+          message.error(info.file.response.message);
         }
       },
     };

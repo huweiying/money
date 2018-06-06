@@ -105,7 +105,6 @@ class MainList extends Component {
     });
   }
   look = (list, carnum, id, status) => {
-    console.log(list,carnum,id,status)
     this.setState({
       close: false,
       car: {
@@ -116,6 +115,8 @@ class MainList extends Component {
         status: this.state.status[status],
         id: id
       }
+    },() => {
+      window.scroll(0,2000) 
     })
   }
   printfalse = (id) => {

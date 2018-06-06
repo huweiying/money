@@ -13,6 +13,9 @@ const cook = {
     var v = document.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
     return v ? v[2] : null;
   },
+  clear(){
+    
+  },
   delete(name) {
     cook.set(name, "", -1);
   }

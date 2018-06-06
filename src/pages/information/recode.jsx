@@ -406,7 +406,7 @@ export default class Recode extends Component {
       { title: '安装日期', width: 100, dataIndex: 'pictureTime',key:'pictureTime' ,align: 'center' },
       { title: '公司车队', dataIndex: 'teamName',key:'teamName', width: 150 ,align: 'center' },
       { title: '车辆类型', dataIndex: 'typeName',key:'typeName', width: 150 ,align: 'center' },
-      { title: '维修照片', dataIndex: '', key: 'action', width: 100 ,align: 'center' , render: (item) =>{ if(item.repairInstallPictureList) {return (<a onClick = {()=>{this.showPic(item.repairInstallPictureList)}}>查看</a>)} },  width: 150 ,align: 'center' },
+      { title: '维修照片', dataIndex: '', key: 'action', width: 100 ,align: 'center' , render: (item) =>{ if(item.repairInstallPictureList && item.repairInstallPictureList.length != 0) {return (<a onClick = {()=>{this.showPic(item.repairInstallPictureList)}}>查看</a>)} },  width: 150 ,align: 'center' },
       { title: '工作人员', dataIndex: 'name',key:'name', width: 150 ,align: 'center' },
     ];
     

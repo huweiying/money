@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker,Spin } from 'antd';
+import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker,Spin,Modal } from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 const { TextArea } = Input;
-
+const confirm = Modal.confirm;
 // import { renderRoutes } from 'react-router-config'
 
 function Nav(props){
@@ -272,15 +272,19 @@ export default class addNotice extends Component {
         total:'',//总页数
         detail:{},//录入项对象
         addEntry:false,//弹窗显示
+        choose:[]
     }
   }
   componentWillMount(){
     this.init({})
   }
-  init=(data)=>{
-    !data.currPage && (data.currPage = this.state.currPage);
-    data.pageSize = this.state.pageSize;
-    let url = this.state.navIndex == 0 ? 'getInstallNoticeList' : 'getRepairNoticeList';
+  init=(data={})=>{
+    this.setState({
+      loading:true
+    },()=>{
+      !data.currPage && (data.currPage = this.state.currPage);
+      data.pageSize = this.state.pageSize;
+      let url = this.state.navIndex == 0 ? 'getInstallNoticeList' : 'getRepairNoticeList';
         $Funs.$AJAX(url,'get',data,(res)=>{
             let data = res.data.map((v,i)=>{
               v.key = i;
@@ -294,6 +298,8 @@ export default class addNotice extends Component {
               loading:false
             })
         })
+    })
+    
     
     
   }
@@ -311,7 +317,6 @@ export default class addNotice extends Component {
   pageChange = (page)=>{
     this.setState({
       currPage:page,
-      loading:true
     },()=>{
       let data = this.state.keyWord;
       this.init(data)
@@ -332,22 +337,33 @@ export default class addNotice extends Component {
     this.setState({
       navIndex:i,
       currPage:1,
-      loading:true
     },()=>{
         this.init({})
     })
   }
-  postChoose = (items)=>{
+  postChoose = ()=>{
+    let items = this.state.choose;
     if(items.length == 0 ){
       message.error('请选择需要发送通知的车辆');
     }else{
-      $Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
-        message.success('操作成功');
-      })
+      confirm({
+        title: '提示',
+        content: '确认提交通知信息？',
+        okText:'确认',
+        cancelText:'取消',
+        onOk:()=> {
+          $Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
+            message.success('操作成功');
+            this.init();
+          })
+        },
+        onCancel() {
+        },
+      });
+      
     }
   }
   render() {
-    let choose = [];
     const columns = [
       { title: '公司车队', width: 150, dataIndex: 'teamName',key:'teamName',align: 'center' },
       { title: '车牌号', width: 100, dataIndex: 'vehicleId',key:'vehicleId' ,align: 'center' },
@@ -362,10 +378,12 @@ export default class addNotice extends Component {
     ];
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        choose = selectedRows.map((v)=>{
+        let choose = selectedRows.map((v)=>{
           return v.repairInstallId
         })
-        
+        this.setState({
+          choose:choose
+        })
       },
     };
     
@@ -374,7 +392,7 @@ export default class addNotice extends Component {
       <Spin spinning = {this.state.loading} size='large'>
         <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
           <div>
-            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} postChoose = {()=>{this.postChoose(choose)}}/>
+            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} postChoose = {()=>{this.postChoose()}}/>
             <Table  rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
             {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
           </div>

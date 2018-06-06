@@ -27,6 +27,47 @@ p {
 .login .item {
   margin: 20px 0;
 }
+.login .repass {
+  width: 400px;
+  height: 350px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -175px;
+  margin-left: -200px;
+  background: #fff;
+}
+.login .repass .title {
+  width: 100%;
+  height: 63px;
+  background: linear-gradient(#6ba0d4, #1E75CE);
+  line-height: 63px;
+}
+.login .repass .title img {
+  width: 145px;
+  height: 24px;
+  margin-left: 20px;
+}
+.login .repass .item {
+  padding: 0 50px;
+  position: relative;
+}
+.login .repass .item button {
+  float: right;
+}
+.login .repass .item:nth-child(1) input {
+  background: url("../img/user.png") no-repeat 260px center;
+  background-size: 30px auto;
+}
+.login .repass .ant-btn-primary {
+  margin: 0 auto;
+  display: block;
+}
+.login .repass a {
+  position: absolute;
+  top: 87%;
+  left: 80%;
+}
 .login .login_box {
   width: 400px;
   height: 350px;
@@ -574,261 +615,7 @@ header .select .subNav {
 }
 .container .prove .topForm .ant-calendar-picker-input input:nth-child(3) {
   padding-left: 0px !important;
-}
-.container .prove .topForm .printbox .ant-form-item-children .ant-calendar-picker-input {
-  padding-left: 40px;
-  padding-top: 0;
-}
-.container .prove .topForm .printbox .ant-form-item-children .ant-calendar-picker-input .ant-calendar-range-picker-separator {
-  line-height: 30px;
-}
-.container .prove .topForm .printbox .ant-form-item-children .ant-calendar-picker-input input {
-  width: 40%;
-  padding-left: 20px;
-}
-.container .prove .topForm .pribox {
-  font-family: "\5B8B\4F53";
-  margin-top: 40px;
-  overflow: hidden;
-}
-.container .prove .topForm .pribox .lfbox,
-.container .prove .topForm .pribox .rtbox {
-  width: 580px;
-  overflow: hidden;
-  background: #fff;
-  padding: 30px 0 40px 0;
-  position: relative;
-}
-.container .prove .topForm .pribox .lfbox span,
-.container .prove .topForm .pribox .rtbox span {
-  border-bottom: 1px solid #000;
-  padding: 0 6px;
-}
-.container .prove .topForm .pribox .lfbox .absoubox,
-.container .prove .topForm .pribox .rtbox .absoubox {
-  position: absolute;
-  right: -40px;
-  text-align: center;
-  padding: 5px 0;
-  width: 24px;
-  border: 1px solid #000;
-}
-.container .prove .topForm .pribox .lfbox .conent,
-.container .prove .topForm .pribox .rtbox .conent {
-  position: relative;
-  padding: 0 50px;
-}
-.container .prove .topForm .pribox .lfbox {
-  float: left;
-}
-.container .prove .topForm .pribox .lfbox .tit {
-  line-height: 16px;
-  font-size: 16px;
-  font-family: Adobe Heiti Std R;
-  color: #000000;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.container .prove .topForm .pribox .lfbox .say {
-  position: relative;
-  font-size: 14px;
-}
-.container .prove .topForm .pribox .lfbox .say .p {
-  text-indent: 2em;
-  line-height: 28px;
-}
-.container .prove .topForm .pribox .lfbox .say .p span {
-  text-indent: 0;
-}
-.container .prove .topForm .pribox .lfbox .bot {
-  text-align: right;
-  color: #000;
-  margin-top: 20px;
-  font-size: 12px;
-}
-.container .prove .topForm .pribox .lfbox .middsolide {
-  line-height: 60px;
-  text-align: center;
-  font-size: 14px;
-  margin: 50px 0 30px 0;
-  position: relative;
-}
-.container .prove .topForm .pribox .lfbox .middsolide i {
-  position: absolute;
-  border-top: 1px dashed #000;
-  display: block;
-  height: 1px;
-  width: 100%;
-  left: 0;
-  top: 30px;
-}
-.container .prove .topForm .pribox .rtbox {
-  float: right;
-}
-.container .prove .topForm .pribox .rtbox .bz {
-  margin: 30px 0 40px 0;
-}
-.container .prove .topForm .pribox .rtbox .mtit {
-  margin: 50px 0 10px 0;
-}
-.container .prove .topForm .pribox .rtbox .conent {
-  padding: 0 20px;
-}
-.container .prove .topForm .pribox .rtbox .say {
-  position: relative;
-  font-size: 14px;
-}
-.container .prove .topForm .pribox .rtbox .say .p {
-  text-indent: 2em;
-  line-height: 34px;
-}
-.container .prove .topForm .pribox .rtbox .say .p span {
-  text-indent: 0;
-}
-.container .prove .topForm .pribox .rtbox .tit {
-  font-size: 20px;
-  text-align: center;
-}
-.container .prove .topForm .pribox .rtbox .say {
-  margin: 20px 0 30px 0;
-}
-.container .prove .topForm .pribox .rtbox table {
-  width: 100%;
-  margin: 10px 0 5px 0;
-}
-.container .prove .topForm .pribox .rtbox table th {
-  height: 88px;
-  border: 1px solid #000;
-  text-align: center;
-  padding: 0 5px;
-  font-weight: 400;
-}
-.container .prove .topForm .pribox .rtbox table td {
-  border: 1px solid #000;
-  text-align: center;
-  padding: 20px 5px;
-}
-.container .prove .topForm .pribox .rtbox .bot {
-  text-align: right;
-  margin-top: 20px;
-  margin-right: 30px;
-}
-.container .prove .topForm .pribox .bhnum {
-  height: 12px;
-  font-size: 12px;
-  text-align: right;
-}
-.container .prove .topForm .noprint .lfbox,
-.container .prove .topForm .noprint .rtbox {
-  height: 422px;
-}
-.container .prove .topForm .noprint .lfbox .say,
-.container .prove .topForm .noprint .rtbox .say {
-  margin-top: 5px;
-}
-.container .prove .topForm .noprint .lfbox .mtit,
-.container .prove .topForm .noprint .rtbox .mtit {
-  margin-top: 0;
-}
-.container .prove .topForm .noprint .hide {
-  display: none;
-}
-.container .prove .topForm .noprint .rtbox .say {
-  margin-bottom: 10px;
-}
-.container .prove .topForm .privemain .ckbox {
-  margin: 24px 0 30px 0;
-}
-.container .prove .topForm .privemain .ckbox .ant-radio-group {
-  width: 100%;
-}
-.container .prove .topForm .privemain .ckbox .ant-radio-wrapper {
-  width: 580px;
-  text-align: center;
-  font-size: 21px;
-}
-.container .prove .topForm .privemain .ckbox .ant-radio-wrapper:nth-last-child(1) {
-  float: right;
-}
-.container .prove .topForm .privemain .button {
-  width: 100%;
-  text-align: center;
-}
-.container .prove .topForm .privemain .button a {
-  width: 113px;
-  height: 39px;
-  background: #ffffff;
-  display: inline-block;
-  margin-right: 90px;
-  line-height: 39px;
-}
-.container .prove .topForm .privemain .button a:nth-last-child(1) {
-  margin: 0;
-}
-.container .prove .topForm #printimg {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: 111;
-  overflow: hidden;
-  font-family: '宋体';
-  background: rgba(0, 0, 0, 0.4);
-}
-.container .prove .topForm #printimg img {
-  width: 100%;
-}
-@media print {
-  .container .prove .topForm body {
-    height: auto;
-  }
-  .container .prove .topForm div {
-    margin-bottom: 0;
-  }
-  .container .prove .topForm #print {
-    margin: 0;
-    padding: 0;
-  }
-  .container .prove .topForm h1 {
-    color: #000;
-    background: none;
-  }
-  .container .prove .topForm body,
-  .container .prove .topForm article {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-  .container .prove .topForm img {
-    width: 100%;
-  }
-  @page {
-    size: 21cm 29.7cm;
-    /*A4*/
-    margin: 0cm!important;
-  }
-  @page :left {
-    margin-left: -20cm;
-  }
-  @page :right {
-    margin-left: -20cm;
-  }
-}
-.container .prove .topForm .message {
-  position: absolute;
-  right: 20px;
-  bottom: -30px;
-  padding-right: 24px;
-  background: url("../img/message.png") no-repeat right 1px;
-  background-size: 16px 16px;
-}
-.container .prove .topForm .message a.context {
-  color: #000;
-}
-.container .prove .topForm .message a.context:hover {
-  color: #1890ff;
+  width: auto!important;
 }
 .container .prove .history {
   margin-top: 20px;
@@ -840,6 +627,16 @@ header .select .subNav {
 }
 .container .prove .history .ant-table {
   box-shadow: none;
+}
+.container .prove .history p {
+  font-family: '微软雅黑';
+  font-size: 18px;
+  color: #323232;
+  font-weight: normal;
+  margin-bottom: 10px;
+}
+.container .prove .history .ant-table-body {
+  min-height: 130px !important;
 }
 .container .prove .ant-table-body-outer {
   margin-bottom: 0px !important;
@@ -1444,4 +1241,259 @@ header .select .subNav {
 }
 .container .person .depModal .main .btns .ant-btn {
   margin-right: 20px;
+}
+.container .printbox .ant-form-item-children .ant-calendar-picker-input {
+  padding-left: 40px;
+  padding-top: 0;
+}
+.container .printbox .ant-form-item-children .ant-calendar-picker-input .ant-calendar-range-picker-separator {
+  line-height: 30px;
+}
+.container .printbox .ant-form-item-children .ant-calendar-picker-input input {
+  width: 40%;
+  padding-left: 20px;
+}
+.container .pribox {
+  font-family: "\5B8B\4F53";
+  margin-top: 40px;
+  overflow: hidden;
+}
+.container .pribox .lfbox,
+.container .pribox .rtbox {
+  width: 580px;
+  overflow: hidden;
+  background: #fff;
+  padding: 30px 0 40px 0;
+  position: relative;
+}
+.container .pribox .lfbox span,
+.container .pribox .rtbox span {
+  border-bottom: 1px solid #000;
+  padding: 0 6px;
+}
+.container .pribox .lfbox .absoubox,
+.container .pribox .rtbox .absoubox {
+  position: absolute;
+  right: -40px;
+  text-align: center;
+  padding: 5px 0;
+  width: 24px;
+  border: 1px solid #000;
+}
+.container .pribox .lfbox .conent,
+.container .pribox .rtbox .conent {
+  position: relative;
+  padding: 0 50px;
+}
+.container .pribox .lfbox {
+  float: left;
+}
+.container .pribox .lfbox .tit {
+  line-height: 16px;
+  font-size: 16px;
+  font-family: Adobe Heiti Std R;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.container .pribox .lfbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.container .pribox .lfbox .say .p {
+  text-indent: 2em;
+  line-height: 28px;
+}
+.container .pribox .lfbox .say .p span {
+  text-indent: 0;
+}
+.container .pribox .lfbox .bot {
+  text-align: right;
+  color: #000;
+  margin-top: 20px;
+  font-size: 12px;
+}
+.container .pribox .lfbox .middsolide {
+  line-height: 60px;
+  text-align: center;
+  font-size: 14px;
+  margin: 50px 0 30px 0;
+  position: relative;
+}
+.container .pribox .lfbox .middsolide i {
+  position: absolute;
+  border-top: 1px dashed #000;
+  display: block;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  top: 30px;
+}
+.container .pribox .rtbox {
+  float: right;
+}
+.container .pribox .rtbox .bz {
+  margin: 30px 0 40px 0;
+}
+.container .pribox .rtbox .mtit {
+  margin: 50px 0 10px 0;
+}
+.container .pribox .rtbox .conent {
+  padding: 0 20px;
+}
+.container .pribox .rtbox .say {
+  position: relative;
+  font-size: 14px;
+}
+.container .pribox .rtbox .say .p {
+  text-indent: 2em;
+  line-height: 34px;
+}
+.container .pribox .rtbox .say .p span {
+  text-indent: 0;
+}
+.container .pribox .rtbox .tit {
+  font-size: 20px;
+  text-align: center;
+}
+.container .pribox .rtbox .say {
+  margin: 20px 0 30px 0;
+}
+.container .pribox .rtbox table {
+  width: 100%;
+  margin: 10px 0 5px 0;
+}
+.container .pribox .rtbox table th {
+  height: 88px;
+  border: 1px solid #000;
+  text-align: center;
+  padding: 0 5px;
+  font-weight: 400;
+}
+.container .pribox .rtbox table td {
+  border: 1px solid #000;
+  text-align: center;
+  padding: 20px 5px;
+}
+.container .pribox .rtbox .bot {
+  text-align: right;
+  margin-top: 20px;
+  margin-right: 30px;
+}
+.container .pribox .bhnum {
+  height: 12px;
+  font-size: 12px;
+  text-align: right;
+}
+.container .noprint .lfbox,
+.container .noprint .rtbox {
+  height: 422px;
+}
+.container .noprint .lfbox .say,
+.container .noprint .rtbox .say {
+  margin-top: 5px;
+}
+.container .noprint .lfbox .mtit,
+.container .noprint .rtbox .mtit {
+  margin-top: 0;
+}
+.container .noprint .hide {
+  display: none;
+}
+.container .noprint .rtbox .say {
+  margin-bottom: 10px;
+}
+.container .privemain .ckbox {
+  margin: 24px 0 30px 0;
+}
+.container .privemain .ckbox .ant-radio-group {
+  width: 100%;
+}
+.container .privemain .ckbox .ant-radio-wrapper {
+  width: 580px;
+  text-align: center;
+  font-size: 21px;
+}
+.container .privemain .ckbox .ant-radio-wrapper:nth-last-child(1) {
+  float: right;
+}
+.container .privemain .button {
+  width: 100%;
+  text-align: center;
+}
+.container .privemain .button a {
+  width: 113px;
+  height: 39px;
+  background: #ffffff;
+  display: inline-block;
+  margin-right: 90px;
+  line-height: 39px;
+}
+.container .privemain .button a:nth-last-child(1) {
+  margin: 0;
+}
+.container #printimg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 111;
+  overflow: hidden;
+  font-family: '宋体';
+  background: rgba(0, 0, 0, 0.4);
+}
+.container #printimg img {
+  width: 100%;
+}
+@media print {
+  .container body {
+    height: auto;
+  }
+  .container div {
+    margin-bottom: 0;
+  }
+  .container #print {
+    margin: 0;
+    padding: 0;
+  }
+  .container h1 {
+    color: #000;
+    background: none;
+  }
+  .container body,
+  .container article {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .container img {
+    width: 100%;
+  }
+  @page {
+    size: 21cm 29.7cm;
+    /*A4*/
+    margin: 0cm!important;
+  }
+  @page :left {
+    margin-left: -20cm;
+  }
+  @page :right {
+    margin-left: -20cm;
+  }
+}
+.message {
+  position: absolute;
+  right: 40px;
+  bottom: -30px;
+  padding-right: 24px;
+  background: url("../img/message.png") no-repeat right 1px;
+  background-size: 16px 16px;
+}
+.message a.context {
+  color: #000;
+}
+.message a.context:hover {
+  color: #1890ff;
 }

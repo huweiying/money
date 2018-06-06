@@ -12,7 +12,7 @@ const columns = [
   { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 150, align: 'center' },
   { title: '证明编号', dataIndex: 'num', key: 'num', width: 150, align: 'center' },
   { title: '打印时间', dataIndex: 'createTime', key: 'createTime', width: 150, align: 'center' },
-  { title: '是否已作废', dataIndex: 'nowstatus', key: 'nowstatus', width: 150, align: 'center' },
+  { title: '是否已作废', dataIndex: 'status', key: 'status', width: 150, align: 'center' },
 ];
 
 
@@ -57,6 +57,7 @@ export default class Invalid extends Component {
       res.data = res.data.map((v, i) => {
         // $Funs.format(v.paymentDate)
         v.createTime = $Funs.format(v.createTime)
+        v.status == 1 ? v.status = '是' : v.status = '否';
         v.key = i
         return v
       })
