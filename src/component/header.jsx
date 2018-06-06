@@ -72,29 +72,54 @@ class THeader extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    if(this.props.navIdx != nextProps.navIdx && this.props.location.pathname == '/'){//index跳转执行
-      let navArr = this.state.navArr;
-      navArr.push(nav[nextProps.navIdx])
-      navArr = [...new Set(navArr)]//数组去重
-      navArr.map(v=>{
-        v.active = false;
-        return v
-      })
-      navArr[navArr.length-1].active = true//当前激活nav
-      let child = navArr[navArr.length-1].child;
-      if(child){
-        child = child.map((v,i)=>{
-          v.active = false
-          return v
+    console.log(this.props.navIdx)
+    console.log(nextProps.navIdx)
+    if(this.props.location.pathname == '/'){
+      // if(this.props.navIdx != nextProps.navIdx  ){//index跳转执行
+        let navArr = this.state.navArr;
+        let isExit = navArr.filter((v,i)=>{
+          return v.id == nextProps.navIdx
         })
-        child[0].active = true;
-      }
-      this.setState({
-        navArr:navArr
-      })
-    }else{
-
+        if(isExit.length != 0){//已存在
+          navArr.map((v,i)=>{
+            if(v.id != nextProps.navIdx){
+              v.active = false
+            }else{//当前导航
+              v.active = true
+              if(v.child){
+                v.child.map((item,i)=>{
+                  i == 0 ? item.active = true : item.active = false
+                })
+              }
+            }
+          })
+          this.setState({
+            navArr:navArr
+          })
+        }else{
+          navArr.push(nav[nextProps.navIdx])
+          navArr = [...new Set(navArr)]//数组去重
+          navArr.map(v=>{
+            v.active = false;
+            return v
+          })
+          navArr[navArr.length-1].active = true//当前激活nav
+          let child = navArr[navArr.length-1].child;
+          if(child){
+            child = child.map((v,i)=>{
+              v.active = false
+              return v
+            })
+            child[0].active = true;
+          }
+          this.setState({
+            navArr:navArr
+          })
+        }
+        
+ 
     }
+    
     
   }
   navchange = (i) =>{

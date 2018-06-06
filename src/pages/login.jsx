@@ -37,7 +37,7 @@ class TLogin extends Component {
       .set("Content-Type", "application/json").end((err, res) => {
         this.toggle(false)
         if (err || !res.ok) {
-          message.error('登录失败');
+          message.error(res.body.message);
         } else {
           // 成功登录
           $Funs.cook.set('token',res.body.token,7)

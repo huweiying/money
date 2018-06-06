@@ -68,7 +68,7 @@ class TopForm extends Component {
               <div className = 'fl'>
                 <FormItem label = '变更时间：' className = 'formItem'>
                   {getFieldDecorator('paymentDate', rangeConfig)(
-                    <RangePicker format="YYYY-MM-DD"/>
+                    <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']}/>
                   )}
                 </FormItem>
               </div>
