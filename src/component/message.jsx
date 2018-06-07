@@ -8,10 +8,10 @@ class Message extends React.Component{
         })
       }
     mess=()=>{
-        let type=$Funs.cook.get("roles");
+        let type=window.$Funs.cook.get("roles");
         type=type==0?2:1;
         let txt=type==2?"审批通知":"安装/维修"
-        $Funs.$AJAX('message', 'get', {type:type}, res => {
+        window.$Funs.$AJAX('message', 'get', {type:type}, res => {
             Modal.info({
                 title: '提示',
                 content: (

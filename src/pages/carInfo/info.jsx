@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select ,Spin} from 'antd';
+import { Table , Input , Button , Form , Select ,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 // import { renderRoutes } from 'react-router-config'
-
 
 class TopForm extends Component {
   constructor(props) {
@@ -26,6 +25,7 @@ class TopForm extends Component {
         }
     });
   }
+ 
   clear = ()=>{
     this.props.form.resetFields();
     this.props.init({})
@@ -104,22 +104,31 @@ function Picshow(props){
       <div className = 'main'>
         {props.picArr[0] && 
           <div className = 'first fl'>
-            <p>{props.picArr[0].type == 0 ?  '车辆登记证书' : (props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
-            
-           
-            <img src={props.picArr[0].photoCode} />
+              <span>
+                <p>{props.picArr[0].type == 0 ?  '车辆登记证书' : (props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
+                <img src={props.picArr[0].photoCode}  />
+              </span>
+        
           </div>
         }
         {props.picArr[1] && 
-          <div className = 'first fl'>
-            <p>{props.picArr[1].type == 0 ? '车辆登记证书' :(props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
-            <img src={props.picArr[1].photoCode} />
+          <div className = 'first fl' >
+            <span>
+               <p>{props.picArr[1].type == 0 ? '车辆登记证书' :(props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={props.picArr[1].photoCode} />
+            </span>
+           
           </div>
         }
         {props.picArr[2] && 
-          <div className = 'first fl'>
-            <p>{props.picArr[2].type == 0 ? '车辆登记证书' :(props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
-            <img src={props.picArr[2].photoCode} />
+          <div className = 'first fl' >
+           
+           
+            <span>
+              <p>{props.picArr[2].type == 0 ? '车辆登记证书' :(props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={props.picArr[1].photoCode} />
+            </span>
+           
           </div>
         }
         
@@ -137,7 +146,7 @@ export default class Info extends Component {
       data:[],//table数据
       total:'',//总页数
       showDialog:false,//图片显示模态框
-      picArr:[]//显示的图片路径
+      picArr:[],//显示的图片路径
     }
   }
   componentWillMount(){
@@ -146,7 +155,7 @@ export default class Info extends Component {
   init=(data)=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('newCars','get',data,(res)=>{
+    window.$Funs.$AJAX('newCars','get',data,(res)=>{
       let data = res.data.map((v,i)=>{
         v.carDto.key = i;
         v.carDto.leaveFactoryDate = v.carDto.leaveFactoryDate.split(' ')[0];
@@ -182,7 +191,6 @@ export default class Info extends Component {
       this.init(data)
     })
   }
- 
   photoDetail = (item)=>{
     this.setState({
       showDialog:true,
@@ -210,6 +218,14 @@ export default class Info extends Component {
     ];
     return (
       <div className = 'info'>
+        <Modal
+          visible={this.state.visible}
+   
+        >
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Modal>
         <Spin spinning = {this.state.loading} size='large'>
           <SearchForm init={this.init} getSearch = {this.getSearch} />
           <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>

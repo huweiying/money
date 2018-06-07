@@ -97,10 +97,10 @@ class TopForm extends Component {
       init=(data = {})=>{
         !data.currPage && (data.page = this.state.currPage);
         data.size = this.state.pageSize;
-        $Funs.$AJAX('log','get',data,(res)=>{
+        window.$Funs.$AJAX('log','get',data,(res)=>{
           let data = res.data.map((v,i)=>{
             v.stop == 0 ? v.stop = '否' :v.stop = '是';
-            v.stopTime = $Funs.formatDate(v.stopTime);
+            v.stopTime = window.$Funs.formatDate(v.stopTime);
             v.key = i;
             return v
           })
@@ -132,7 +132,7 @@ class TopForm extends Component {
         })
       }
       handleOk = (id)=>{
-        $Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
+        window.$Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
             message.success('操作成功');
             this.init();
         })

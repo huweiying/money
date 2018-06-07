@@ -122,9 +122,9 @@ export default class DataQuery extends Component {
   init=(data = {})=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('carUpd','get',data,(res)=>{
+    window.$Funs.$AJAX('carUpd','get',data,(res)=>{
       let data = res.data.map((v,i)=>{
-        v.changeTime = $Funs.formatDate(v.changeTime)
+        v.changeTime = window.$Funs.formatDate(v.changeTime)
         v.key = i;
         return v
       })
@@ -174,7 +174,7 @@ export default class DataQuery extends Component {
     }
     exslDTO.type = 1;
     let code = Base64.encode(JSON.stringify(exslDTO))
-    window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
+    window.open(window.$Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
     const columns = [

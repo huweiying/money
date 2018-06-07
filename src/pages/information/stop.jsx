@@ -94,8 +94,8 @@ class TopForm extends Component {
               values.vehicleId = this.props.detail.vehicleId;
               values.oldVehicleId = this.props.detail.oldVehicleId;
               values.teamName = this.props.detail.teamName;
-              values.inputMan = $Funs.cook.get('id');
-              $Funs.$AJAX('stop','post',values,(res)=>{
+              values.inputMan = window.$Funs.cook.get('id');
+              window.$Funs.$AJAX('stop','post',values,(res)=>{
                 this.props.cancel()
                 message.success('操作成功');
                 this.props.init();
@@ -204,10 +204,10 @@ class TopForm extends Component {
         },()=>{
           !data.currPage && (data.currPage = this.state.currPage);
           data.pageSize = this.state.pageSize;
-          $Funs.$AJAX('getStop','get',data,(res)=>{
+          window.$Funs.$AJAX('getStop','get',data,(res)=>{
             let data = res.data.map((v,i)=>{
               v.stop == 0 ? v.stop = '否' :v.stop = '是';
-              v.stopTime = $Funs.formatDate(v.stopTime);
+              v.stopTime = window.$Funs.formatDate(v.stopTime);
               v.key = i;
               return v
             })
@@ -239,7 +239,7 @@ class TopForm extends Component {
         })
       }
       handleOk = (id)=>{
-          $Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
+          window.$Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
             message.success('操作成功');
             this.init();
         })

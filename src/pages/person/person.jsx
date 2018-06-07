@@ -100,7 +100,7 @@ class TMsgDetail extends Component {
             okText: "确认",
             cancelText: "取消",
             onOk() {
-              $Funs.$AJAX("user", "patch", values, e => {
+              window.$Funs.$AJAX("user", "patch", values, e => {
                 message.success('修改成功！');
                 setTimeout(e => {
                   location.reload();
@@ -109,15 +109,15 @@ class TMsgDetail extends Component {
             }
           });
         } else {
-          values.inputMan = $Funs.cook.get("id");
-          $Funs.$AJAX("user", "post", values, e => {
+          values.inputMan = window.$Funs.cook.get("id");
+          window.$Funs.$AJAX("user", "post", values, e => {
             message.success('添加成功！');
             setTimeout(e => {
               location.reload();
             }, 400);
           });
         }
-        // $Funs.$AJAX('charge','post',values,(res)=>{
+        // window.$Funs.$AJAX('charge','post',values,(res)=>{
         //   message.success('操作成功');
         //   this.props.cancel()
         // })
@@ -375,12 +375,12 @@ class Department extends Component{
       message.error('未添加部门')
     }
     if(this.state.departmentName){//添加部门
-      $Funs.$AJAX('department','post',{'departmentName':this.state.departmentName,'inputMan':$Funs.cook.get('id')},(res)=>{
+      window.$Funs.$AJAX('department','post',{'departmentName':this.state.departmentName,'inputMan':window.$Funs.cook.get('id')},(res)=>{
         console.log(res)
         if(this.state.groupName){//添加部门分组
-          $Funs.$AJAX('group','post',{'department':res.id,'groupName':this.state.groupName,'inputMan':$Funs.cook.get('id')},(res)=>{
+          window.$Funs.$AJAX('group','post',{'department':res.id,'groupName':this.state.groupName,'inputMan':window.$Funs.cook.get('id')},(res)=>{
             if(this.state.newGroupName){
-              $Funs.$AJAX('group','post',{'department':this.state.id,'groupName':this.state.newGroupName,'inputMan':$Funs.cook.get('id')},(res)=>{
+              window.$Funs.$AJAX('group','post',{'department':this.state.id,'groupName':this.state.newGroupName,'inputMan':window.$Funs.cook.get('id')},(res)=>{
                 message.success('添加成功')
               })
             }else{
@@ -396,7 +396,7 @@ class Department extends Component{
         location.reload();
       }, 400);
     }else if(this.state.newGroupName){
-      $Funs.$AJAX('group','post',{'department':this.state.id,'groupName':this.state.newGroupName,'inputMan':$Funs.cook.get('id')},(res)=>{
+      window.$Funs.$AJAX('group','post',{'department':this.state.id,'groupName':this.state.newGroupName,'inputMan':window.$Funs.cook.get('id')},(res)=>{
         message.success('添加成功')
       })
       this.props.close();
@@ -458,7 +458,7 @@ export default class Person extends Component {
     };
   }
   componentWillMount = () => {
-    $Funs.$AJAX("department", "get", "", res => {
+    window.$Funs.$AJAX("department", "get", "", res => {
       this.setState({
         nav: res
       });
@@ -473,7 +473,7 @@ export default class Person extends Component {
   init = obj => {
     let arr = ['管理员','操作员','安装师傅','财务','其他']
     if (this.state.nav[0].groupListDtoList.length == 0) {
-      $Funs.$AJAX("user/" + $Funs.cook.get("id"), "get", obj, res => {
+      window.$Funs.$AJAX("user/" + window.$Funs.cook.get("id"), "get", obj, res => {
         let data = res.data.map((v, i) => {
           v.key = i;
           v.state =
@@ -586,7 +586,7 @@ export default class Person extends Component {
         okText: "确认",
         cancelText: "取消",
         onOk() {
-          $Funs.$AJAX("user?userId="+item.id,"DELETE",null,e=>{
+          window.$Funs.$AJAX("user?userId="+item.id,"DELETE",null,e=>{
             message.success('删除成功');
             setTimeout(e => {
               location.reload();
@@ -637,7 +637,7 @@ export default class Person extends Component {
     }
     exslDTO.type = 4;
     let code = Base64.encode(JSON.stringify(exslDTO));
-    window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
+    window.open(window.$Funs.Basse_Port+'saveExsl?exslDTO='+ code)
 }
   render() {
     const columns = [

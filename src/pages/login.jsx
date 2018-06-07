@@ -16,7 +16,11 @@ class TLogin extends Component {
   toggle = (value) => {
     this.setState({ loading: value });
   }
-
+  handleKeyDown=(e)=>{
+    if(e.keyCode==13 && this.state.user && this.state.psd){
+      this.login()
+    }
+  }
   handleUser=(e)=>{
     this.setState({user:e.target.value})
   }
@@ -33,18 +37,18 @@ class TLogin extends Component {
       message.error('请输入密码');
     }else{
       this.toggle(true)
-      $http.post($Funs.Basse_Port + "auth/login", {username:this.state.user,password:this.state.psd})
+      $http.post(window.$Funs.Basse_Port + "auth/login", {username:this.state.user,password:this.state.psd})
       .set("Content-Type", "application/json").end((err, res) => {
         this.toggle(false)
         if (err || !res.ok) {
           message.error(res.body.message);
         } else {
           // 成功登录
-          $Funs.cook.set('token',res.body.token,7)
-          $Funs.cook.set('userName',res.body.userName,7)
-          $Funs.cook.set('id',res.body.id,7)
-          $Funs.cook.set('name',res.body.name,7)
-          $Funs.cook.set('roles',res.body.roles,7)
+          window.$Funs.cook.set('token',res.body.token,7)
+          window.$Funs.cook.set('userName',res.body.userName,7)
+          window.$Funs.cook.set('id',res.body.id,7)
+          window.$Funs.cook.set('name',res.body.name,7)
+          window.$Funs.cook.set('roles',res.body.roles,7)
           this.props.history.push('/')
         }
       });
@@ -65,7 +69,7 @@ class TLogin extends Component {
                 <img src={require('../assets/img/user.png')} />
                 </div>
                 <div className = 'item'>
-                  <Input placeholder="密码" type="password" value={this.state.psd} onChange={this.handlePsd}  style={{ width: 300,height:50 }}/>
+                  <Input placeholder="密码" type="password" value={this.state.psd} onChange={this.handlePsd}  style={{ width: 300,height:50 }}  onKeyDown = {this.handleKeyDown}/>
                   <img src={require('../assets/img/lock.png')} />
                 </div>
                 <Button type="primary" onClick = {this.login}>登录</Button>

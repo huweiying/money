@@ -39,7 +39,7 @@ export default class password extends Component {
     }
  
     if (!this.state.yzming) {
-      $Funs.$AJAX(
+      window.$Funs.$AJAX(
         "basis/user/" + this.state.user + "/phone/code",
         "post",
         null,
@@ -70,7 +70,7 @@ export default class password extends Component {
         message.error("请输入完整");
         return false;
     }
-    $Funs.$AJAX(
+    window.$Funs.$AJAX(
       "basis/user/" +
         this.state.user +
         "/phone/code/" +
@@ -80,7 +80,7 @@ export default class password extends Component {
       null,
       res => {
         if (res) {
-          $Funs.$AJAX(
+          window.$Funs.$AJAX(
             "auth/user/" + this.state.user + "/pwd",
             "patch",
             {

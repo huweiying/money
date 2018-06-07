@@ -44,7 +44,7 @@ class THeader extends Component {
     
   }
   componentWillMount(){
-    let roles = $Funs.cook.get('roles');
+    let roles = window.$Funs.cook.get('roles');
     let url = this.props.location.pathname.split('/');
     if(this.props.location.pathname == '/'){
       navArr[0].active = true;
@@ -152,10 +152,10 @@ class THeader extends Component {
       okText:'确认',
       cancelText:'取消',
       onOk:()=> {
-        $Funs.cook.delete('id')
-        $Funs.cook.delete('name')
-        $Funs.cook.delete('token')
-        $Funs.cook.delete('userName')
+        window.$Funs.cook.delete('id')
+        window.$Funs.cook.delete('name')
+        window.$Funs.cook.delete('token')
+        window.$Funs.cook.delete('userName')
         this.props.history.push('/login')
       },
       onCancel() {
@@ -212,7 +212,7 @@ class THeader extends Component {
       <header>
         <div className = 'logo'></div>
         <div className = 'loginInfo'>
-          {$Funs.cook.get('name')}<img src={require('../assets/img/exit.png')} onClick={this.logout}/>
+          {window.$Funs.cook.get('name')}<img src={require('../assets/img/exit.png')} onClick={this.logout}/>
         </div>
         <div className = 'top_nav'>
           {navs}

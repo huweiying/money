@@ -128,11 +128,11 @@ class TChgForm extends Component {
     }
   }
   componentWillMount(){
-    $Funs.$AJAX('ziDian','get',{type:3},(res)=>{
+    window.$Funs.$AJAX('ziDian','get',{type:3},(res)=>{
       this.setState({
         terminalType:res
       },()=>{
-        $Funs.$AJAX('ziDian','get',{type:4},(res)=>{
+        window.$Funs.$AJAX('ziDian','get',{type:4},(res)=>{
           this.setState({
             simTypeName:res
           })
@@ -155,7 +155,7 @@ class TChgForm extends Component {
               terminalChangeDto:{},
               simChangeDto:{}
             };
-            informationChangeDto.inputMan = $Funs.cook.get('id');
+            informationChangeDto.inputMan = window.$Funs.cook.get('id');
             informationChangeDto.newCarId = this.props.detail.newCarId;
             let keys = Object.keys(values)
             keys.forEach((v,i)=>{
@@ -169,7 +169,7 @@ class TChgForm extends Component {
                 informationChangeDto.simChangeDto[v.split('_')[1]] = values[v];
               }
             })
-            $Funs.$AJAX('informationChange','post',informationChangeDto,(res)=>{
+            window.$Funs.$AJAX('informationChange','post',informationChangeDto,(res)=>{
               message.success('操作成功');
               this.props.cancel();
             })
@@ -422,7 +422,7 @@ export default class Change extends Component {
     init=(data)=>{
       !data.currPage && (data.currPage = this.state.currPage);
       data.pageSize = this.state.pageSize;
-      $Funs.$AJAX('getInformationChangeList/getCarList','get',data,(res)=>{
+      window.$Funs.$AJAX('getInformationChangeList/getCarList','get',data,(res)=>{
         let data = res.data.map((v,i)=>{
           v.key = i;
           return v

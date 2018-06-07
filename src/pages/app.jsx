@@ -15,13 +15,13 @@ import { message} from 'antd';
   }
   
   componentWillMount(){
-    if(!$Funs.cook.get('userName')){//未登录
+    if(!window.$Funs.cook.get('userName')){//未登录
       this.props.history.push('/login')
     }else{//已登录
       if(this.props.location.pathname == '/'){
         return
       }else{
-        if($Funs.cook.get('roles') == '1'){//操作员
+        if(window.$Funs.cook.get('roles') == '1'){//操作员
           if(this.props.location.pathname.split('/')[1] != 'carInfo' ){
             this.props.history.push('/login')
             message.error('您没有该权限，请重新登录')
@@ -29,7 +29,7 @@ import { message} from 'antd';
           }else{
             return
           }
-        }else if($Funs.cook.get('roles') == '3'){
+        }else if(window.$Funs.cook.get('roles') == '3'){
           if(this.props.location.pathname.split('/')[1] != 'print' || this.props.location.pathname.split('/')[1] != 'charge' ){
             this.props.history.push('/login')
             message.error('您没有该权限，请重新登录')

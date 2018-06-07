@@ -49,8 +49,8 @@ function CarDetail(props){//查看车辆详情
    }
   
   componentWillMount(){
-    $Funs.$AJAX('ziDian','get',{type:1},(res)=>{
-      $Funs.$AJAX('ziDian','get',{type:3},(data)=>{
+    window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{
+      window.$Funs.$AJAX('ziDian','get',{type:3},(data)=>{
         this.setState({
           zdType:data,
           product:res
@@ -71,7 +71,7 @@ function CarDetail(props){//查看车辆详情
             values.carId = this.props.item.id;
             values.photoCodes = this.state.photoCodes;
             values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
-            $Funs.$AJAX('car/newCar','post',values,(res)=>{
+            window.$Funs.$AJAX('car/newCar','post',values,(res)=>{
               message.success('操作成功');
               this.props.cancel()
             })
@@ -376,7 +376,7 @@ export default class Entry extends Component {
   }
 // 数据请求
   init=()=>{
-    $Funs.$AJAX('cars','get',{currPage:this.state.currPage,pageSize:this.state.pageSize,carNumOrName:this.state.search},(res)=>{
+    window.$Funs.$AJAX('cars','get',{currPage:this.state.currPage,pageSize:this.state.pageSize,carNumOrName:this.state.search},(res)=>{
       res.data = res.data.map((v,i)=>{
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
         v.key = i

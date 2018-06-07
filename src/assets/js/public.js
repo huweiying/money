@@ -1,5 +1,5 @@
 import $http from "superagent";
-import { message } from 'antd';
+import { message , Modal} from 'antd';
 const cook = {
   set(name, value, days) {
     var d = new Date();
@@ -21,7 +21,7 @@ const cook = {
   }
 };
 const Basse_Port = "http://192.168.1.82:8899/api/v1/";
-window.$Funs = {
+const main={
   cook: cook,
   Basse_Port: Basse_Port,
   sethistory() {
@@ -90,7 +90,8 @@ window.$Funs = {
     let date = time.getDate() < 10 ? '0' + time.getDate() : time.getDate();
     return year + '-' + month + '-' + date
   }
-};
+}
+window.$Funs =main;
 /*export default {
   cook: cook,
   Basse_Port: Basse_Port,

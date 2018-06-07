@@ -94,11 +94,17 @@
     ]
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules":{
+      "no-undef":"off",
+      "no-restricted-globals":"off",
+      "no-unsed-vars":"off"
+    }
   },
   "devDependencies": {
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "superagent": "^3.8.3"
-  }
+  },
+  "homepage":"."
 }
