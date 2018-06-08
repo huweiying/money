@@ -45,11 +45,15 @@ function CarDetail(props){//查看车辆详情
       photoCodes:[],
       product:[],
       zdType:[],
+<<<<<<< HEAD
       item:{}
+=======
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
      }
    }
   
   componentWillMount(){
+<<<<<<< HEAD
     window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{//生产厂家
       window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//生产厂家
         this.setState({
@@ -66,6 +70,16 @@ function CarDetail(props){//查看车辆详情
         item:res
       })
      })
+=======
+    window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{
+      window.$Funs.$AJAX('ziDian','get',{type:3},(data)=>{
+        this.setState({
+          zdType:data,
+          product:res
+        })
+      })
+    })
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
   }
   handleSubmit=(e)=>{
     e.preventDefault();
@@ -136,7 +150,11 @@ function CarDetail(props){//查看车辆详情
                     {getFieldDecorator('carColor', {
                       initialValue:'黄色'
                     })(
+<<<<<<< HEAD
                       <Select  style={{ width: 120 }} >
+=======
+                      <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
                         <Option value="黄色">黄色</Option>
                         <Option value="蓝色">蓝色</Option>
                         <Option value="黑色">黑色</Option>
@@ -198,6 +216,12 @@ function CarDetail(props){//查看车辆详情
                   {this.state.product.length > 0 &&
                   <FormItem className = 'formItem clean'{...formItemLayout} label="生产厂家">
                     {getFieldDecorator('manufacturer', {
+<<<<<<< HEAD
+=======
+                      rules: [ {
+                        required: true, message: '请输入生产厂家',
+                      }],
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
                       initialValue:this.state.product[0]
                     })(
                       <Select  style={{ width: 120 }} onChange={this.handleSelect}>
@@ -208,15 +232,26 @@ function CarDetail(props){//查看车辆详情
                     )}
                   </FormItem>
                   }
+<<<<<<< HEAD
                   <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型号">
                     {getFieldDecorator('terminalTypeNum', {
                       initialValue:this.state.item.termTypeID
                     })(
                       <Input  disabled />
+=======
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端类型号">
+                    {getFieldDecorator('terminalTypeNum', {
+                      rules: [ {
+                        required: true, message: '请输入终端类型号',
+                      }],
+                    })(
+                      <Input  />
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
                     )}
                   </FormItem>
                 </div>
                 <div className = "row clean">
+<<<<<<< HEAD
                   <FormItem className = 'formItem clean'{...formItemLayout}  label="厂家编号">
                     {getFieldDecorator('factoryNumber', {
                       initialValue:this.state.item.producerID
@@ -236,6 +271,38 @@ function CarDetail(props){//查看车辆详情
                       initialValue:this.state.item.termPici
                     })(
                       <Input  disabled  />
+=======
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="厂家编号">
+                    {getFieldDecorator('factoryNumber', {
+                      rules: [ {
+                        required: true, message: '请输入厂家编号',
+                      }],
+                    })(
+                      <Input  />
+                    )}
+                  </FormItem>
+                  <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型">
+                    {getFieldDecorator('terminalType', {
+                      rules: [ {
+                        required: true, message: '请输入终端类型',
+                      }],
+                      initialValue:this.state.zdType[0]
+                    })(
+                      <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+                        { this.state.zdType.map((v,i)=>{
+                          return <Option value={v} key={i}>{v}</Option>
+                        })}
+                      </Select>
+                    )}
+                  </FormItem>
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="终端批次">
+                    {getFieldDecorator('terminalOrder', {
+                      rules: [ {
+                        required: true, message: '请输入终端批次',
+                      }],
+                    })(
+                      <Input  />
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
                     )}
                   </FormItem>
                   <FormItem  className = 'formItem clean' label='终端号'>
@@ -253,6 +320,7 @@ function CarDetail(props){//查看车辆详情
                     )}
                   </FormItem>
 
+<<<<<<< HEAD
                   <FormItem className = 'formItem clean'{...formItemLayout}  label="平台编号">
                     {getFieldDecorator('systemPlatformNumber', {
                       initialValue:'50627'
@@ -267,6 +335,26 @@ function CarDetail(props){//查看车辆详情
                       initialValue:'6'
                     })(
                       <Input disabled />
+=======
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="平台编号">
+                    {getFieldDecorator('systemPlatformNumber', {
+                      rules: [ {
+                        required: true, message: '请输入平台编号',
+                      }],
+                    })(
+                      <Input  />
+                    )}
+                  </FormItem>
+
+                  <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="平台批次">
+                    <span className = 'tag'>资料齐全</span>
+                    {getFieldDecorator('systemPlatformOrder', {
+                      rules: [ {
+                        required: true, message: '请输入平台批次',
+                      }],
+                    })(
+                      <Input  />
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
                     )}
                   </FormItem>
                 </div>

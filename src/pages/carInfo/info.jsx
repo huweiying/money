@@ -97,6 +97,7 @@ const SearchForm = Form.create({
   },
 })(TopForm)
 
+<<<<<<< HEAD
 
 class Picshow extends Component {
   constructor(props) {
@@ -130,35 +131,70 @@ class Picshow extends Component {
               <span>
                 <p>{this.props.picArr[0].type == 0 ?  '车辆登记证书' : (this.props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
                 <img src={this.props.picArr[0].photoCode} onClick={this.open.bind(this,this.props.picArr[0].photoCode)} />
+=======
+function Picshow(props){
+  return (
+    <div className = 'dialog'>
+      <div className = 'mask' onClick = {()=>{props.cancel()}}></div>
+      <div className = 'main'>
+        {props.picArr[0] && 
+          <div className = 'first fl'>
+              <span>
+                <p>{props.picArr[0].type == 0 ?  '车辆登记证书' : (props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
+                <img src={props.picArr[0].photoCode}  />
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
               </span>
         
           </div>
         }
+<<<<<<< HEAD
         {this.props.picArr[1] && 
           <div className = 'first fl' >
             <span>
                <p>{this.props.picArr[1].type == 0 ? '车辆登记证书' :(this.props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
               <img src={this.props.picArr[1].photoCode} onClick={this.open.bind(this,this.props.picArr[1].photoCode)} />
+=======
+        {props.picArr[1] && 
+          <div className = 'first fl' >
+            <span>
+               <p>{props.picArr[1].type == 0 ? '车辆登记证书' :(props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={props.picArr[1].photoCode} />
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
             </span>
            
           </div>
         }
+<<<<<<< HEAD
         {this.props.picArr[2] && 
           <div className = 'first fl' >
             <span>
               <p>{this.props.picArr[2].type == 0 ? '车辆登记证书' :(this.props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
               <img src={this.props.picArr[1].photoCode} onClick={this.open.bind(this,this.props.picArr[2].photoCode)} />
+=======
+        {props.picArr[2] && 
+          <div className = 'first fl' >
+           
+           
+            <span>
+              <p>{props.picArr[2].type == 0 ? '车辆登记证书' :(props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={props.picArr[1].photoCode} />
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
             </span>
            
           </div>
         }
         
       </div>
+<<<<<<< HEAD
     </div>
     )
   }
 }
 
+=======
+    </div>)
+}
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
 export default class Info extends Component {
   constructor(props) {
     super(props)
@@ -227,7 +263,10 @@ export default class Info extends Component {
       currPage:1
     })
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
   render() {
     const columns = [
       { title: '安装日期', width: 100, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },

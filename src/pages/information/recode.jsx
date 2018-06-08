@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+<<<<<<< HEAD
 import { Table , Input , Button , Form ,Icon ,Spin,Select,Modal} from 'antd';
+=======
+import { Table , Input , Button , Form ,Icon ,Spin,Select} from 'antd';
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
 const FormItem = Form.Item;
 const Search = Input.Search;
 // import { renderRoutes } from 'react-router-config'
@@ -247,8 +251,11 @@ class PicDetail extends Component{
       pageSize:4,
       total:this.props.detail.length,
       loading:true,
+<<<<<<< HEAD
       show:false,
       path:''
+=======
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
     }
   }
   componentDidMount(){
@@ -256,6 +263,7 @@ class PicDetail extends Component{
       loading:false
     })
   }
+<<<<<<< HEAD
   open=(src)=>{
     this.setState({
       show:true,
@@ -268,6 +276,8 @@ class PicDetail extends Component{
       path:''
     });
   }
+=======
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
   next(isNext){
     if(isNext){//下一页
       totalPage = parseInt(this.state.total / this.state.pageSize);
@@ -294,6 +304,7 @@ class PicDetail extends Component{
         if(v){
           return(
             <div className = 'item fl' key={i}>
+<<<<<<< HEAD
               <span>
                   <p>{v.pictureType}</p>
                   <img src={v.picturePath} onClick={this.open.bind(this,v.picturePath)}/>
@@ -301,13 +312,26 @@ class PicDetail extends Component{
                   <p>{v.pictureLocation}</p>
               </span>
             </div>
+=======
+            <span>
+                  <p>{v.pictureType}</p>
+                  <img src={v.picturePath} />
+                  <p>{v.pictureTime}</p>
+                  <p>{v.pictureLocation}</p>
+            </span>
+              </div>
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
           )
         }
       })
     return (
       <div className = 'picDialog'>
       <div className = 'mask'></div>
+<<<<<<< HEAD
           {this.state.show && <img onClick={this.close} src={this.state.path} className = 'preview'></img>}
+=======
+        
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
           <div className="insetbox">
           <Spin spinning = {this.state.loading} tip="Loading..."></Spin>
               <div className = 'main'>

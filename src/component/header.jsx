@@ -112,6 +112,7 @@ class THeader extends Component {
     })
     navArr[i].active = true;
     
+<<<<<<< HEAD
     if(!navArr[i].child){
       return
     }else{
@@ -124,6 +125,20 @@ class THeader extends Component {
       }
       navArr[i].child[0].active = true;
     }
+=======
+    // if(!navArr[i].child){
+    //   return
+    // }else{
+    //   navArr[i].child = navArr[i].child.map(v=>{
+    //     v.active = false;
+    //     return v
+    //   })
+    //   for(let val of navArr[i].child){
+    //     val.active=false;
+    //   }
+    //   navArr[i].child[0].active = true;
+    // }
+>>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
   
   }
   subchange = (i) =>{//子路由下标
