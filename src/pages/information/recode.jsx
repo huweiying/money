@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-<<<<<<< HEAD
 import { Table , Input , Button , Form ,Icon ,Spin,Select,Modal} from 'antd';
-=======
-import { Table , Input , Button , Form ,Icon ,Spin,Select} from 'antd';
->>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
 const FormItem = Form.Item;
 const Search = Input.Search;
 // import { renderRoutes } from 'react-router-config'
@@ -92,157 +88,7 @@ const SearchForm = Form.create({
   },
 })(TopForm)
 
-/*class TMsgDetail extends Component{
-  constructor(props) {
-    super(props)
-    this.state = {
-       
-    }
-  }
-  handleSubmit = ()=>{
-    this.props.form.validateFields((err, values) => {
-      if(!err){
-        values.invoiceNum = values.prefix + values.invoiceNum;
-        delete values.prefix;
-        values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
-        values.chargeTime = window.$Funs.formatDate(values.chargeTime);
-        values.id = this.props.detail.chargeid;
-        values.newCarId = this.props.detail.newCarId;
-        values.vehicleId = this.props.detail.vehicleId;
-        values.teamName = this.props.detail.teamName;
-        values.inputMan = window.$Funs.cook.get('id');
-        values.inputManName = window.$Funs.cook.get('name');
-        // values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
-        // console.log(values)
-        window.$Funs.$AJAX('charge','post',values,(res)=>{
-          message.success('操作成功');
-          this.props.cancel()
-        })      
-      }
-    });
-  }
-  render(){
-    const { getFieldDecorator} = this.props.form;
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
-    };
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: 'F',
-    })(
-      <Select style={{ width: 50 }}>
-        <Option value="F">F</Option>
-        <Option value="S">S</Option>
-      </Select>
-    );
-    let msgform = (
-      <div className = 'detail'>
-        <Form layout="inline"  className='clean'>
-          <div className = 'clean'>
-            <FormItem label='车牌号' className = 'formItem clean'>
-              <Input  value={this.props.detail.vehicleId } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem label='公司或车队名' className = 'formItem clean'>
-              <Input  value={this.props.detail.teamName } disabled className = 'disabled'/>
-            </FormItem>
-            <FormItem className = 'formItem clean'{...formItemLayout} label="收费金额">
-              {getFieldDecorator('moneyAmont', {
-                rules: [ {
-                  required: true, message: '请输入收费金额',
-                }],
-              })(
-                <Input className = 'pay' />
-              )}
-              <span  className = 'unit'>单位：元</span>
-            </FormItem>
-          </div>
-          <div className = ' clean'>
-            
-            <FormItem className = 'formItem clean'{...formItemLayout} label="支付方式">
-              {getFieldDecorator('payType', {
-                rules: [ {
-                  required: true, message: '请输入收费金额',
-                }],
-                initialValue:'现金'
-              })(
-                <Select  style={{ width: 200 }}>
-                  <Option value="现金">现金</Option>
-                  <Option value="转帐支票">转帐支票</Option>
-                  <Option value="网银转账">网银转账</Option>
-                  <Option value="支付宝">支付宝</Option>
-                  <Option value="微信">微信</Option>
-                  <Option value="其他">其他</Option>
-                </Select>     
-              )}
-            </FormItem>
-            <FormItem className = 'formItem clean'{...formItemLayout} label="截止时间">
-              {getFieldDecorator('deadlineDate', {
-                rules: [ {
-                  required: true, message: '请输入截止时间',
-                }],
-              })(
-                <DatePicker />
-              )}
-            </FormItem>
-          </div>
-          <div className = 'clean'>
-            <FormItem className = 'formItem code clean' {...formItemLayout} label="发票（或收据）号码">
-              {getFieldDecorator('invoiceNum', {
-                rules: [ {
-                  required: true, message: '请输入发票（或收据）号码',
-                }],
-              })(
-                <Input  addonBefore={prefixSelector} style={{ width: '100%' }} />
-              )}
-            </FormItem>
-          </div>
-          <FormItem label = '收费备注：' className = 'formItem fl clean'>
-            {getFieldDecorator('remark', {
-              rules: [ {
-                required: true, message: '请输入收费备注',
-              }],
-            })(
-              <TextArea rows={3} />
-            )}
-          </FormItem>
-        </Form>
-        <div className = 'diaBtns fr'>
-          <Button type="primary" onClick = {this.handleSubmit}>确认修改</Button>
-          <Button onClick = { this.props.cancel}>取消</Button>
-        </div>
-      </div>
-    )
-    return(
-      <div className = 'dialog'>
-        <div className = 'mask'></div>
-        <div className = 'main'>
-          <p className = 'title'>修改收费信息</p>
-           {  msgform }
-        </div>
-      </div>
-    )
-  }
-}
-const MsgDetail = Form.create({
-  mapPropsToFields(props) {
-    return {
-      detail: Form.createFormField({
-        value: props.detail,
-      }),
-      cancel: Form.createFormField({
-        value: props.cancel,
-      }),
-    }
-  },
-})(TMsgDetail)*/
 
-//维修图片组件
 class PicDetail extends Component{
   constructor(props) {
     super(props)
@@ -251,11 +97,8 @@ class PicDetail extends Component{
       pageSize:4,
       total:this.props.detail.length,
       loading:true,
-<<<<<<< HEAD
       show:false,
       path:''
-=======
->>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
     }
   }
   componentDidMount(){
@@ -263,7 +106,6 @@ class PicDetail extends Component{
       loading:false
     })
   }
-<<<<<<< HEAD
   open=(src)=>{
     this.setState({
       show:true,
@@ -276,8 +118,6 @@ class PicDetail extends Component{
       path:''
     });
   }
-=======
->>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
   next(isNext){
     if(isNext){//下一页
       totalPage = parseInt(this.state.total / this.state.pageSize);
@@ -304,7 +144,6 @@ class PicDetail extends Component{
         if(v){
           return(
             <div className = 'item fl' key={i}>
-<<<<<<< HEAD
               <span>
                   <p>{v.pictureType}</p>
                   <img src={v.picturePath} onClick={this.open.bind(this,v.picturePath)}/>
@@ -312,26 +151,13 @@ class PicDetail extends Component{
                   <p>{v.pictureLocation}</p>
               </span>
             </div>
-=======
-            <span>
-                  <p>{v.pictureType}</p>
-                  <img src={v.picturePath} />
-                  <p>{v.pictureTime}</p>
-                  <p>{v.pictureLocation}</p>
-            </span>
-              </div>
->>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
           )
         }
       })
     return (
       <div className = 'picDialog'>
       <div className = 'mask'></div>
-<<<<<<< HEAD
           {this.state.show && <img onClick={this.close} src={this.state.path} className = 'preview'></img>}
-=======
-        
->>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
           <div className="insetbox">
           <Spin spinning = {this.state.loading} tip="Loading..."></Spin>
               <div className = 'main'>

@@ -160,7 +160,6 @@ class TChgForm extends Component {
             let keys = Object.keys(values)
             keys.forEach((v,i)=>{
               if(v.split('_')[0] == 1){
-<<<<<<< HEAD
                 values[v] && (informationChangeDto.relocationChangeDto[v.split('_')[1]] = values[v]);
               }else if(v.split('_')[0] == 2){
                 values[v] && (informationChangeDto.transferChangeDto[v.split('_')[1]] = values[v]);
@@ -175,18 +174,6 @@ class TChgForm extends Component {
               !(JSON.stringify(informationChangeDto[p])=="{}") && (obj[p] = informationChangeDto[p])
             }
             window.$Funs.$AJAX('informationChange','post',obj,(res)=>{
-=======
-                informationChangeDto.relocationChangeDto[v.split('_')[1]] = values[v];
-              }else if(v.split('_')[0] == 2){
-                informationChangeDto.transferChangeDto[v.split('_')[1]] = values[v];
-              }else if(v.split('_')[0] == 3){
-                informationChangeDto.terminalChangeDto[v.split('_')[1]] = values[v];
-              }else{
-                informationChangeDto.simChangeDto[v.split('_')[1]] = values[v];
-              }
-            })
-            window.$Funs.$AJAX('informationChange','post',informationChangeDto,(res)=>{
->>>>>>> 6e91800f9eda543b8c73c96e67130cea2e6ee560
               message.success('操作成功');
               this.props.cancel();
             })
