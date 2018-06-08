@@ -53,10 +53,10 @@ export default class Invalid extends Component {
     })
   }
   list(data) {
-    $Funs.$AJAX('printHistorys', 'get', data, res => {
+    window.$Funs.$AJAX('printHistorys', 'get', data, res => {
       res.data = res.data.map((v, i) => {
-        // $Funs.format(v.paymentDate)
-        v.createTime = $Funs.format(v.createTime)
+        // window.$Funs.format(v.paymentDate)
+        v.createTime = window.$Funs.format(v.createTime)
         v.status == 1 ? v.status = '是' : v.status = '否';
         v.key = i
         return v
@@ -114,7 +114,7 @@ export default class Invalid extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        $Funs.$AJAX('printHistorys', 'patch', newArr, e => {
+        window.$Funs.$AJAX('printHistorys', 'patch', newArr, e => {
           message.success('操作成功')
           setTimeout(() => {
             location.reload();

@@ -116,7 +116,7 @@ class TMsgDetail extends Component{
   }
   
   componentWillMount(){
-    $Funs.$AJAX('user','get',{roles:2},(res)=>{
+    window.$Funs.$AJAX('user','get',{roles:2},(res)=>{
       if(res.length == 0){
         return
       }
@@ -138,7 +138,7 @@ class TMsgDetail extends Component{
           cancelText:'取消',
           onOk:()=> {
               values.carframeId = this.props.detail.carframeId;
-              values.inputMan = $Funs.cook.get('id');
+              values.inputMan = window.$Funs.cook.get('id');
               values.newCarId =  this.props.detail.newCarId;
               values.oldVehicleId = this.props.detail.oldVehicleId;
               values.operationType = Number(this.props.navIndex);
@@ -147,7 +147,7 @@ class TMsgDetail extends Component{
               values.teamName = this.props.detail.teamName;
               values.typeName = this.props.detail.typeName;
               values.repairInstallType = Number(values.repairInstallType);
-            $Funs.$AJAX('repairInstall','post',values,(res)=>{
+            window.$Funs.$AJAX('repairInstall','post',values,(res)=>{
               message.success('操作成功');
               this.props.cancel()
             })      
@@ -296,10 +296,10 @@ export default class addNotice extends Component {
   init=(data)=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-        $Funs.$AJAX('RepairInstall/getCarList','get',data,(res)=>{
+        window.$Funs.$AJAX('RepairInstall/getCarList','get',data,(res)=>{
             let data = res.data.map((v,i)=>{
               v.key = i;
-              v.deadlineDate = $Funs.formatDate(v.deadlineDate)
+              v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
               return v
             })
             this.setState({

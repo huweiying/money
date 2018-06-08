@@ -128,11 +128,11 @@ class TChgForm extends Component {
     }
   }
   componentWillMount(){
-    $Funs.$AJAX('ziDian','get',{type:3},(res)=>{
+    window.$Funs.$AJAX('ziDian','get',{type:3},(res)=>{
       this.setState({
         terminalType:res
       },()=>{
-        $Funs.$AJAX('ziDian','get',{type:4},(res)=>{
+        window.$Funs.$AJAX('ziDian','get',{type:4},(res)=>{
           this.setState({
             simTypeName:res
           })
@@ -155,22 +155,25 @@ class TChgForm extends Component {
               terminalChangeDto:{},
               simChangeDto:{}
             };
-            informationChangeDto.inputMan = $Funs.cook.get('id');
+            informationChangeDto.inputMan = window.$Funs.cook.get('id');
             informationChangeDto.newCarId = this.props.detail.newCarId;
             let keys = Object.keys(values)
             keys.forEach((v,i)=>{
               if(v.split('_')[0] == 1){
-                informationChangeDto.relocationChangeDto[v.split('_')[1]] = values[v];
+                values[v] && (informationChangeDto.relocationChangeDto[v.split('_')[1]] = values[v]);
               }else if(v.split('_')[0] == 2){
-                informationChangeDto.transferChangeDto[v.split('_')[1]] = values[v];
+                values[v] && (informationChangeDto.transferChangeDto[v.split('_')[1]] = values[v]);
               }else if(v.split('_')[0] == 3){
-                informationChangeDto.terminalChangeDto[v.split('_')[1]] = values[v];
+                values[v] && (informationChangeDto.terminalChangeDto[v.split('_')[1]] = values[v]);
               }else{
-                informationChangeDto.simChangeDto[v.split('_')[1]] = values[v];
+                values[v] && (informationChangeDto.simChangeDto[v.split('_')[1]] = values[v]);
               }
             })
-            console.log(informationChangeDto)
-            $Funs.$AJAX('informationChange','post',informationChangeDto,(res)=>{
+            let obj = {}
+            for(var p in informationChangeDto){
+              !(JSON.stringify(informationChangeDto[p])=="{}") && (obj[p] = informationChangeDto[p])
+            }
+            window.$Funs.$AJAX('informationChange','post',obj,(res)=>{
               message.success('操作成功');
               this.props.cancel();
             })
@@ -309,7 +312,7 @@ class TChgForm extends Component {
                       <Select  style={{ width: 120 }}>
                         {
                           this.state.terminalType.map((v,i)=>{
-                            <Option value={v} key={i}>{i}</Option>
+                            return <Option value={v} key={i}>{v}</Option>
                           })
                         }
                       </Select>
@@ -335,7 +338,7 @@ class TChgForm extends Component {
                       <Select  style={{ width: 120 }}>
                         {
                           this.state.simTypeName.map((v,i)=>{
-                            <Option value={v} key={i}>{v}</Option>
+                            return <Option value={v} key={i}>{v}</Option>
 
                           })
                         }
@@ -361,7 +364,7 @@ class TChgForm extends Component {
                       <Select  style={{ width: 120 }}>
                         {
                           this.state.terminalType.map((v,i)=>{
-                            <Option value={v} key={i}>{i}</Option>
+                            return <Option value={v} key={i}>{v}</Option>
                           })
                         }
                       </Select>
@@ -423,7 +426,7 @@ export default class Change extends Component {
     init=(data)=>{
       !data.currPage && (data.currPage = this.state.currPage);
       data.pageSize = this.state.pageSize;
-      $Funs.$AJAX('getInformationChangeList/getCarList','get',data,(res)=>{
+      window.$Funs.$AJAX('getInformationChangeList/getCarList','get',data,(res)=>{
         let data = res.data.map((v,i)=>{
           v.key = i;
           return v

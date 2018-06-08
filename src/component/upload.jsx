@@ -53,7 +53,7 @@ class Avatar extends React.Component {
         listType="picture-card"
         className="avatar-uploader"
         showUploadList={false}
-        action= {$Funs.Basse_Port +"file"}
+        action= {window.$Funs.Basse_Port +"file"}
         beforeUpload={beforeUpload}
         onChange={this.handleChange}
       >

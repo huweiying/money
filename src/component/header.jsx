@@ -34,21 +34,17 @@ const nav = [
   ]},
   {id:6,name:'人员管理',href:'/person',active:false},
 ]
-let navArr = []
-
-
+let navArr = [{id:0,name:'首页',href:'/',exact:true,active:false}]
 class THeader extends Component {
   constructor(props) {
     super(props);
     this.state = ({
       reNew:true,
-      navArr:[{id:0,name:'首页',href:'/',exact:true,active:false}]
     })
     
   }
   componentWillMount(){
-    let roles = $Funs.cook.get('roles');
-    let navArr = this.state.navArr;
+    let roles = window.$Funs.cook.get('roles');
     let url = this.props.location.pathname.split('/');
     if(this.props.location.pathname == '/'){
       navArr[0].active = true;
@@ -66,21 +62,17 @@ class THeader extends Component {
       })
     }
     navArr.push(newNav)
-    this.setState({
-      navArr:navArr
-    })
   }
 
   componentWillReceiveProps(nextProps){
     if(this.props.location.pathname == '/'){
       // if(this.props.navIdx != nextProps.navIdx  ){//index跳转执行
-        let navArr = this.state.navArr;
         let isExit = navArr.filter((v,i)=>{
-          return v.id == nextProps.navIdx
+          return v.href == nextProps.location.pathname
         })
         if(isExit.length != 0){//已存在
           navArr.map((v,i)=>{ 
-            if(v.id != nextProps.navIdx){
+            if(v.href != nextProps.location.pathname){
               v.active = false
             }else{//当前导航
               v.active = true
@@ -90,9 +82,6 @@ class THeader extends Component {
                 })
               }
             }
-          })
-          this.setState({
-            navArr:navArr
           })
         }else{
           navArr.push(nav[nextProps.navIdx])
@@ -110,9 +99,6 @@ class THeader extends Component {
             })
             child[0].active = true;
           }
-          this.setState({
-            navArr:navArr
-          })
         }
  
     }
@@ -120,17 +106,13 @@ class THeader extends Component {
     
   }
   navchange = (i) =>{
-    let navArr = this.state.navArr
     navArr = navArr.map((v)=>{
       v.active = false;
       return v
     })
     navArr[i].active = true;
+    
     if(!navArr[i].child){
-      this.setState({
-        navArr:navArr
-      },()=>{
-      })
       return
     }else{
       navArr[i].child = navArr[i].child.map(v=>{
@@ -141,15 +123,10 @@ class THeader extends Component {
         val.active=false;
       }
       navArr[i].child[0].active = true;
-      this.setState({
-        navArr:navArr
-      },()=>{
-      })
     }
   
   }
   subchange = (i) =>{//子路由下标
-    let navArr = this.state.navArr;
     let index = '';
     let item = navArr.find((v,i)=>{
       index = i
@@ -175,10 +152,10 @@ class THeader extends Component {
       okText:'确认',
       cancelText:'取消',
       onOk:()=> {
-        $Funs.cook.delete('id')
-        $Funs.cook.delete('name')
-        $Funs.cook.delete('token')
-        $Funs.cook.delete('userName')
+        window.$Funs.cook.delete('id')
+        window.$Funs.cook.delete('name')
+        window.$Funs.cook.delete('token')
+        window.$Funs.cook.delete('userName')
         this.props.history.push('/login')
       },
       onCancel() {
@@ -187,24 +164,32 @@ class THeader extends Component {
     
 
   }
+
   close = (id)=>{
+    //let Brr=navArr.splice(0,1)
     if(id == 0){return}
-    let navArr = this.state.navArr;
     let idx = navArr.findIndex(v=>{
       return v.id == id
     })
     navArr.splice(idx,1)
+   
+   
+   
+   
     let href = navArr[navArr.length - 1].href;
     navArr[navArr.length - 1].active = true;
-    this.setState({
-      navArr:navArr
-    })
-    this.props.history.push(href)
+    setTimeout(e=>{
+      this.props.history.push(href)
+    },200)
+    // if(this.props.location.pathname != '/'){
+    //   console.log(navArr)
+    //   this.props.history.push(href)
+    // }
   }
 
   render() {
     const { match, location, history } = this.props
-    const navs = this.state.navArr.map((v,i)=>{
+    const navs = navArr.map((v,i)=>{
       return (
         <div  key={i} className="nav">
           <div style={{position:'relative'}}>
@@ -227,7 +212,7 @@ class THeader extends Component {
       <header>
         <div className = 'logo'></div>
         <div className = 'loginInfo'>
-          {$Funs.cook.get('name')}<img src={require('../assets/img/exit.png')} onClick={this.logout}/>
+          {window.$Funs.cook.get('name')}<img src={require('../assets/img/exit.png')} onClick={this.logout}/>
         </div>
         <div className = 'top_nav'>
           {navs}

@@ -11,7 +11,8 @@ p{
   margin:0;
 }
 .login{
-  background: url('../img/login.png') no-repeat;
+  background: url('../img/login.jpg') no-repeat;
+  background-size: cover;
   width:100%;
   height:100vh;
   
@@ -283,7 +284,7 @@ li{
 header{
   width: 1920px;
   height: 200px;
-  background: url('../img/top_bg.png') no-repeat 0 0;
+  background: url('../img/top_bg.jpg') no-repeat 0 0;
   background-size: 100% 100%;
   position: relative;
   margin-bottom: 36px;
@@ -544,11 +545,24 @@ header{
       margin-top:20px;
     }
     .first{
-      margin: 0px 8px;
-      img{
-        width: 300px;
-        height: 380px;
+      margin: 0px 14px;
+      width: 30.3%;
+      height:390px;
+      display: table;
+      vertical-align: middle;
+      text-align: center;
+      p{
+        line-height: 24px;
+        margin-bottom: 20px;
       }
+        span{
+          display: table-cell;
+          vertical-align: middle;
+        }
+        img{
+          max-width: 100%;
+        }
+    
     }
   }
   .dataQuery,.query,.modify{
@@ -807,6 +821,21 @@ header{
         width: 140px;
         height: 36px;
       }
+      .ant-calendar-picker-input{
+        input{
+          height: 32px;
+          line-height: 32px;
+        }
+        padding:0px;
+        .ant-calendar-range-picker-input{
+          width: 180px;
+        }
+        input:nth-child(3){
+          padding-left: 0px !important;
+     
+        }
+    
+      }
     }
     #deadlineDate .ant-input{
       padding:0px;
@@ -1035,6 +1064,7 @@ header{
           margin-left: -10px;
           top: 220px;
         }
+        
       }
       .main{
           display: inline-block;
@@ -1068,19 +1098,25 @@ header{
           .item{
             width:290px;
             height: 100%;
+            display: table;
             padding: 0px 20px;
+            vertical-align: middle;
+            text-align: center;
             p{
               margin: 5px 0;
             }
             .bx;
-            img{
-              width: 100%;
-              height:300px;
+            span{
+              display: table-cell;
+              vertical-align: middle;
+              text-align: center;
+              img{
+                max-width: 100%;
+                cursor: pointer;
+              }
+
             }
           }
-          
-        }
-        
       }
     }
     .nav{
@@ -1114,6 +1150,7 @@ header{
         }
       }
     }
+  }
     .notice{
       .topForm{
         .ant-btn{
@@ -1483,4 +1520,10 @@ header{
  a.context:hover{
    color:#1890ff;
  }
+}
+.preview{
+  .fixed(50%,50%);
+  z-index: 100;
+  width: 1200px;
+  transform: translate(-50%,-50%)
 }

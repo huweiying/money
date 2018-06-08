@@ -56,12 +56,12 @@ export default class Audit extends Component {
       this.setState({
         loading:true
       },()=>{
-        $Funs.$AJAX('printApplyFors','get',data,res=>{
+        window.$Funs.$AJAX('printApplyFors','get',data,res=>{
           res.data = res.data.map((v,i)=>{
-           // $Funs.format(v.paymentDate)
-            // v.paymentDate=$Funs.format(v.paymentDate)
-            // v.deadlineDate=$Funs.format(v.deadlineDate)
-            v.paymentDate = $Funs.formatDate(v.paymentDate)
+           // window.$Funs.format(v.paymentDate)
+            // v.paymentDate=window.$Funs.format(v.paymentDate)
+            // v.deadlineDate=window.$Funs.format(v.deadlineDate)
+            v.paymentDate = window.$Funs.formatDate(v.paymentDate)
             v.key = i
             return v
           })
@@ -120,7 +120,7 @@ export default class Audit extends Component {
         okText: '确认',
         cancelText: '取消',
         onOk(){
-          $Funs.$AJAX('printApplyFors?status='+type,'patch',newArr,e=>{
+          window.$Funs.$AJAX('printApplyFors?status='+type,'patch',newArr,e=>{
             message.success('操作成功')
             setTimeout(() => {
               location.reload();

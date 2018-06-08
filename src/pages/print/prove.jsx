@@ -56,11 +56,11 @@ class MainList extends Component {
     })
   }
   list(data) {
-    $Funs.$AJAX('proves', 'get', data, res => {
+    window.$Funs.$AJAX('proves', 'get', data, res => {
       res.data = res.data.map((v, i) => {
-        // $Funs.format(v.paymentDate)
-        v.paymentDate = $Funs.formatDate(v.paymentDate)
-        v.deadlineDate = $Funs.formatDate(v.deadlineDate)
+        // window.$Funs.format(v.paymentDate)
+        v.paymentDate = window.$Funs.formatDate(v.paymentDate)
+        v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
         v.nowstatus = this.state.status[v.status];
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
         v.key = i
@@ -94,7 +94,7 @@ class MainList extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        $Funs.$AJAX("prove/" + id + "/" + $Funs.cook.get('name'), "post", null, e => {
+        window.$Funs.$AJAX("prove/" + id + "/" + window.$Funs.cook.get('name'), "post", null, e => {
           data[index].nowstatus = '审核中'
           data[index].status = 1
           _this.setState({
@@ -131,7 +131,7 @@ class MainList extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        $Funs.$AJAX('prove/'+id+'/delete', 'post', null, e => {
+        window.$Funs.$AJAX('prove/'+id+'/delete', 'post', null, e => {
           message.success('已取消')
           setTimeout(() => {
             location.reload();
@@ -287,7 +287,7 @@ class Details extends Component {
               <div className="tit">道路运输车辆卫星定位装置安装证明</div>
               <div className="say">
                 <div className="absoubox">运营商存根</div>
-                <div className="p">兹有 <span>{details.teamName}</span> 车牌牌号 <span>{details.vehicleId}</span>,车牌颜色 <span>{details.carColor}</span>,已于<span>{$Funs.format(details.leaveFactoryDate)}</span>
+                <div className="p">兹有 <span>{details.teamName}</span> 车牌牌号 <span>{details.vehicleId}</span>,车牌颜色 <span>{details.carColor}</span>,已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>
                   安装 <span>{details.terminalType}</span> 卫星定位装置,终端型号为 <span>{details.terminalTypeNum}</span> 
                   (为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家名称为<span>{details.manufacturer}</span>,厂家编号为<span>{details.factoryNumber}</span>,车载终端序列号为
                   <span>{details.manageNum}</span>),SIM卡号为<span>{details.sim}</span>,采用<span>{details.systemPlatform}</span>(第<span>{details.systemPlatformOrder}</span>
@@ -299,7 +299,7 @@ class Details extends Component {
               </div>
               <div className="bot">
                   <p>运营商盖章（盖章)</p>
-                  <p>{$Funs.format(new Date().getTime())}</p>
+                  <p>{window.$Funs.format(new Date().getTime())}</p>
               </div>
             </div>
             <div className="middsolide hide">
@@ -310,7 +310,7 @@ class Details extends Component {
               <div className="tit">道路运输车辆卫星定位装置安装证明</div>
               <div className="say">
                 <div className="absoubox">管理部门存根</div>
-                <div className="p">兹有 <span>{details.teamName}</span> 车牌牌号 <span>{details.vehicleId}</span>,车牌颜色 <span>{details.carColor}</span>,已于<span>{$Funs.format(details.leaveFactoryDate)}</span>
+                <div className="p">兹有 <span>{details.teamName}</span> 车牌牌号 <span>{details.vehicleId}</span>,车牌颜色 <span>{details.carColor}</span>,已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>
                   安装 <span>{details.terminalType}</span> 卫星定位装置,终端型号为 <span>{details.terminalTypeNum}</span> 
                   (为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准的车载终端,生产厂家名称为<span>{details.manufacturer}</span>,厂家编号为<span>{details.factoryNumber}</span>,车载终端序列号为
                   <span>{details.manageNum}</span>),SIM卡号为<span>{details.sim}</span>,采用<span>{details.systemPlatform}</span>(第<span>{details.systemPlatformOrder}</span>
@@ -322,7 +322,7 @@ class Details extends Component {
               </div>
               <div className="bot">
                 <p>运营商盖章（盖章)</p>
-                <p>{$Funs.format(new Date().getTime())}</p>
+                <p>{window.$Funs.format(new Date().getTime())}</p>
               </div>
             </div>
           </div>
@@ -331,7 +331,7 @@ class Details extends Component {
               <div className="tit">浙江马良通讯科技有限公司余慈分公司<br/>证  明</div>
               <div className="bhnum">编号:{details.systemPlatformNumber}</div>
               <div className="say">
-                <div className="p">兹有<span>{details.teamName}</span>所属车辆共<span>一</span>台已于<span>{$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalTypeNum}</span>，为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span>{details.manufacturer}</span>，厂家编号为<span>{details.factoryNumber}</span>。截止日期为<span>{$Funs.format(details.deadlineDate)}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
+                <div className="p">兹有<span>{details.teamName}</span>所属车辆共<span>一</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalTypeNum}</span>，为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span>{details.manufacturer}</span>，厂家编号为<span>{details.factoryNumber}</span>。截止日期为<span>{window.$Funs.format(details.deadlineDate)}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
                   <br/>特此证明！
                   </div>
               </div>
@@ -366,7 +366,7 @@ class Details extends Component {
               <div className="bot hide">
                 <div className="bz">(附钢印有效)</div>
                 <p>GPS运营商:_ _ _ _ _ _(盖章)</p> 
-                <p>{$Funs.format(new Date().getTime())}</p> 
+                <p>{window.$Funs.format(new Date().getTime())}</p> 
                 </div>
             </div>
           </div>
@@ -396,7 +396,7 @@ export default class Prove extends Component {
   }
   want=(type,id,ts)=>{
     if(id && !ts){
-      $Funs.$AJAX("prove/"+id,"get",null,e=>{
+      window.$Funs.$AJAX("prove/"+id,"get",null,e=>{
         this.setState({
           details:e,
         })

@@ -91,11 +91,11 @@ class TMsgDetail extends Component{
     this.initTable()
   }
   initTable=()=>{
-    $Funs.$AJAX('getChargeByNewCarId','get',{newCarId:this.props.detail.newCarId},(res)=>{
+    window.$Funs.$AJAX('getChargeByNewCarId','get',{newCarId:this.props.detail.newCarId},(res)=>{
       let data = res.data.map((v,i)=>{
         v.key = i;
-        v.chargeTime = $Funs.formatDate(v.chargeTime);
-        v.deadlineDate = $Funs.formatDate(v.deadlineDate);
+        v.chargeTime = window.$Funs.formatDate(v.chargeTime);
+        v.deadlineDate = window.$Funs.formatDate(v.deadlineDate);
         return v
       })
       this.setState({
@@ -122,10 +122,10 @@ class TMsgDetail extends Component{
             values.newCarId = this.props.detail.newCarId;
             values.vehicleId = this.props.detail.vehicleId;
             values.teamName = this.props.detail.teamName;
-            values.inputMan = $Funs.cook.get('id');
-            values.inputManName = $Funs.cook.get('name');
+            values.inputMan = window.$Funs.cook.get('id');
+            values.inputManName = window.$Funs.cook.get('name');
             values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
-            $Funs.$AJAX('charge','post',values,(res)=>{
+            window.$Funs.$AJAX('charge','post',values,(res)=>{
               message.success('操作成功');
               this.props.cancel()
             })   
@@ -286,13 +286,13 @@ export default class Save extends Component {
   init=(data)=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('getChargelist','get',data,(res)=>{
+    window.$Funs.$AJAX('getChargelist','get',data,(res)=>{
       let data = res.data.map((v,i)=>{
         v.key = i;
         v.leaveFactoryInstall = v.leaveFactoryInstall == 0 ? '否' : '是';
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0];
-        v.chargeTime ? (v.chargeTime = $Funs.formatDate(v.chargeTime)) : v.chargeTime = '未收费';
-        v.deadlineDate ? (v.deadlineDate = $Funs.formatDate(v.deadlineDate)) : v.deadlineDate = '无';
+        v.chargeTime ? (v.chargeTime = window.$Funs.formatDate(v.chargeTime)) : v.chargeTime = '未收费';
+        v.deadlineDate ? (v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)) : v.deadlineDate = '无';
         return v
       })
       this.setState({

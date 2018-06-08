@@ -1,6 +1,6 @@
 {
   "name": "manager",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "antd": "^3.5.3",
@@ -94,13 +94,17 @@
     ]
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules":{
+      "no-undef":"off",
+      "no-restricted-globals":"off",
+      "no-unsed-vars":"off"
+    }
   },
   "devDependencies": {
-    "dom-to-image": "^2.6.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "superagent": "^3.8.3"
   },
-  "homepage": "."
+  "homepage":"."
 }

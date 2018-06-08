@@ -126,15 +126,15 @@ export default class Query extends Component {
   init=(data)=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('getChargeComplex','get',data,(res)=>{
+    window.$Funs.$AJAX('getChargeComplex','get',data,(res)=>{
       let data = res.data.map((v,i)=>{
         v.key = i;
         v.leaveFactoryInstall = v.leaveFactoryInstall == 0 ? '否' : '是';
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0];
         v.stop == 1 ? (v.stop = '是') : (v.stop = '否');
-        v.stopTime ? (v.stopTime = $Funs.formatDate(v.stopTime)) : (v.stopTime = '无');
-        v.chargeTime ? (v.chargeTime = $Funs.formatDate(v.chargeTime)) : v.chargeTime = '未收费';
-        v.deadlineDate ? (v.deadlineDate = $Funs.formatDate(v.deadlineDate)) : v.deadlineDate = '无';
+        v.stopTime ? (v.stopTime = window.$Funs.formatDate(v.stopTime)) : (v.stopTime = '无');
+        v.chargeTime ? (v.chargeTime = window.$Funs.formatDate(v.chargeTime)) : v.chargeTime = '未收费';
+        v.deadlineDate ? (v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)) : v.deadlineDate = '无';
         return v
       })
       this.setState({
@@ -198,7 +198,7 @@ export default class Query extends Component {
       }
       exslDTO.type = 3;
       let code = Base64.encode(JSON.stringify(exslDTO))
-      window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
+      window.open(window.$Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
    

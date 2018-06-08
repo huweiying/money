@@ -6,17 +6,15 @@ body {
   font-size: 14px;
   color: #333;
   font-weight: normal;
+  overflow-x: hidden;
   background: #F1FCFF;
-  min-width: 1440px;
 }
 p {
   margin: 0;
 }
-#root{
-  overflow: hidden;
-}
 .login {
-  background: url('../img/login.png') no-repeat;
+  background: url('../img/login.jpg') no-repeat;
+  background-size: cover;
   width: 100%;
   height: 100vh;
   position: relative;
@@ -253,7 +251,7 @@ li {
 header {
   width: 1920px;
   height: 200px;
-  background: url('../img/top_bg.png') no-repeat 0 0;
+  background: url('../img/top_bg.jpg') no-repeat 0 0;
   background-size: 100% 100%;
   position: relative;
   margin-bottom: 36px;
@@ -557,11 +555,23 @@ header .select .subNav {
   margin-top: 20px;
 }
 .container .info .first {
-  margin: 0px 8px;
+  margin: 0px 14px;
+  width: 30.3%;
+  height: 390px;
+  display: table;
+  vertical-align: middle;
+  text-align: center;
+}
+.container .info .first p {
+  line-height: 24px;
+  margin-bottom: 20px;
+}
+.container .info .first span {
+  display: table-cell;
+  vertical-align: middle;
 }
 .container .info .first img {
-  width: 300px;
-  height: 380px;
+  max-width: 100%;
 }
 .container .dataQuery .topForm .ant-btn,
 .container .query .topForm .ant-btn,
@@ -834,6 +844,19 @@ header .select .subNav {
   width: 140px;
   height: 36px;
 }
+.container .log .topForm .ant-calendar-picker-input {
+  padding: 0px;
+}
+.container .log .topForm .ant-calendar-picker-input input {
+  height: 32px;
+  line-height: 32px;
+}
+.container .log .topForm .ant-calendar-picker-input .ant-calendar-range-picker-input {
+  width: 180px;
+}
+.container .log .topForm .ant-calendar-picker-input input:nth-child(3) {
+  padding-left: 0px !important;
+}
 .container .log #deadlineDate .ant-input {
   padding: 0px;
 }
@@ -1103,35 +1126,43 @@ header .select .subNav {
 .container .recode .picDialog .main .item {
   width: 290px;
   height: 100%;
+  display: table;
   padding: 0px 20px;
+  vertical-align: middle;
+  text-align: center;
   box-sizing: border-box;
 }
 .container .recode .picDialog .main .item p {
   margin: 5px 0;
 }
-.container .recode .picDialog .main .item img {
-  width: 100%;
-  height: 300px;
+.container .recode .picDialog .main .item span {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
-.container .nav {
+.container .recode .picDialog .main .item span img {
+  max-width: 100%;
   cursor: pointer;
 }
-.container .addNotice .topForm .ant-btn {
+.container .recode .nav {
+  cursor: pointer;
+}
+.container .recode .addNotice .topForm .ant-btn {
   margin-right: 50px !important;
   margin-left: 0px;
   width: 140px;
   height: 36px;
 }
-.container .addNotice .dialog .detail {
+.container .recode .addNotice .dialog .detail {
   padding: 20px 0;
 }
-.container .addNotice .dialog .ant-form-item-label {
+.container .recode .addNotice .dialog .ant-form-item-label {
   text-align: left;
 }
-.container .addNotice .dialog .formItem {
+.container .recode .addNotice .dialog .formItem {
   margin: 10px 20px;
 }
-.container .addNotice .dialog .location input {
+.container .recode .addNotice .dialog .location input {
   width: 450px;
   text-align: left;
 }
@@ -1499,4 +1530,12 @@ header .select .subNav {
 }
 .message a.context:hover {
   color: #1890ff;
+}
+.preview {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  width: 1200px;
+  transform: translate(-50%, -50%);
 }

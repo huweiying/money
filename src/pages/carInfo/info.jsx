@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form , Select ,Spin} from 'antd';
+import { Table , Input , Button , Form , Select ,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 // import { renderRoutes } from 'react-router-config'
-
 
 class TopForm extends Component {
   constructor(props) {
@@ -26,6 +25,7 @@ class TopForm extends Component {
         }
     });
   }
+ 
   clear = ()=>{
     this.props.form.resetFields();
     this.props.init({})
@@ -97,35 +97,68 @@ const SearchForm = Form.create({
   },
 })(TopForm)
 
-function Picshow(props){
-  return (
-    <div className = 'dialog'>
-      <div className = 'mask' onClick = {()=>{props.cancel()}}></div>
+
+class Picshow extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      show:false,
+      path:'',
+    }
+  }
+  open = (src)=>{
+    this.setState({
+      show:true,
+      path:src
+    })
+    console.log(this.props.picArr[0].photoCode)
+  }
+  close = ()=>{
+    this.setState({
+      show:false,
+      path:''
+    })
+  }
+  render (){
+    return(
+      <div className = 'dialog'>
+      <div className = 'mask' onClick = {()=>{this.props.cancel()}}></div>
+      {this.state.show && <img onClick={this.close} src={this.state.path} className = 'preview'></img>}
       <div className = 'main'>
-        {props.picArr[0] && 
+        {this.props.picArr[0] && 
           <div className = 'first fl'>
-            <p>{props.picArr[0].type == 0 ?  '车辆登记证书' : (props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
-            
+              <span>
+                <p>{this.props.picArr[0].type == 0 ?  '车辆登记证书' : (this.props.picArr[0].type == 1 ? '行驶证' : '车身照片')}</p>
+                <img src={this.props.picArr[0].photoCode} onClick={this.open.bind(this,this.props.picArr[0].photoCode)} />
+              </span>
+        
+          </div>
+        }
+        {this.props.picArr[1] && 
+          <div className = 'first fl' >
+            <span>
+               <p>{this.props.picArr[1].type == 0 ? '车辆登记证书' :(this.props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={this.props.picArr[1].photoCode} onClick={this.open.bind(this,this.props.picArr[1].photoCode)} />
+            </span>
            
-            <img src={props.picArr[0].photoCode} />
           </div>
         }
-        {props.picArr[1] && 
-          <div className = 'first fl'>
-            <p>{props.picArr[1].type == 0 ? '车辆登记证书' :(props.picArr[1].type == 1 ? '行驶证' : '车身照片')}</p>
-            <img src={props.picArr[1].photoCode} />
-          </div>
-        }
-        {props.picArr[2] && 
-          <div className = 'first fl'>
-            <p>{props.picArr[2].type == 0 ? '车辆登记证书' :(props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
-            <img src={props.picArr[2].photoCode} />
+        {this.props.picArr[2] && 
+          <div className = 'first fl' >
+            <span>
+              <p>{this.props.picArr[2].type == 0 ? '车辆登记证书' :(this.props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={this.props.picArr[1].photoCode} onClick={this.open.bind(this,this.props.picArr[2].photoCode)} />
+            </span>
+           
           </div>
         }
         
       </div>
-    </div>)
+    </div>
+    )
+  }
 }
+
 export default class Info extends Component {
   constructor(props) {
     super(props)
@@ -137,7 +170,7 @@ export default class Info extends Component {
       data:[],//table数据
       total:'',//总页数
       showDialog:false,//图片显示模态框
-      picArr:[]//显示的图片路径
+      picArr:[],//显示的图片路径
     }
   }
   componentWillMount(){
@@ -146,7 +179,7 @@ export default class Info extends Component {
   init=(data)=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('newCars','get',data,(res)=>{
+    window.$Funs.$AJAX('newCars','get',data,(res)=>{
       let data = res.data.map((v,i)=>{
         v.carDto.key = i;
         v.carDto.leaveFactoryDate = v.carDto.leaveFactoryDate.split(' ')[0];
@@ -182,7 +215,6 @@ export default class Info extends Component {
       this.init(data)
     })
   }
- 
   photoDetail = (item)=>{
     this.setState({
       showDialog:true,
@@ -195,6 +227,7 @@ export default class Info extends Component {
       currPage:1
     })
   }
+
   render() {
     const columns = [
       { title: '安装日期', width: 100, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },
@@ -210,6 +243,14 @@ export default class Info extends Component {
     ];
     return (
       <div className = 'info'>
+        <Modal
+          visible={this.state.visible}
+   
+        >
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Modal>
         <Spin spinning = {this.state.loading} size='large'>
           <SearchForm init={this.init} getSearch = {this.getSearch} />
           <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>

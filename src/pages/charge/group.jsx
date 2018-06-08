@@ -38,7 +38,7 @@ export default class Group extends Component {
         this.setState({
           loading:true
         },()=>{
-          $Funs.$AJAX('groupCharge','post',group,(res)=>{
+          window.$Funs.$AJAX('groupCharge','post',group,(res)=>{
             message.success('收费成功');
             this.setState({
               loading:false
@@ -56,7 +56,7 @@ export default class Group extends Component {
     let group = [];
     const props = {
       name: 'file',
-      action: $Funs.Basse_Port + 'groupChargeUpload',
+      action: window.$Funs.Basse_Port + 'groupChargeUpload',
       headers: {
         authorization: 'authorization-text',
       },
@@ -67,7 +67,7 @@ export default class Group extends Component {
           message.success(`${info.file.name} 上传成功`);
           let data = info.file.response.data;
           data = data.map((v,i)=>{
-            v.deadlineDate = $Funs.formatDate(v.deadlineDate);
+            v.deadlineDate = window.$Funs.formatDate(v.deadlineDate);
             v.key = i;
             return v
           }) 

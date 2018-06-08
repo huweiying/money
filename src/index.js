@@ -9,6 +9,7 @@ import publics from "./assets/js/public";
 import registerServiceWorker from './registerServiceWorker';
 
 
+
 ReactDOM.render((
   <HashRouter>
     {renderRoutes(Routers)}

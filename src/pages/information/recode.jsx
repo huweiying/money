@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table , Input , Button , Form ,Icon ,Spin} from 'antd';
+import { Table , Input , Button , Form ,Icon ,Spin,Select,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 // import { renderRoutes } from 'react-router-config'
@@ -88,7 +88,7 @@ const SearchForm = Form.create({
   },
 })(TopForm)
 
-class TMsgDetail extends Component{
+/*class TMsgDetail extends Component{
   constructor(props) {
     super(props)
     this.state = {
@@ -101,16 +101,16 @@ class TMsgDetail extends Component{
         values.invoiceNum = values.prefix + values.invoiceNum;
         delete values.prefix;
         values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
-        values.chargeTime = $Funs.formatDate(values.chargeTime);
+        values.chargeTime = window.$Funs.formatDate(values.chargeTime);
         values.id = this.props.detail.chargeid;
         values.newCarId = this.props.detail.newCarId;
         values.vehicleId = this.props.detail.vehicleId;
         values.teamName = this.props.detail.teamName;
-        values.inputMan = $Funs.cook.get('id');
-        values.inputManName = $Funs.cook.get('name');
+        values.inputMan = window.$Funs.cook.get('id');
+        values.inputManName = window.$Funs.cook.get('name');
         // values.deadlineDate && (values.deadlineDate = new Date(values.deadlineDate._d).getTime())
         // console.log(values)
-        $Funs.$AJAX('charge','post',values,(res)=>{
+        window.$Funs.$AJAX('charge','post',values,(res)=>{
           message.success('操作成功');
           this.props.cancel()
         })      
@@ -236,7 +236,7 @@ const MsgDetail = Form.create({
       }),
     }
   },
-})(TMsgDetail)
+})(TMsgDetail)*/
 
 //维修图片组件
 class PicDetail extends Component{
@@ -247,12 +247,26 @@ class PicDetail extends Component{
       pageSize:4,
       total:this.props.detail.length,
       loading:true,
+      show:false,
+      path:''
     }
   }
   componentDidMount(){
     this.setState({
       loading:false
     })
+  }
+  open=(src)=>{
+    this.setState({
+      show:true,
+      path:src
+    })
+  }
+  close=()=>{
+    this.setState({
+      show:false,
+      path:''
+    });
   }
   next(isNext){
     if(isNext){//下一页
@@ -280,18 +294,20 @@ class PicDetail extends Component{
         if(v){
           return(
             <div className = 'item fl' key={i}>
-                <p>{v.pictureType}</p>
-                <img src={v.picturePath} />
-                <p>{v.pictureTime}</p>
-                <p>{v.pictureLocation}</p>
-              </div>
+              <span>
+                  <p>{v.pictureType}</p>
+                  <img src={v.picturePath} onClick={this.open.bind(this,v.picturePath)}/>
+                  <p>{v.pictureTime}</p>
+                  <p>{v.pictureLocation}</p>
+              </span>
+            </div>
           )
         }
       })
     return (
       <div className = 'picDialog'>
       <div className = 'mask'></div>
-        
+          {this.state.show && <img onClick={this.close} src={this.state.path} className = 'preview'></img>}
           <div className="insetbox">
           <Spin spinning = {this.state.loading} tip="Loading..."></Spin>
               <div className = 'main'>
@@ -341,10 +357,10 @@ export default class Recode extends Component {
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
     let url = this.state.navIndex == 0 ? 'getInstallRecord' : 'getRepairRecord';
-    $Funs.$AJAX(url,'get',data,(res)=>{
+    window.$Funs.$AJAX(url,'get',data,(res)=>{
       let data = res.data.map((v,i)=>{
         v.key = i;
-        v.pictureTime = $Funs.formatDate(v.pictureTime)
+        v.pictureTime = window.$Funs.formatDate(v.pictureTime)
         return v
       })
       this.setState({
@@ -377,7 +393,7 @@ export default class Recode extends Component {
   showPic = (item)=>{
     item = item.map((v,i)=>{
       v.key = i;
-      v.pictureTime = $Funs.formatDate(v.pictureTime)
+      v.pictureTime = window.$Funs.formatDate(v.pictureTime)
       return v
     })
     this.setState({

@@ -116,7 +116,7 @@ class TMsgDetail extends Component{
   }
   
   componentWillMount(){
-    $Funs.$AJAX('user','get',{roles:2},(res)=>{
+    window.$Funs.$AJAX('user','get',{roles:2},(res)=>{
         this.setState({
             user:res
         })
@@ -128,14 +128,14 @@ class TMsgDetail extends Component{
       if(!err){
         //   console.log(values)
           values.carframeId = this.props.detail.carframeId;
-          values.inputMan = $Funs.cook.get('id');
+          values.inputMan = window.$Funs.cook.get('id');
           values.newCarId =  this.props.detail.newCarId;
           values.oldVehicleId = this.props.detail.oldVehicleId;
           values.operationType = this.props.navIndex;
           values.phone = this.props.detail.phone;
           values.vehicleId = this.props.detail.vehicleId;
           values.teamName = this.props.detail.teamName;
-        $Funs.$AJAX('repairInstall','post',values,(res)=>{
+        window.$Funs.$AJAX('repairInstall','post',values,(res)=>{
           message.success('操作成功');
           this.props.cancel()
         })      
@@ -285,10 +285,10 @@ export default class addNotice extends Component {
       !data.currPage && (data.currPage = this.state.currPage);
       data.pageSize = this.state.pageSize;
       let url = this.state.navIndex == 0 ? 'getInstallNoticeList' : 'getRepairNoticeList';
-        $Funs.$AJAX(url,'get',data,(res)=>{
+        window.$Funs.$AJAX(url,'get',data,(res)=>{
             let data = res.data.map((v,i)=>{
               v.key = i;
-              v.deadlineDate = $Funs.formatDate(v.deadlineDate)
+              v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
               v.repairInstallType == 0 ? v.repairInstallType = '监控' : v.repairInstallType = 'GPS';
               return v
             })
@@ -352,7 +352,7 @@ export default class addNotice extends Component {
         okText:'确认',
         cancelText:'取消',
         onOk:()=> {
-          $Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
+          window.$Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
             message.success('操作成功');
             this.init();
           })

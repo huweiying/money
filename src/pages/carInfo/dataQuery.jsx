@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Base64 } from 'js-base64';
-import { Table , Input , Button , Breadcrumb , Form , Select , DatePicker ,message ,Spin} from 'antd';
+import { Table , Input , Button , Breadcrumb , Form , Select , DatePicker ,message ,Spin ,Divider } from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -122,10 +122,15 @@ export default class DataQuery extends Component {
   init=(data = {})=>{
     !data.currPage && (data.currPage = this.state.currPage);
     data.pageSize = this.state.pageSize;
-    $Funs.$AJAX('carUpd','get',data,(res)=>{
+    window.$Funs.$AJAX('carUpd','get',data,(res)=>{
       let data = res.data.map((v,i)=>{
-        v.changeTime = $Funs.formatDate(v.changeTime)
+        v.changeTime = window.$Funs.formatDate(v.changeTime)
         v.key = i;
+        v.changeDetail = v.changeDetail.reverse();
+        v.changeDetail = v.changeDetail.map((v,i)=>{
+          v = v.split(';')
+          return v
+        })
         return v
       })
       this.setState({
@@ -174,7 +179,7 @@ export default class DataQuery extends Component {
     }
     exslDTO.type = 1;
     let code = Base64.encode(JSON.stringify(exslDTO))
-    window.open($Funs.Basse_Port+'saveExsl?exslDTO='+ code)
+    window.open(window.$Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
     const columns = [
@@ -196,7 +201,7 @@ export default class DataQuery extends Component {
       <div className = 'dataQuery'>
         <Spin spinning = {this.state.loading} size = 'large'>
           <SearchForm init={this.init} exportForm = {this.exportForm} getSearch = {this.getSearch} />
-          <Table rowSelection={rowSelection} columns={columns} expandedRowRender={record => {return (<div><span>变更详情{record.changeDetail.map((v,i)=>{return (<p style={{ margin: 0 }} key = {i}>{v}</p>)})}</span></div>) }} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange ,current:this.state.currPage}}/>
+          <Table rowSelection={rowSelection} columns={columns} expandedRowRender={record => {return (<div>{record.changeDetail.map((v,i)=>{return (<div style={{ margin: 0 }} key = {i}>{v.map((sub,i)=>{return (<p key={i}>{sub}</p>)})}<Divider /></div>)})}</div>) }} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange ,current:this.state.currPage}}/>
         </Spin>
       </div>
     )
