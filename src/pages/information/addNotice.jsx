@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker ,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -21,7 +21,9 @@ function Nav(props){
 class TopForm extends Component {
   constructor(props) {
     super(props)
-    
+    this.state = {
+      data:{}
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -44,9 +46,19 @@ class TopForm extends Component {
         }
     });
   }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
+  }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('addNotice?currPage=1&navIndex='+this.state.data.navIndex)
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
@@ -57,7 +69,9 @@ class TopForm extends Component {
       <Form className = 'topForm clean'>
               <div className = 'fl'>
                 <FormItem label = '车牌号码：' className = 'formItem'>
-                  {getFieldDecorator('vehicleId')(
+                  {getFieldDecorator('vehicleId',{
+                    initialValue:this.state.data.vehicleId
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -65,7 +79,9 @@ class TopForm extends Component {
                 </div>
               <div className = 'fl'>
                 <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('teamName')(
+                {getFieldDecorator('teamName',{
+                  initialValue:this.state.data.teamName
+                })(
                   <Input />
                 )}
                 </FormItem>
@@ -73,10 +89,18 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '车辆类型：' className = 'formItem'>
-                {getFieldDecorator('name')(
-                  <Input />
+                {getFieldDecorator('carType', {
+                  initialValue:this.state.data.carType
+                })(
+                  <Select style={{ width: 230 }}>
+                    { 
+                      this.props.carType.map((v,i)=>{
+                        return <Option value={v} key={i}>{v}</Option>
+                      })
+                    }
+                  </Select>
                 )}
-                </FormItem>
+              </FormItem>
                 
               </div>
             <div className = 'fl'>
@@ -90,7 +114,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -99,12 +123,17 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
+      clearKeyWord: Form.createFormField({
+        value: props.clearKeyWord,
+      }),
     //   showDetail: Form.createFormField({
     //     value: props.showDetail,
     //   }),
     }
   },
 })(TopForm)
+
+const SearchForm = withRouter(TSearchForm)
 
 class TMsgDetail extends Component{
   constructor(props) {
@@ -116,13 +145,13 @@ class TMsgDetail extends Component{
   }
   
   componentWillMount(){
-    window.$Funs.$AJAX('user','get',{roles:2},(res)=>{
-      if(res.length == 0){
-        return
-      }
+      window.$Funs.$AJAX('user','get',{roles:2},(user)=>{
         this.setState({
-            user:res,
-            loading:false,
+          user:user
+        },()=>{
+          this.setState({
+            loading:false
+          })
         })
     })
   }
@@ -223,21 +252,21 @@ class TMsgDetail extends Component{
                             <Input />
                         )}
                     </FormItem>
+                    <FormItem className = 'formItem clean'{...formItemLayout} label='安装类型'>
+                        {getFieldDecorator('repairInstallType', {
+                            rules: [ {
+                                required: true, message: '请选择安装类型',
+                            }],
+                            initialValue:'0'
+                        })(
+                            <Select  style={{ width: 200 }}>
+                                <Option value="0">监控</Option>
+                                <Option value="1">GPS</Option>
+                            </Select>     
+                        )}
+                    </FormItem>
                 </div>
                 <div className = 'clean'>
-                  <FormItem className = 'formItem clean'{...formItemLayout} label='安装类型'>
-                      {getFieldDecorator('repairInstallType', {
-                          rules: [ {
-                              required: true, message: '请选择安装类型',
-                          }],
-                          initialValue:'0'
-                      })(
-                          <Select  style={{ width: 200 }}>
-                              <Option value="0">监控</Option>
-                              <Option value="1">GPS</Option>
-                          </Select>     
-                      )}
-                  </FormItem>
                 </div>
                 <FormItem label = '备注：' className = 'formItem fl clean'>
                   {getFieldDecorator('repairInstallRemark', {
@@ -276,59 +305,112 @@ const MsgDetail = Form.create({
 })(TMsgDetail)
 
 
-export default class addNotice extends Component {
+class TAddNotice extends Component {
   constructor(props) {
     super(props)
     this.state = {
         navIndex : 0,
         currPage:1,
-        pageSize:13,
+        pageSize:10,
         keyWord:{},//搜索关键字
         data:[],//table数据
         total:'',//总页数
         detail:{},//录入项对象
         addEntry:false,//弹窗显示
+        carType:[]
     }
   }
   componentWillMount(){
-    this.init({})
+    window.$Funs.$AJAX('ziDian','get',{type:2},(carType)=>{
+      this.setState({
+        carType:carType
+      },()=>{
+        this.init()
+      })
+    })
   }
-  init=(data)=>{
-    !data.currPage && (data.currPage = this.state.currPage);
-    data.pageSize = this.state.pageSize;
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    let navIndex = this.state.navIndex;
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        if(key == 'navIndex'){
+          navIndex = value
+        }else{
+          data[key] = value
+        }
+      })
+    }
+    !data.currPage && (data.currPage = this.state.currPage) 
+    !data.pageSize && (data.pageSize = this.state.pageSize)
         window.$Funs.$AJAX('RepairInstall/getCarList','get',data,(res)=>{
-            let data = res.data.map((v,i)=>{
+            let arr = res.data.map((v,i)=>{
               v.key = i;
               v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
               return v
             })
             this.setState({
-              data : data,
+              data : arr,
               total: res.count,
+              currPage:Number(data.currPage),
+              navIndex:navIndex,
               loading:false
             })
         })
   }
   getSearch=(data)=>{
-    if(data){
-      this.setState({
-        keyWord:data,
-        currPage:1,
-        loading:true,
-      },()=>{
-        this.init(data)
-      })
-    }
-  }
-  pageChange = (page)=>{
     this.setState({
-      currPage:page,
-      loading:true
-    },()=>{
-      let data = this.state.keyWord;
-      this.init(data)
+      keyWord:data
+    })
+    let str = '';
+    for(let v in data){
+      str = str + '&' + v + '=' + data[v]
+    }
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&navIndex='+this.state.navIndex+str)
+    this.props.history.push('addNotice?'+url)
+
+  }
+  clearKeyWord = ()=>{
+    this.setState({
+      keyWord:{}
     })
   }
+  pageChange = (page)=>{
+    let keyWord = this.state.keyWord;
+    if(keyWord){
+      var str = '';
+      for(let v in keyWord){
+        str = str + '&' + v + '=' + keyWord[v]
+      }
+    }
+    let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+'&navIndex='+this.state.navIndex+str)
+    this.props.history.push('addNotice?'+url)
+  }
+  // getSearch=(data)=>{
+  //   if(data){
+  //     this.setState({
+  //       keyWord:data,
+  //       currPage:1,
+  //       loading:true,
+  //     },()=>{
+  //       this.init(data)
+  //     })
+  //   }
+  // }
+  // pageChange = (page)=>{
+  //   this.setState({
+  //     currPage:page,
+  //     loading:true
+  //   },()=>{
+  //     let data = this.state.keyWord;
+  //     this.init(data)
+  //   })
+  // }
   showDetail = (item)=>{//显示弹窗
     this.setState({
         addEntry:true,
@@ -341,14 +423,16 @@ export default class addNotice extends Component {
     })
   }
   navChange = (i)=>{//切换导航
-    this.setState({
-      navIndex:i,
-      currPage:1,
-      loading:true,
-      keyWord:{}
-    },()=>{
-        this.init({})
-    })
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&navIndex='+i)
+    this.props.history.push('addNotice?'+url)
+    // this.setState({
+    //   navIndex:i,
+    //   currPage:1,
+    //   loading:true,
+    //   keyWord:{}
+    // },()=>{
+    //     this.init({})
+    // })
   }
   render() {
     const columns = [
@@ -365,10 +449,10 @@ export default class addNotice extends Component {
     return (
       <div className = 'addNotice'>
         <Spin spinning = {this.state.loading} size='large'>
-          <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
+          <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange} />
             <div>
-              <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail}/>
-              <Table expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+              <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} carType = {this.state.carType} clearKeyWord = { this.clearKeyWord }/>
+              <Table expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
               {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
             </div>
         </Spin>
@@ -376,3 +460,8 @@ export default class addNotice extends Component {
     )
   }
 }
+
+
+const AddNotice = withRouter(TAddNotice)
+
+export default AddNotice 

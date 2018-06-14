@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Base64 } from 'js-base64';
-import { Table , Input , Button , Breadcrumb , Form , Select ,message, DatePicker} from 'antd';
+import moment from 'moment';
+import { withRouter } from 'react-router-dom'
+import { Table , Input , Button , Breadcrumb , Form , Select ,message, DatePicker,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -9,6 +11,9 @@ const RangePicker = DatePicker.RangePicker;
 class TopForm extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      data:{}
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -26,32 +31,41 @@ class TopForm extends Component {
         }
       }
       if(data){
-        //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
-        }
+      }
     });
+  }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
   }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('query?currPage=1')
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
-    const rangeConfig = {
-      rules: [{ type: 'array',  message: 'Please select time!' }],
-    };
+
     return (
       <Form className = 'topForm clean'>
             <div className = 'fl'>
               <FormItem label = '收费日期：' className = 'formItem'>
-                {getFieldDecorator('chargeTime', rangeConfig)(
+                {getFieldDecorator('chargeTime', {
+                  initialValue: (this.state.data.chargeTimeStart && this.state.data.chargeTimeEnd) ? [ moment( window.$Funs.formatDate(Number(this.state.data.chargeTimeStart)),'YYYY/MM/DD'), moment( window.$Funs.formatDate(Number(this.state.data.chargeTimeEnd)),'YYYY/MM/DD')] : ''
+                })(
                   <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']}/>
                 )}
               </FormItem>
               <FormItem label = '有效日期：' className = 'formItem'>
-              {getFieldDecorator('deadlineDate', rangeConfig)(
+              {getFieldDecorator('deadlineDate', {
+                initialValue: (this.state.data.deadlineDateStart && this.state.data.deadlineDateEnd) ? [ moment( window.$Funs.formatDate(Number(this.state.data.deadlineDateStart)),'YYYY/MM/DD'), moment( window.$Funs.formatDate(Number(this.state.data.deadlineDateEnd)),'YYYY/MM/DD')] : ''
+              })(
                 <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']}/>
               )}
               </FormItem>
@@ -59,12 +73,16 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('teamName')(
+                {getFieldDecorator('teamName',{
+                  initialValue:this.state.data.teamName
+                })(
                   <Input />
                 )}
                 </FormItem>
                 <FormItem label = '收款人：' className = 'formItem'>
-                {getFieldDecorator('inputManName')(
+                {getFieldDecorator('inputManName',{
+                  initialValue:this.state.data.inputManName
+                })(
                   <Input />
                 )}
                 </FormItem>
@@ -72,7 +90,9 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '车牌号码：' className = 'formItem'>
-                  {getFieldDecorator('vehicleId')(
+                  {getFieldDecorator('vehicleId',{
+                    initialValue:this.state.data.vehicleId
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -90,7 +110,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -102,11 +122,17 @@ const SearchForm = Form.create({
       exportForm: Form.createFormField({
         value: props.exportForm,
       }),
+      clearKeyWord: Form.createFormField({
+        value: props.clearKeyWord,
+      }),
     }
   },
 })(TopForm)
 
-export default class Query extends Component {
+const SearchForm = withRouter(TSearchForm)
+
+
+ class TQuery extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -117,17 +143,30 @@ export default class Query extends Component {
       data:[],//table数据
       total:'',//总页数
       detail:{},//录入项对象
-      selectedRows:[]
+      selectedRows:[],
+      loading:true,
+      selectedRowKeys:[]
     }
   }
   componentWillMount(){
-    this.init({})
+    this.init()
   }
-  init=(data)=>{
-    !data.currPage && (data.currPage = this.state.currPage);
-    data.pageSize = this.state.pageSize;
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        data[key] = value
+      })
+    }
+    !data.currPage && (data.currPage = this.state.currPage) 
+    !data.pageSize && (data.pageSize = this.state.pageSize) 
     window.$Funs.$AJAX('getChargeComplex','get',data,(res)=>{
-      let data = res.data.map((v,i)=>{
+      let arr = res.data.map((v,i)=>{
         v.key = i;
         v.leaveFactoryInstall = v.leaveFactoryInstall == 0 ? '否' : '是';
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0];
@@ -138,27 +177,45 @@ export default class Query extends Component {
         return v
       })
       this.setState({
-        data : data,
-        total: res.count
+        data : arr,
+        total: res.count,
+        currPage:Number(data.currPage),
+        loading:false
       })
     })
   }
+
   getSearch=(data)=>{
-    if(data){
-      this.setState({
-        keyWord:data,
-        currPage:1
-      })
+    this.setState({
+      keyWord:data
+    })
+    let str = '';
+    for(let v in data){
+      str = str + '&' + v + '=' + data[v]
     }
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+str)
+    this.props.history.push('query?'+url)
+
+  }
+  clearKeyWord = ()=>{
+    this.setState({
+      keyWord:{}
+    })
   }
   pageChange = (page)=>{
+    let keyWord = this.state.keyWord;
+    if(keyWord){
+      var str = '';
+      for(let v in keyWord){
+        str = str + '&' + v + '=' + keyWord[v]
+      }
+    }
     this.setState({
-      currPage:page,
-    },()=>{
-      let data = this.state.keyWord;
-      data.currPage = page
-      this.init(data)
+      selectedRowKeys:[],
+      selectedRows:[]
     })
+    let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+str)
+    this.props.history.push('query?'+url)
   }
   addEntry = (item)=>{
     this.setState({
@@ -201,7 +258,7 @@ export default class Query extends Component {
       window.open(window.$Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
-   
+    const {selectedRowKeys } = this.state
     const columns = [
       { title: '公司车队', dataIndex: 'teamName',key:'teamName',  width: 100 ,align: 'center' },
       { title: '车牌号', dataIndex: 'vehicleId',key:'vehicleId',  width: 90 ,align: 'center' },
@@ -219,18 +276,25 @@ export default class Query extends Component {
       { title: '收款人', dataIndex: 'inputManName',key:'inputManName',  width: 100 ,align: 'center' },
     ];
     const rowSelection = {
+      selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
-          selectedRows:selectedRows
+          selectedRows,
+          selectedRowKeys
         })
       }
     };
     return (
       <div className = 'query'>
-        <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}/>
-        <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data} scroll= {{ x:1600,y:700 }} pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+      <Spin spinning = {this.state.loading} size="large">
+        <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}  clearKeyWord = { this.clearKeyWord }/>
+        <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data} scroll= {{ x:1600,y:700 }} pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
         {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+      </Spin>
       </div>
     )
   }
 }
+const Query = withRouter(TQuery)
+
+export default Query

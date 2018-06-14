@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import moment from 'moment';
+import { withRouter } from 'react-router-dom'
 import { Table , Input , Button , Form , Select,message,Modal,Spin} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -11,6 +12,9 @@ const confirm = Modal.confirm;
 class TopForm extends Component {
     constructor(props) {
       super(props)
+      this.state = {
+        data:{}
+      }
     }
     handleSearch =()=>{
       this.props.form.validateFields((err, values) => {
@@ -27,9 +31,19 @@ class TopForm extends Component {
           }
       });
     }
+    componentWillReceiveProps(nextProps){
+      let obj = [];
+      decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+        obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+      })
+      this.setState({
+        data:obj
+      })
+    }
     clear = ()=>{
       this.props.form.resetFields();
-      this.props.init({})
+      this.props.clearKeyWord();
+      this.props.history.push('stop?currPage=1')
     }
     render(){
       const { getFieldDecorator, resetFields } = this.props.form;
@@ -38,14 +52,18 @@ class TopForm extends Component {
         <Form className = 'topForm clean'>
               <div className = 'fl'>
                 <FormItem label = '车牌号码：' className = 'formItem'>
-                  {getFieldDecorator('vehicleId')(
+                  {getFieldDecorator('vehicleId',{
+                    initialValue:this.state.data.vehicleId
+                  })(
                     <Input />
                   )}
                 </FormItem>
               </div>
               <div className = 'fl'>
                 <FormItem label = '公司车队：' className = 'formItem'>
-                  {getFieldDecorator('teamName')(
+                  {getFieldDecorator('teamName',{
+                    initialValue:this.state.data.teamName
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -61,7 +79,7 @@ class TopForm extends Component {
     }
     
   }
-  const SearchForm = Form.create({
+  const TSearchForm = Form.create({
     mapPropsToFields(props) {
       return {
         init: Form.createFormField({
@@ -73,7 +91,7 @@ class TopForm extends Component {
       }
     },
   })(TopForm)
-
+  const SearchForm = withRouter(TSearchForm)
   class TMsgDetail extends Component{
     constructor(props) {
       super(props)
@@ -182,62 +200,98 @@ class TopForm extends Component {
   
 
 
-  export default class Stop extends Component {
+ class TStop extends Component {
     constructor(props) {
         super(props)
         this.state={
             loading:true,
             showDiglog:false,
             currPage:1,
-            pageSize:13,
+            pageSize:10,
             keyWord:{},//搜索关键字
             data:[],//table数据
             total:'',//总页数
         }
     }
     componentWillMount(){
-        this.init({})
-      }
-      init=(data = {})=>{
-        this.setState({
-          loading:true
-        },()=>{
-          !data.currPage && (data.currPage = this.state.currPage);
-          data.pageSize = this.state.pageSize;
+      this.init()
+    }
+    componentWillReceiveProps(nextProps){
+      this.init(decodeURIComponent(nextProps.location.search))
+    }
+      init=(url = decodeURIComponent(this.props.location.search))=>{
+        let data = {}
+        if(url){
+          url.slice(1,).split('&').forEach((v,i)=>{
+            let key = v.split('=')[0]
+            let value = v.split('=')[1]
+            data[key] = value
+          })
+        }
+        !data.currPage && (data.currPage = this.state.currPage) 
+        !data.pageSize && (data.pageSize = this.state.pageSize) 
           window.$Funs.$AJAX('getStop','get',data,(res)=>{
-            let data = res.data.map((v,i)=>{
+            let arr = res.data.map((v,i)=>{
               v.stop == 0 ? v.stop = '否' :v.stop = '是';
               v.stopTime = window.$Funs.formatDate(v.stopTime);
               v.key = i;
               return v
             })
             this.setState({
-              data : data,
+              data : arr,
               total: res.count,
+              currPage:Number(data.currPage),
               loading:false
             })
-          })
         })
         
       }
       getSearch=(data)=>{
-        if(data){
-          this.setState({
-            keyWord:data,
-            currPage:1
-          },()=>{
-            this.init(data)
-          })
-        }
-      }
-      pageChange = (page)=>{
         this.setState({
-          currPage:page,
-        },()=>{
-          let data = this.state.keyWord;
-          this.init(data)
+          keyWord:data
+        })
+        let str = '';
+        for(let v in data){
+          str = str + '&' + v + '=' + data[v]
+        }
+        let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+str)
+        this.props.history.push('stop?'+url)
+    
+      }
+      clearKeyWord = ()=>{
+        this.setState({
+          keyWord:{}
         })
       }
+      pageChange = (page)=>{
+        let keyWord = this.state.keyWord;
+        if(keyWord){
+          var str = '';
+          for(let v in keyWord){
+            str = str + '&' + v + '=' + keyWord[v]
+          }
+        }
+        let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+str)
+        this.props.history.push('stop?'+url)
+      }
+      // getSearch=(data)=>{
+      //   if(data){
+      //     this.setState({
+      //       keyWord:data,
+      //       currPage:1
+      //     },()=>{
+      //       this.init(data)
+      //     })
+      //   }
+      // }
+      // pageChange = (page)=>{
+      //   this.setState({
+      //     currPage:page,
+      //   },()=>{
+      //     let data = this.state.keyWord;
+      //     this.init(data)
+      //   })
+      // }
       handleOk = (id)=>{
           window.$Funs.$AJAX(id+'/stopRestore','patch',{stopId:id},(res)=>{
             message.success('操作成功');
@@ -280,11 +334,16 @@ class TopForm extends Component {
         return (
             <div className = 'stop'>
               <Spin spinning = {this.state.loading} size='large'>
-                <SearchForm init={this.init} getSearch = {this.getSearch} />
-                <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }} scroll={{ y:400}} />
+                <SearchForm init={this.init} getSearch = {this.getSearch}  clearKeyWord = { this.clearKeyWord } />
+                <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }} scroll={{ y:400}} />
                 {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} init= {this.init}/>}
               </Spin>
             </div>
         )
     }
 }
+
+
+const Stop = withRouter(TStop)
+
+export default Stop

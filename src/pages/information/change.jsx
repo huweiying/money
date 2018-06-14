@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { Table , Input , Button , Form , Select , Breadcrumb,message, DatePicker,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -13,6 +13,9 @@ const { TextArea } = Input;
 class TopForm extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      data:[]
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -36,9 +39,19 @@ class TopForm extends Component {
         }
     });
   }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
+  }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('change?currPage=1')
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
@@ -49,19 +62,25 @@ class TopForm extends Component {
       <Form className = 'topForm clean'>
             <div className = 'fl'>
               <FormItem label = '车牌号码：' className = 'formItem'>
-                {getFieldDecorator('vehicleId')(
+                {getFieldDecorator('vehicleId',{
+                  initialValue:this.state.data.vehicleId
+                })(
                   <Input />
                 )}
               </FormItem>
               <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('teamName')(
+                {getFieldDecorator('teamName',{
+                  initialValue:this.state.data.teamName
+                })(
                   <Input />
                 )}
               </FormItem>
             </div>
             <div className = 'fl'>
               <FormItem label = 'SIM卡号' className = 'formItem'>
-                {getFieldDecorator('sim')(
+                {getFieldDecorator('sim',{
+                  initialValue:this.state.data.sim
+                })(
                   <Input />
                 )}
               </FormItem>
@@ -69,7 +88,9 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '终端号' className = 'formItem'>
-                  {getFieldDecorator('s')(
+                  {getFieldDecorator('manageNum',{
+                    initialValue:this.state.data.manageNum
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -85,7 +106,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -94,9 +115,14 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
+      clearKeyWord: Form.createFormField({
+        value: props.clearKeyWord,
+      }),
     }
   },
 })(TopForm)
+
+const SearchForm = withRouter(TSearchForm)
 
 function UnabledItem(props){//禁用表单项
   return (
@@ -307,7 +333,7 @@ class TChgForm extends Component {
                 <UnabledItem label='原终端号' value={this.props.detail.manageNum}/>
                   { this.state.terminalType.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
                     {getFieldDecorator('3_newTerminalType', {
-                      initialValue:this.state.terminalType[0]
+                      // initialValue:this.state.terminalType[0]
                     })(
                       <Select  style={{ width: 120 }}>
                         {
@@ -333,7 +359,7 @@ class TChgForm extends Component {
                 <UnabledItem label='原SIM卡类型' value={this.props.detail.simTypeName}/>
                 { this.state.simTypeName.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新SIM卡类型'>
                     {getFieldDecorator('4_simTypeName', {
-                      initialValue:this.state.simTypeName[0]
+                      // initialValue:this.state.simTypeName[0]
                     })(
                       <Select  style={{ width: 120 }}>
                         {
@@ -359,7 +385,7 @@ class TChgForm extends Component {
                 <UnabledItem label='原终端号' value='123213'/>
                 { this.state.terminalType.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
                     {getFieldDecorator('4_newTerminalType', {
-                      initialValue:this.state.terminalType[0]
+                      // initialValue:this.state.terminalType[0]
                     })(
                       <Select  style={{ width: 120 }}>
                         {
@@ -406,14 +432,14 @@ const  ChgForm  = Form.create({
   },
 })( TChgForm )
 
-export default class Change extends Component {
+class TChange extends Component {
     constructor(props) {
       super(props)
       this.state = {
         loading:true,
         isChange:false,
         currPage:1,
-        pageSize:13,
+        pageSize:10,
         keyWord:{},//搜索关键字
         data:[],//table数据
         total:'',//总页数
@@ -421,43 +447,83 @@ export default class Change extends Component {
       }
     }
     componentWillMount(){
-      this.init({})
+      this.init()
     }
-    init=(data)=>{
-      !data.currPage && (data.currPage = this.state.currPage);
-      data.pageSize = this.state.pageSize;
+    componentWillReceiveProps(nextProps){
+      this.init(decodeURIComponent(nextProps.location.search))
+    }
+    init=(url = decodeURIComponent(this.props.location.search))=>{
+      let data = {}
+      if(url){
+        url.slice(1,).split('&').forEach((v,i)=>{
+          let key = v.split('=')[0]
+          let value = v.split('=')[1]
+          data[key] = value
+        })
+      }
+      !data.currPage && (data.currPage = this.state.currPage) 
+      !data.pageSize && (data.pageSize = this.state.pageSize) 
       window.$Funs.$AJAX('getInformationChangeList/getCarList','get',data,(res)=>{
-        let data = res.data.map((v,i)=>{
+        let arr = res.data.map((v,i)=>{
           v.key = i;
           return v
         })
         this.setState({
-          data : data,
+          data : arr,
           total: res.count,
+          currPage:Number(data.currPage),
           loading:false
         })
       })
     }
     getSearch=(data)=>{
-      if(data){
-        this.setState({
-          keyWord:data,
-          currPage:1,
-          loading:true,
-        },()=>{
-          this.init(data)
-        })
-      }
-    }
-    pageChange = (page)=>{
       this.setState({
-        currPage:page,
-        loading:true
-      },()=>{
-        let data = this.state.keyWord;
-        this.init(data)
+        keyWord:data
+      })
+      let str = '';
+      for(let v in data){
+        str = str + '&' + v + '=' + data[v]
+      }
+      let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+str)
+      this.props.history.push('change?'+url)
+  
+    }
+    clearKeyWord = ()=>{
+      this.setState({
+        keyWord:{}
       })
     }
+    pageChange = (page)=>{
+      let keyWord = this.state.keyWord;
+      if(keyWord){
+        var str = '';
+        for(let v in keyWord){
+          str = str + '&' + v + '=' + keyWord[v]
+        }
+      }
+      let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+str)
+      this.props.history.push('change?'+url)
+    }
+    // getSearch=(data)=>{
+    //   if(data){
+    //     this.setState({
+    //       keyWord:data,
+    //       currPage:1,
+    //       loading:true,
+    //     },()=>{
+    //       this.init(data)
+    //     })
+    //   }
+    // }
+    // pageChange = (page)=>{
+    //   this.setState({
+    //     currPage:page,
+    //     loading:true
+    //   },()=>{
+    //     let data = this.state.keyWord;
+    //     this.init(data)
+    //   })
+    // }
     update = (item)=>{
       this.setState({
         isChange: true,
@@ -486,8 +552,8 @@ export default class Change extends Component {
               <Spin spinning = {this.state.loading} size='large'>
               {this.state.isChange ? <ChgForm detail = {this.state.detail} cancel = {this.cancel}/> :
                 <div>
-                  <SearchForm init={this.init} getSearch = {this.getSearch}/>
-                  <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+                  <SearchForm init={this.init} getSearch = {this.getSearch}   clearKeyWord = { this.clearKeyWord }/>
+                  <Table columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
                 </div>
               }
               </Spin>
@@ -495,3 +561,7 @@ export default class Change extends Component {
         )
     }
 }
+
+const Change = withRouter(TChange)
+
+export default Change

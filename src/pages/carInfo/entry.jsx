@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Upload from '../../component/upload'
-import { Link } from 'react-router-dom'
+import { Link , withRouter} from 'react-router-dom'
 import { Table , Input , Button , Breadcrumb , Form , Select ,DatePicker , message,Spin ,Modal} from 'antd';
 import Avatar from '../../component/upload';
 const FormItem = Form.Item;
@@ -11,7 +11,10 @@ const confirm = Modal.confirm;
 
 
 function CarDetail(props){//查看车辆详情
-
+  let keyword = ''
+  if(props.search){
+    keyword = decodeURIComponent(props.search).split('&').find((v)=>{return v.indexOf('carNumOrName') != -1}).split('=')[1]
+  }
   const columns = [
     { title: '安装日期', width: 100, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },
     { title: '公司车队', width: 200, dataIndex: 'teamName', key: 'teamName' ,align: 'center' },
@@ -29,11 +32,11 @@ function CarDetail(props){//查看车辆详情
       <div className = 'clean top'>
         <Search className="search"
         placeholder="请输入车牌号或车队名字"
+        defaultValue = {keyword}
         onSearch={value => props.searchCar(value) }
         enterButton/>
-        <Button className = 'fr' onClick = {()=>{props.searchCar('')}}>全部</Button>
       </div>
-      <Table columns={columns} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} dataSource={props.carArr} pagination = {{defaultPageSize:10,total:props.total,onChange:props.pageChange}}/>
+      <Table columns={columns} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} dataSource={props.carArr} pagination = {{defaultPageSize:10,total:props.total,onChange:props.pageChange,current:props.currPage}}/>
     </div>
   );
 }
@@ -43,27 +46,28 @@ function CarDetail(props){//查看车辆详情
      super(props)
      this.state = {
       photoCodes:[],
-      product:[],
+      product:[],//生产厂家
       zdType:[],
-      item:{}
+      subitem:{}//终端厂家
      }
    }
   
   componentWillMount(){
     window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{//生产厂家
-      window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//生产厂家
+      console.log(res)
+      window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//z终端生产厂家
+        console.log(data)
         this.setState({
           product:res,
-          item:data
+          subitem:data
         })
        })
     })
   }
   handleSelect=(v)=>{//选择厂家
-    console.log(v)
     window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:v},(res)=>{//生产厂家
       this.setState({
-        item:res
+        subitem:res
       })
      })
   }
@@ -100,7 +104,7 @@ function CarDetail(props){//查看车辆详情
     this.setState({
       photoCodes:arr
     },()=>{
-      console.log(this.state.photoCodes)
+      // console.log(this.state.photoCodes)
     })
   }
   render() {
@@ -210,40 +214,53 @@ function CarDetail(props){//查看车辆详情
                   }
                   <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型号">
                     {getFieldDecorator('terminalTypeNum', {
-                      initialValue:this.state.item.termTypeID
+                      initialValue:this.state.subitem.termTypeID
                     })(
                       <Input  disabled />
                     )}
                   </FormItem>
                 </div>
                 <div className = "row clean">
-                  <FormItem className = 'formItem clean'{...formItemLayout}  label="厂家编号">
-                    {getFieldDecorator('factoryNumber', {
-                      initialValue:this.state.item.producerID
-                    })(
-                      <Input  disabled />
-                    )}
-                  </FormItem>
-                  <FormItem className = 'formItem clean'{...formItemLayout}  label="终端类型">
-                    {getFieldDecorator('terminalType', {
-                      initialValue:this.state.item.termType
-                    })(
-                      <Input  disabled />
-                    )}
-                  </FormItem>
-                  <FormItem className = 'formItem clean'{...formItemLayout} label="终端批次">
-                    {getFieldDecorator('terminalOrder', {
-                      initialValue:this.state.item.termPici
-                    })(
-                      <Input  disabled  />
-                    )}
-                  </FormItem>
+                    {
+                      this.state.subitem.producerID && (
+                        <FormItem className = 'formItem clean'{...formItemLayout}  label="厂家编号">
+                          {getFieldDecorator('factoryNumber', {
+                            initialValue:this.state.subitem.producerID
+                          })(
+                            <Input  disabled />
+                          )}
+                        </FormItem>
+                      )
+                    }
+                    {
+                      this.state.subitem.termType && (
+                        <FormItem className = 'formItem clean'{...formItemLayout}  label="终端类型">
+                          {getFieldDecorator('terminalType', {
+                            initialValue:this.state.subitem.termType
+                          })(
+                            <Input  disabled />
+                          )}
+                        </FormItem>
+                      )
+                    }
+                    {
+                      this.state.subitem.termPici && (
+                        <FormItem className = 'formItem clean'{...formItemLayout} label="终端批次">
+                          {getFieldDecorator('terminalOrder', {
+                            initialValue:this.state.subitem.termPici
+                          })(
+                            <Input  disabled  />
+                          )}
+                        </FormItem>
+                      )
+                    }
+                  
                   <FormItem  className = 'formItem clean' label='终端号'>
                     <Input  value={this.props.item.manageNum} disabled className = 'disabled'/>
                   </FormItem>
                 </div>
                 <div className = "row clean">
-                  <FormItem className = 'formItem clean'{...formItemLayout} label='导航类型'>
+                  <FormItem className = 'formItem clean'{...formItemLayout} label='系统平台'>
                     {getFieldDecorator('systemPlatform', {
                       initialValue:'马良车辆监控导航系统'
                     })(
@@ -292,7 +309,7 @@ function CarDetail(props){//查看车辆详情
                   <FormItem className = 'formItem clean'{...formItemLayout} label="来电时间">
                     {getFieldDecorator('callDate', {
                     })(
-                      <DatePicker />
+                      <DatePicker placeholder='选择时间'/>
                     )}
                   </FormItem>
                   <FormItem className = 'formItem clean'{...formItemLayout} label="记录人">
@@ -322,7 +339,7 @@ function CarDetail(props){//查看车辆详情
 
 const AddForm = Form.create()(AddNew)
 
-export default class Entry extends Component {
+ class TEntry extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -348,32 +365,52 @@ export default class Entry extends Component {
     })
   }
 // 切换页面
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
   pageChange = (page)=>{
-    this.setState({
-      currPage:page
-    },()=>{
-      this.init()
-    })
+    let url = encodeURIComponent('currPage='+page + '&pageSize='+this.state.pageSize+'&carNumOrName='+ this.state.search)
+    this.props.history.push('entry?'+url)
+    // this.setState({
+    //   currPage:page
+    // },()=>{
+    //   this.init()
+    // })
   }
   //搜索车辆
   searchCar = (v)=>{
-     this.setState({
-       search:v,
-       loading:true
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&carNumOrName='+v)
+    this.props.history.push('entry?'+url)
+    // this.props.history.push('entry?currPage='+this.state.currPage + '&pageSize='+this.state.pageSize+'&carNumOrName='+v)
+    //  this.setState({
+    //    search:v,
+    //    loading:true
       
-    },()=>{this.init()})
+    // },()=>{this.init()})
   }
 // 数据请求
-  init=()=>{
-    window.$Funs.$AJAX('cars','get',{currPage:this.state.currPage,pageSize:this.state.pageSize,carNumOrName:this.state.search},(res)=>{
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        data[key] = value
+      })
+    }
+    !data.currPage && (data.currPage = 1) 
+    !data.pageSize && (data.pageSize = 10) 
+    window.$Funs.$AJAX('cars','get',data,(res)=>{
       res.data = res.data.map((v,i)=>{
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
         v.key = i
         return v
       })
       this.setState({
+        search:data.carNumOrName ? data.carNumOrName : '' ,
         carArr: res.data,
         total:res.count,
+        currPage:Number(data.currPage),
         loading:false
       })
     })
@@ -385,10 +422,13 @@ export default class Entry extends Component {
     return (
       <div className = 'entry'>
         <Spin spinning = {this.state.loading} size='large'>
-          {this.state.addFlag ? <AddForm cancel = {this.cancel}  item = {this.state.item}/> : <CarDetail addCarInfo = {this.addCarInfo}  carArr = {this.state.carArr} total = {this.state.total} pageChange = {this.pageChange} searchCar = {this.searchCar} ></CarDetail>}
+          {this.state.addFlag ? <AddForm cancel = {this.cancel}  item = {this.state.item}/> : <CarDetail addCarInfo = {this.addCarInfo}  carArr = {this.state.carArr} total = {this.state.total} pageChange = {this.pageChange} currPage = {this.state.currPage} searchCar = {this.searchCar} search = {this.props.history.location.search}></CarDetail>}
         </Spin>
       </div>
 
     )
   }
 }
+const Entry=withRouter(TEntry)
+
+export default Entry

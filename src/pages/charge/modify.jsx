@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { Base64 } from 'js-base64';
+import moment from 'moment';
+import { withRouter } from 'react-router-dom'
 import { Table , Input , Button , Breadcrumb , Form , Select,message, DatePicker,Spin,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -11,6 +13,9 @@ const { TextArea } = Input;
 class TopForm extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      data:{}
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -33,25 +38,36 @@ class TopForm extends Component {
       }
     });
   }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
+  }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('modify?currPage=1')
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
-    const rangeConfig = {
-      rules: [{ type: 'array',  message: '请选择时间!' }],
-    };
     return (
       <Form className = 'topForm clean'>
             <div className = 'fl'>
               <FormItem label = '收费日期：' className = 'formItem'>
-                {getFieldDecorator('chargeTime', rangeConfig)(
+                {getFieldDecorator('chargeTime',{
+                  initialValue: (this.state.data.chargeTimeStart && this.state.data.chargeTimeEnd) ? [ moment( window.$Funs.formatDate(Number(this.state.data.chargeTimeStart)),'YYYY/MM/DD'), moment( window.$Funs.formatDate(Number(this.state.data.chargeTimeEnd)),'YYYY/MM/DD')] : ''
+                })(
                   <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']}/>
                 )}
               </FormItem>
               <FormItem label = '有效日期：' className = 'formItem'>
-              {getFieldDecorator('deadlineDate', rangeConfig)(
+              {getFieldDecorator('deadlineDate', {
+                initialValue: (this.state.data.deadlineDateStart && this.state.data.deadlineDateEnd) ? [ moment( window.$Funs.formatDate(Number(this.state.data.deadlineDateStart)),'YYYY/MM/DD'), moment( window.$Funs.formatDate(Number(this.state.data.deadlineDateEnd)),'YYYY/MM/DD')] : ''
+              })(
                 <RangePicker format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']}/>
               )}
               </FormItem>
@@ -59,12 +75,16 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('teamName')(
+                {getFieldDecorator('teamName',{
+                  initialValue:this.state.data.teamName
+                })(
                   <Input />
                 )}
                 </FormItem>
                 <FormItem label = '收款人：' className = 'formItem'>
-                {getFieldDecorator('inputManName')(
+                {getFieldDecorator('inputManName',{
+                  initialValue:this.state.data.inputManName
+                })(
                   <Input />
                 )}
                 </FormItem>
@@ -72,7 +92,9 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '车牌号码：' className = 'formItem'>
-                  {getFieldDecorator('vehicleId')(
+                  {getFieldDecorator('vehicleId',{
+                    initialValue:this.state.data.vehicleId
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -90,7 +112,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -102,9 +124,15 @@ const SearchForm = Form.create({
       exportForm: Form.createFormField({
         value: props.exportForm,
       }),
+      clearKeyWord: Form.createFormField({
+        value: props.clearKeyWord,
+      }),
     }
   },
 })(TopForm)
+
+const SearchForm = withRouter(TSearchForm)
+
 
 class TMsgDetail extends Component{
   constructor(props) {
@@ -269,29 +297,42 @@ const MsgDetail = Form.create({
 
 
 
-export default class Modify extends Component {
+class TModify extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading:true,
       showDiglog:false,
       currPage:1,
-      pageSize:13,
+      pageSize:10,
       keyWord:{},//搜索关键字
       data:[],//table数据
       total:'',//总页数
       detail:{},//录入项对象
-      selectedRows:[]
+      selectedRows:[],
+      electedRowKeys:[]
+
     }
   }
   componentWillMount(){
-    this.init({})
+    this.init()
   }
-  init=(data)=>{
-    !data.currPage && (data.currPage = this.state.currPage);
-    data.pageSize = this.state.pageSize;
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        data[key] = value
+      })
+    }
+    !data.currPage && (data.currPage = this.state.currPage) 
+    !data.pageSize && (data.pageSize = this.state.pageSize) 
     window.$Funs.$AJAX('getChargeComplex','get',data,(res)=>{
-      let data = res.data.map((v,i)=>{
+      let arr = res.data.map((v,i)=>{
         v.key = i;
         v.leaveFactoryInstall = v.leaveFactoryInstall == 0 ? '否' : '是';
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0];
@@ -302,32 +343,65 @@ export default class Modify extends Component {
         return v
       })
       this.setState({
-        data : data,
+        data : arr,
         total: res.count,
+        currPage:Number(data.currPage),
         loading:false
       })
     })
   }
   getSearch=(data)=>{
-    if(data){
-      this.setState({
-        keyWord:data,
-        currPage:1,
-        loading:true
-      },()=>{
-        this.init(data)
-      })
-    }
-  }
-  pageChange = (page)=>{
     this.setState({
-      currPage:page,
-      loading:true
-    },()=>{
-      let data = this.state.keyWord;
-      this.init(data)
+      keyWord:data
+    })
+    let str = '';
+    for(let v in data){
+      str = str + '&' + v + '=' + data[v]
+    }
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+str)
+    this.props.history.push('modify?'+url)
+
+  }
+  clearKeyWord = ()=>{
+    this.setState({
+      keyWord:{}
     })
   }
+  pageChange = (page)=>{
+    let keyWord = this.state.keyWord;
+    if(keyWord){
+      var str = '';
+      for(let v in keyWord){
+        str = str + '&' + v + '=' + keyWord[v]
+      }
+    }
+    this.setState({
+      selectedRowKeys:[],
+      selectedRows:[]
+    })
+    let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+str)
+    this.props.history.push('modify?'+url)
+  }
+  // getSearch=(data)=>{
+  //   if(data){
+  //     this.setState({
+  //       keyWord:data,
+  //       currPage:1,
+  //       loading:true
+  //     },()=>{
+  //       this.init(data)
+  //     })
+  //   }
+  // }
+  // pageChange = (page)=>{
+  //   this.setState({
+  //     currPage:page,
+  //     loading:true
+  //   },()=>{
+  //     let data = this.state.keyWord;
+  //     this.init(data)
+  //   })
+  // }
   edit = (item)=>{
     this.setState({
       showDiglog: true,
@@ -363,6 +437,7 @@ export default class Modify extends Component {
       window.open(window.$Funs.Basse_Port+'saveExsl?exslDTO='+ code)
   }
   render() {
+    const {selectedRowKeys }= this.state
     const columns = [
       { title: '公司车队', dataIndex: 'teamName',key:'teamName',  width: 150 ,align: 'center' },
       { title: '车牌号', dataIndex: 'vehicleId',key:'vehicleId',  width: 100 ,align: 'center' },
@@ -375,9 +450,11 @@ export default class Modify extends Component {
       { title: '操作', dataIndex: '', key: 'action', width: 100 ,align: 'center' , render: (item) => <Button type="primary" onClick = {()=>{this.edit(item)}}>修改</Button> },
     ];
     const rowSelection = {
+      selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
-          selectedRows:selectedRows
+          selectedRows,
+          selectedRowKeys
         })
       },
     };
@@ -385,11 +462,15 @@ export default class Modify extends Component {
     return (
       <div className = 'modify'>
         <Spin spinning = {this.state.loading} size='large'>
-          <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}/>
-          <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+          <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}  clearKeyWord = { this.clearKeyWord }/>
+          <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
           {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
         </Spin>
       </div>
     )
   }
 }
+
+const Modify = withRouter(TModify)
+
+export default Modify

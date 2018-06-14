@@ -141,6 +141,7 @@ class TMsgDetail extends Component {
     // let Arr=this.props.nav;
   };
   render() {
+    console.log(this.props.detail)
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -164,6 +165,7 @@ class TMsgDetail extends Component {
           {v.groupName}
         </Option>
       ));
+      const rolesArr = ['管理员','操作员','安装师傅','财务','其他']
     let msgform = (
       <div className="detail">
         <Form layout="inline" className="clean">
@@ -219,7 +221,7 @@ class TMsgDetail extends Component {
                   required:true
                 }
               ],
-              initialValue: "0"
+              initialValue: String(rolesArr.findIndex((v)=>{return this.props.detail.roles == v})) == '-1' ? '0' : String(rolesArr.findIndex((v)=>{return this.props.detail.roles == v}))
             })(
               <Select style={{ width: 200 }} onChange={this.handleSelect}>
                 <Option value="0">管理员</Option>
@@ -277,7 +279,7 @@ class TMsgDetail extends Component {
                     required: true,
                   }
                 ],
-                initialValue: this.props.nav[0].id
+                initialValue: this.props.detail.id
               })(
                 <div>
                   <Select
@@ -506,7 +508,9 @@ export default class Person extends Component {
   };
   getIndex = i => {
     this.setState({
-      navIndex: i
+      navIndex: i,
+      selectedRows:[],
+      selectedRowKeys:[]
     });
     let data={
       page: 1,
@@ -710,10 +714,13 @@ export default class Person extends Component {
         }
       }
     ];
+    const {selectedRowKeys} = this.state 
     const rowSelection = {
+      selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
-          selectedRows:selectedRows
+          selectedRows,
+          selectedRowKeys
         })
       }
     };
@@ -721,12 +728,7 @@ export default class Person extends Component {
       <div className="person">
         <Spin spinning = {this.state.loading} size='large'>
         <div className="top">
-          <Search
-            placeholder="请输入搜索的职员"
-            enterButton="查询"
-            style={{ width: 240 }}
-            onSearch={this.search}
-          />
+       
           <Button type="primary" className="fr" onClick = {this.exportForm}>
             导出
           </Button>
@@ -735,7 +737,7 @@ export default class Person extends Component {
             新增职员
           </Button>
         </div>
-        <div className="main_con">
+        <div className="main_con claer">
           <div className="fl left">
             <p className="title">部门列表<Icon type="form" onClick={this.addDepartment}/></p>
             {this.state.nav.length > 0 && (
@@ -747,6 +749,7 @@ export default class Person extends Component {
               rowSelection={rowSelection}
               columns = {columns}
               dataSource={this.state.data}
+              scroll = {{y:500}}
               pagination={{
                 defaultPageSize: 13,
                 total: this.state.total,

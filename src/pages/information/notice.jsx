@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { Table , Input , Button , Form ,Icon, Select ,message,DatePicker,Spin,Modal } from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -20,7 +20,9 @@ function Nav(props){
 class TopForm extends Component {
   constructor(props) {
     super(props)
- 
+    this.state = {
+      data:{}
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -40,14 +42,22 @@ class TopForm extends Component {
       if(data){
         //默认查找第一页开始
         this.props.getSearch(data);
-        data.currPage = 1;
-        this.props.init(data)
-        }
+      }
     });
+  }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
   }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('notice?currPage=1&navIndex='+this.state.data.navIndex)
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
@@ -56,7 +66,9 @@ class TopForm extends Component {
       <Form className = 'topForm clean'>
               <div className = 'fl'>
                 <FormItem label = '车牌号码：' className = 'formItem'>
-                  {getFieldDecorator('vehicleId')(
+                  {getFieldDecorator('vehicleId',{
+                    initialValue:this.state.data.vehicleId
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -64,7 +76,9 @@ class TopForm extends Component {
                 </div>
               <div className = 'fl'>
                 <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('teamName')(
+                {getFieldDecorator('teamName',{
+                  initialValue:this.state.data.teamName
+                })(
                   <Input />
                 )}
                 </FormItem>
@@ -72,9 +86,17 @@ class TopForm extends Component {
               </div>
               <div className = 'fl'>
                 <FormItem label = '车辆类型：' className = 'formItem'>
-                {getFieldDecorator('name')(
-                  <Input />
-                )}
+                  {getFieldDecorator('carType', {
+                    initialValue:this.state.data.carType
+                  })(
+                    <Select style={{ width: 230 }}>
+                      { 
+                        this.props.carType.map((v,i)=>{
+                          return <Option value={v} key={i}>{v}</Option>
+                        })
+                      }
+                    </Select>
+                  )}
                 </FormItem>
                 
               </div>
@@ -90,7 +112,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -106,6 +128,7 @@ const SearchForm = Form.create({
     }
   },
 })(TopForm)
+const SearchForm = withRouter(TSearchForm)
 
 class TMsgDetail extends Component{
   constructor(props) {
@@ -220,7 +243,7 @@ class TMsgDetail extends Component{
           </div>
           <FormItem label = '备注：' className = 'formItem fl clean'>
             {getFieldDecorator('repairInstallRemark', {
-              rules: [ {
+              rules:[{
                 required: true, message: '请输入备注',
               }],
             })(
@@ -258,69 +281,121 @@ const MsgDetail = Form.create({
   },
 })(TMsgDetail)
 
-
-export default class addNotice extends Component {
+class TNotice extends Component {
   constructor(props) {
     super(props)
     this.state = {
         loading:true,
         navIndex : 0,
         currPage:1,
-        pageSize:13,
+        pageSize:5,
         keyWord:{},//搜索关键字
         data:[],//table数据
         total:'',//总页数
         detail:{},//录入项对象
         addEntry:false,//弹窗显示
-        choose:[]
+        choose:[],
+        carType:[],
+        selectedRowKeys:[]
     }
   }
   componentWillMount(){
-    this.init({})
+    window.$Funs.$AJAX('ziDian','get',{type:2},(carType)=>{
+      this.setState({
+        carType:carType
+      },()=>{
+        this.init()
+      })
+    })
   }
-  init=(data={})=>{
-    this.setState({
-      loading:true
-    },()=>{
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    let navIndex = this.state.navIndex;
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        if(key == 'navIndex'){
+          navIndex = value
+        }else{
+          data[key] = value
+        }
+      })
+    }
+    !data.currPage && (data.currPage = this.state.currPage) 
+    !data.pageSize && (data.pageSize = this.state.pageSize)
       !data.currPage && (data.currPage = this.state.currPage);
       data.pageSize = this.state.pageSize;
-      let url = this.state.navIndex == 0 ? 'getInstallNoticeList' : 'getRepairNoticeList';
-        window.$Funs.$AJAX(url,'get',data,(res)=>{
-            let data = res.data.map((v,i)=>{
+      let navurl = navIndex == 0 ? 'getInstallNoticeList' : 'getRepairNoticeList';
+        window.$Funs.$AJAX(navurl,'get',data,(res)=>{
+            let arr = res.data.map((v,i)=>{
               v.key = i;
               v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
               v.repairInstallType == 0 ? v.repairInstallType = '监控' : v.repairInstallType = 'GPS';
               return v
             })
             this.setState({
-              data : data,
+              data : arr,
               total: res.count,
+              currPage:Number(data.currPage),
+              navIndex:navIndex,
               loading:false
             })
         })
-    })
-    
-    
-    
   }
+  // getSearch=(data)=>{
+  //   if(data){
+  //     this.setState({
+  //       keyWord:data,
+  //       currPage:1,
+  //       loading:true,
+  //     },()=>{
+  //       this.init(data)
+  //     })
+  //   }
+  // }
+  // pageChange = (page)=>{
+  //   this.setState({
+  //     currPage:page,
+  //   },()=>{
+  //     let data = this.state.keyWord;
+  //     this.init(data)
+  //   })
+  // }
   getSearch=(data)=>{
-    if(data){
-      this.setState({
-        keyWord:data,
-        currPage:1,
-        loading:true,
-      },()=>{
-        this.init(data)
-      })
+    this.setState({
+      keyWord:data
+    })
+    let str = '';
+    for(let v in data){
+      str = str + '&' + v + '=' + data[v]
     }
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&navIndex='+this.state.navIndex+str)
+    this.props.history.push('notice?'+url)
+
+  }
+  clearKeyWord = ()=>{
+    this.setState({
+      keyWord:{}
+    })
   }
   pageChange = (page)=>{
+    let keyWord = this.state.keyWord;
+    if(keyWord){
+      var str = '';
+      for(let v in keyWord){
+        str = str + '&' + v + '=' + keyWord[v]
+      }
+    }
     this.setState({
-      currPage:page,
-    },()=>{
-      let data = this.state.keyWord;
-      this.init(data)
+      selectedRowKeys:[],
+      choose:[]
     })
+    let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+'&navIndex='+this.state.navIndex+str)
+    this.props.history.push('notice?'+url)
   }
   showDetail = (item)=>{//显示弹窗
     this.setState({
@@ -334,12 +409,12 @@ export default class addNotice extends Component {
     })
   }
   navChange = (i)=>{//切换导航
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&navIndex='+i)
     this.setState({
-      navIndex:i,
-      currPage:1,
-    },()=>{
-        this.init({})
+      selectedRowKeys:[],
+      choose:[]
     })
+    this.props.history.push('notice?'+url)
   }
   postChoose = ()=>{
     let items = this.state.choose;
@@ -354,7 +429,10 @@ export default class addNotice extends Component {
         onOk:()=> {
           window.$Funs.$AJAX('repairInstallSendNotice','post',{'repairInstallIdList':items},(res)=>{
             message.success('操作成功');
-            this.init();
+            this.setState({
+              selectedRowKeys:[],
+              choose:[]
+            })
           })
         },
         onCancel() {
@@ -376,24 +454,27 @@ export default class addNotice extends Component {
       { title: '车辆位置', dataIndex: 'carLocation',key:'carLocation' ,align: 'center' },
       { title: '安装类型', dataIndex: 'repairInstallType',key:'repairInstallType', width: 100 ,align: 'center' },
     ];
+    const { selectedRowKeys } = this.state;
     const rowSelection = {
+      selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         let choose = selectedRows.map((v)=>{
           return v.repairInstallId
         })
         this.setState({
-          choose:choose
+          choose:choose,
+          selectedRowKeys
         })
       },
     };
     
     return (
-      <div className = 'addNotice'>
+      <div className = 'notice'>
       <Spin spinning = {this.state.loading} size='large'>
         <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
           <div>
-            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} postChoose = {()=>{this.postChoose()}}/>
-            <Table  rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+            <SearchForm init={this.init} getSearch = {this.getSearch} showDetail = {this.showDetail} postChoose = {()=>{this.postChoose()}} carType = {this.state.carType} clearKeyWord = { this.clearKeyWord }/>
+            <Table  rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.repairInstallRemark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
             {this.state.addEntry && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} navIndex = {this.state.navIndex}/>}
           </div>
       </Spin>
@@ -401,3 +482,9 @@ export default class addNotice extends Component {
     )
   }
 }
+
+
+const Notice = withRouter(TNotice)
+
+export default Notice 
+

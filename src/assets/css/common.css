@@ -1212,6 +1212,7 @@ header .select .subNav {
 }
 .container .person .main_con .right {
   width: 1150px;
+  margin-top: 10px;
 }
 .container .person .main_con .right .ant-table-wrapper {
   margin-top: 0px;
@@ -1516,6 +1517,11 @@ header .select .subNav {
   @page :right {
     margin-left: -20cm;
   }
+}
+.download {
+  height: 34px;
+  line-height: 34px;
+  margin-left: 20px;
 }
 .message {
   position: absolute;

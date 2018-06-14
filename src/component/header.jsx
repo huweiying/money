@@ -172,6 +172,16 @@ class THeader extends Component {
       return v.id == id
     })
     navArr.splice(idx,1)
+    if(navArr[navArr.length-1].child){
+      navArr[navArr.length-1].child.map((v,i)=>{
+        if(i == 0){
+          v.active = true
+        }else{
+          v.active = false
+        }
+        return v
+      })
+    }
    
    
    

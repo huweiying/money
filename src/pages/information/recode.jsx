@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { Table , Input , Button , Form ,Icon ,Spin,Select,Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -17,6 +17,9 @@ function Nav(props){
 class TopForm extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      data:{}
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -40,9 +43,19 @@ class TopForm extends Component {
         }
     });
   }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
+  }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('recode?currPage=1&navIndex='+this.state.data.navIndex)
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
@@ -50,7 +63,9 @@ class TopForm extends Component {
       <Form className = 'topForm clean'>
               <div className = 'fl'>
                 <FormItem label = '车牌号码：' className = 'formItem'>
-                  {getFieldDecorator('vehicleId')(
+                  {getFieldDecorator('vehicleId',{
+                    initialValue:this.state.data.vehicleId
+                  })(
                     <Input />
                   )}
                 </FormItem>
@@ -58,7 +73,9 @@ class TopForm extends Component {
                 </div>
               <div className = 'fl'>
                 <FormItem label = '工作人员：' className = 'formItem'>
-                {getFieldDecorator('name')(
+                {getFieldDecorator('name',{
+                  initialValue:this.state.data.name
+                })(
                   <Input />
                 )}
                 </FormItem>
@@ -75,7 +92,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -84,10 +101,15 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
+      clearKeyWord: Form.createFormField({
+        value: props.clearKeyWord,
+      }),
     }
   },
 })(TopForm)
 
+
+const SearchForm = withRouter(TSearchForm)
 
 class PicDetail extends Component{
   constructor(props) {
@@ -185,14 +207,14 @@ class PicDetail extends Component{
 
 
 
-export default class Recode extends Component {
+class TRecode extends Component {
   constructor(props) {
     super(props)
     this.state = {
         loading:true,
         navIndex : 0,
         currPage:1,
-        pageSize:13,
+        pageSize:10,
         keyWord:{},//搜索关键字
         data:[],//table数据
         total:'',//总页数
@@ -203,43 +225,89 @@ export default class Recode extends Component {
   componentWillMount(){
     this.init()
   }
-  init=(data={})=>{
-    !data.currPage && (data.currPage = this.state.currPage);
-    data.pageSize = this.state.pageSize;
-    let url = this.state.navIndex == 0 ? 'getInstallRecord' : 'getRepairRecord';
-    window.$Funs.$AJAX(url,'get',data,(res)=>{
-      let data = res.data.map((v,i)=>{
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    let navIndex = this.state.navIndex;
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        if(key == 'navIndex'){
+          navIndex = value
+        }else{
+          data[key] = value
+        }
+      })
+    }
+    !data.currPage && (data.currPage = this.state.currPage) 
+    !data.pageSize && (data.pageSize = this.state.pageSize) 
+    let navurl = navIndex == 1 ? 'getRepairRecord':'getInstallRecord' ;
+    window.$Funs.$AJAX(navurl,'get',data,(res)=>{
+      let arr = res.data.map((v,i)=>{
         v.key = i;
         v.pictureTime = window.$Funs.formatDate(v.pictureTime)
         return v
       })
       this.setState({
-        data : data,
+        data : arr,
         total: res.count,
+        currPage:Number(data.currPage),
+        navIndex:navIndex,
         loading:false
       })
     })
   }
   getSearch=(data)=>{
-    if(data){
-      this.setState({
-        keyWord:data,
-        currPage:1,
-        loading:true,
-      },()=>{
-        this.init(data)
-      })
-    }
-  }
-  pageChange = (page)=>{
     this.setState({
-      currPage:page,
-      loading:true
-    },()=>{
-      let data = this.state.keyWord;
-      this.init(data)
+      keyWord:data
+    })
+    let str = '';
+    for(let v in data){
+      str = str + '&' + v + '=' + data[v]
+    }
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&navIndex='+this.state.navIndex+str)
+    this.props.history.push('recode?'+url)
+
+  }
+  clearKeyWord = ()=>{
+    this.setState({
+      keyWord:{}
     })
   }
+  pageChange = (page)=>{
+    let keyWord = this.state.keyWord;
+    if(keyWord){
+      var str = '';
+      for(let v in keyWord){
+        str = str + '&' + v + '=' + keyWord[v]
+      }
+    }
+    let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+'&navIndex='+this.state.navIndex+str)
+    this.props.history.push('recode?'+url)
+  }
+  // getSearch=(data)=>{
+  //   if(data){
+  //     this.setState({
+  //       keyWord:data,
+  //       currPage:1,
+  //       loading:true,
+  //     },()=>{
+  //       this.init(data)
+  //     })
+  //   }
+  // }
+  // pageChange = (page)=>{
+  //   this.setState({
+  //     currPage:page,
+  //     loading:true
+  //   },()=>{
+  //     let data = this.state.keyWord;
+  //     this.init(data)
+  //   })
+  // }
   showPic = (item)=>{
     item = item.map((v,i)=>{
       v.key = i;
@@ -258,13 +326,15 @@ export default class Recode extends Component {
     })
   }
   navChange = (i)=>{//切换导航
-    this.setState({
-      navIndex:i,
-      currPage:1,
-      keyWord:{}
-    },()=>{
-      this.init()
-    })
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+'&navIndex='+i)
+    this.props.history.push('recode?'+url)
+    // this.setState({
+    //   navIndex:i,
+    //   currPage:1,
+    //   keyWord:{}
+    // },()=>{
+    //   this.init()
+    // })
   }
   render() {
     const columns = [
@@ -281,8 +351,8 @@ export default class Recode extends Component {
         <Spin spinning = {this.state.loading} size='large'>
           <Nav navIndex =  {this.state.navIndex } navChange = {this.navChange}/>
             <div>
-              <SearchForm init={this.init} getSearch = {this.getSearch}/>
-              <Table  columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+              <SearchForm init={this.init} getSearch = {this.getSearch}  clearKeyWord = { this.clearKeyWord }/>
+              <Table  columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
               {this.state.picDetail && <PicDetail detail = {this.state.detail} cancel = {this.cancel}/>}
             </div>
           
@@ -291,3 +361,7 @@ export default class Recode extends Component {
     )
   }
 }
+
+const Recode = withRouter(TRecode)
+
+export default Recode

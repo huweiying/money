@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 // import Routers from '../router/router'
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 import Header from '../component/header'
 import { withRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'

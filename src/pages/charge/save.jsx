@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link , withRouter } from 'react-router-dom'
 import { Table , Input , Button , Form , Select,DatePicker ,message,Spin , Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -11,6 +11,9 @@ const confirm = Modal.confirm;
 class TopForm extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      data:{}
+    }
   }
   handleSearch =()=>{
     this.props.form.validateFields((err, values) => {
@@ -22,14 +25,23 @@ class TopForm extends Component {
         if(data){
           //默认查找第一页开始
           this.props.getSearch(data);
-          // data.currPage = 1;
-          // this.props.init(data)
+         
         }
     });
   }
+  componentWillReceiveProps(nextProps){
+    let obj = [];
+    decodeURIComponent(nextProps.history.location.search).slice(1,).split('&').forEach((v,i)=>{
+      obj[v.split('=')[0]] = v.split('=')[1] ?  v.split('=')[1] : '';
+    })
+    this.setState({
+      data:obj
+    })
+  }
   clear = ()=>{
     this.props.form.resetFields();
-    this.props.init({})
+    this.props.clearKeyWord();
+    this.props.history.push('save?currPage=1')
   }
   render(){
     const { getFieldDecorator, resetFields } = this.props.form;
@@ -38,7 +50,9 @@ class TopForm extends Component {
       <Form className = 'topForm clean'>
             <div className = 'fl'>
               <FormItem label = '车牌号码：' className = 'formItem'>
-                {getFieldDecorator('vehicleId')(
+                {getFieldDecorator('vehicleId',{
+                  initialValue:this.state.data.vehicleId
+                })(
                   <Input />
                 )}
               </FormItem>
@@ -46,7 +60,9 @@ class TopForm extends Component {
             </div>
             <div className = 'fl'>
               <FormItem label = '公司车队：' className = 'formItem'>
-                {getFieldDecorator('teamName')(
+                {getFieldDecorator('teamName',{
+                  initialValue:this.state.data.teamName
+                })(
                   <Input />
                 )}
               </FormItem>
@@ -63,7 +79,7 @@ class TopForm extends Component {
   }
   
 }
-const SearchForm = Form.create({
+const TSearchForm = Form.create({
   mapPropsToFields(props) {
     return {
       init: Form.createFormField({
@@ -72,9 +88,16 @@ const SearchForm = Form.create({
       getSearch: Form.createFormField({
         value: props.getSearch,
       }),
+      clearKeyWord: Form.createFormField({
+        value: props.clearKeyWord,
+      }),
     }
   },
 })(TopForm)
+
+const SearchForm = withRouter(TSearchForm)
+
+
 
 
 // 收费信息弹窗
@@ -213,7 +236,7 @@ class TMsgDetail extends Component{
                   required: true, message: '请输入截止时间',
                 }],
               })(
-                <DatePicker />
+                <DatePicker placeholder='选择时间'/>
               )}
             </FormItem>
           </div>
@@ -266,14 +289,14 @@ class TMsgDetail extends Component{
 }
 const MsgDetail = Form.create()(TMsgDetail)
 
-export default class Save extends Component {
+class TSave extends Component {
   constructor(props) {
     super(props)
     this.state = {
       loading:true,
       showDiglog:false,
       currPage:1,
-      pageSize:13,
+      pageSize:10,
       keyWord:{},//搜索关键字
       data:[],//table数据
       total:'',//总页数
@@ -281,13 +304,24 @@ export default class Save extends Component {
     }
   }
   componentWillMount(){
-    this.init({})
+    this.init()
   }
-  init=(data)=>{
-    !data.currPage && (data.currPage = this.state.currPage);
-    data.pageSize = this.state.pageSize;
+  componentWillReceiveProps(nextProps){
+    this.init(decodeURIComponent(nextProps.location.search))
+  }
+  init=(url = decodeURIComponent(this.props.location.search))=>{
+    let data = {}
+    if(url){
+      url.slice(1,).split('&').forEach((v,i)=>{
+        let key = v.split('=')[0]
+        let value = v.split('=')[1]
+        data[key] = value
+      })
+    }
+    !data.currPage && (data.currPage = this.state.currPage) 
+    !data.pageSize && (data.pageSize = this.state.pageSize) 
     window.$Funs.$AJAX('getChargelist','get',data,(res)=>{
-      let data = res.data.map((v,i)=>{
+      let arr = res.data.map((v,i)=>{
         v.key = i;
         v.leaveFactoryInstall = v.leaveFactoryInstall == 0 ? '否' : '是';
         v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0];
@@ -296,32 +330,61 @@ export default class Save extends Component {
         return v
       })
       this.setState({
-        data : data,
+        data : arr,
         total: res.count,
+        currPage:Number(data.currPage),
         loading:false
       })
     })
   }
   getSearch=(data)=>{
-    if(data){
-      this.setState({
-        keyWord:data,
-        currPage:1,
-        loading:true
-      },()=>{
-        this.init(data)
-      })
-    }
-  }
-  pageChange = (page)=>{
     this.setState({
-      currPage:page,
-      loading:true,
-    },()=>{
-      let data = this.state.keyWord;
-      this.init(data)
+      keyWord:data
+    })
+    let str = '';
+    for(let v in data){
+      str = str + '&' + v + '=' + data[v]
+    }
+    let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+str)
+    this.props.history.push('save?'+url)
+
+  }
+  clearKeyWord = ()=>{
+    this.setState({
+      keyWord:{}
     })
   }
+  pageChange = (page)=>{
+    let keyWord = this.state.keyWord;
+    if(keyWord){
+      var str = '';
+      for(let v in keyWord){
+        str = str + '&' + v + '=' + keyWord[v]
+      }
+    }
+    let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+str)
+    this.props.history.push('save?'+url)
+  }
+  // getSearch=(data)=>{
+  //   if(data){
+  //     this.setState({
+  //       keyWord:data,
+  //       currPage:1,
+  //       loading:true
+  //     },()=>{
+  //       this.init(data)
+  //     })
+  //   }
+  // }
+  // pageChange = (page)=>{
+  //   this.setState({
+  //     currPage:page,
+  //     loading:true,
+  //   },()=>{
+  //     let data = this.state.keyWord;
+  //     this.init(data)
+  //   })
+  // }
   addEntry = (item)=>{
     this.setState({
       showDiglog:true,
@@ -351,11 +414,15 @@ export default class Save extends Component {
     return (
       <div className = 'save'>
         <Spin spinning = {this.state.loading} size='large'>
-        <SearchForm init={this.init} getSearch = {this.getSearch} />
-          <Table  columns={columns} dataSource={this.state.data} scroll={{y:400}}  pagination = {{ defaultPageSize:13,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+        <SearchForm init={this.init} getSearch = {this.getSearch} clearKeyWord = { this.clearKeyWord }/>
+          <Table  columns={columns} dataSource={this.state.data} scroll={{y:400}}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
           {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
         </Spin>
       </div>
     )
   }
 }
+
+const Save = withRouter(TSave)
+
+export default Save
