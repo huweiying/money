@@ -8,7 +8,7 @@ import Finds from "../../component/find"
 import Arrs from "../../assets/js/formArray"
 const columns = [
     { title: '车牌号码', width: 100, dataIndex: 'vehiclePlate',align: 'center' },
-    // { title: '申请日期', width: 100, dataIndex: 'paymentDate' ,align: 'center' },
+    { title: '打印类型', width: 100, dataIndex: 'newstatus' ,align: 'center' },
     { title: '公司车队', dataIndex: 'teamName', width: 150 ,align: 'center' },
     { title: '车辆类型', dataIndex: 'typeName',  width: 150 ,align: 'center' },
     { title: '付款时间', dataIndex: 'paymentDate',  width: 150 ,align: 'center' },
@@ -28,7 +28,8 @@ export default class Audit extends Component {
            navcur:0,
            form:{},
            ck:[],
-           loading:true
+           loading:true,
+           status:["正常缴费打印","旧车辆打印","补全信息后打印"]
         }
     }
     componentWillMount() {
@@ -52,7 +53,7 @@ export default class Audit extends Component {
       })
       this.list(Arr)
     }
-    list(data){
+    list=(data)=>{
       this.setState({
         loading:true
       },()=>{
@@ -61,6 +62,7 @@ export default class Audit extends Component {
            // window.$Funs.format(v.paymentDate)
             // v.paymentDate=window.$Funs.format(v.paymentDate)
             // v.deadlineDate=window.$Funs.format(v.deadlineDate)
+            v.newstatus=this.state.status[v.type-1]
             v.paymentDate = window.$Funs.formatDate(v.paymentDate)
             v.key = i
             return v

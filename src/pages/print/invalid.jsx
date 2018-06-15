@@ -147,7 +147,7 @@ export default class Invalid extends Component {
           }
         </div>
         <Spin spinning={this.state.loading} size='large'>
-        <Finds Formbody={Arrs.prove} sub={mode => this.sub(mode)} />
+        <Finds Formbody={Arrs.prove.prove} sub={mode => this.sub(mode)} />
         {
           this.state.navcur==0 && <div className="fath">
             <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.list} scroll={{ y: 400 }} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />

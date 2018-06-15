@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Table, Input, Button, Form, Select, Pagination, Modal, message, Breadcrumb ,Radio,Spin} from 'antd';
+import { Table, Input, Button, Form, Select, Pagination, Modal, message, Breadcrumb ,Radio,Spin,Switch} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -9,7 +9,6 @@ import Arrs from "../../assets/js/formArray"
 import domtoimage from "dom-to-image";
 // import { renderRoutes } from 'react-router-config'
 
-
 const itemColumns = [
   { title: '证明编号', dataIndex: 'num', key: 'it-num', width: 150, align: 'center' },
   { title: '打印时间', dataIndex: 'createTime', key: 'it-createTime', width: 200, align: 'center' },
@@ -17,7 +16,7 @@ const itemColumns = [
   { title: '是否作废', dataIndex: 'status', width: 150, key: 'status', align: 'center' }
 ];
 
-class MainList extends Component {
+class MainList extends Component {  
   constructor(props) {
     super(props)
     this.state = {
@@ -34,7 +33,27 @@ class MainList extends Component {
       print: {
 
       },
-      close: true
+      close: true,
+      nav:{
+        selected:0,
+        list:[
+          {
+            tit:"付费后打印",
+            href:'1',
+            selected:true
+          },
+          {
+            tit:"旧车辆打印",
+            href:'2',
+            selected:false
+          },
+          {
+            tit:"补全信息打印",
+            href:'3',
+            selected:false
+          }
+        ]
+      }
     }
   }
   componentWillMount() {
@@ -55,23 +74,61 @@ class MainList extends Component {
       this.list(Arr)
     })
   }
-  list(data) {
-    window.$Funs.$AJAX('proves', 'get', data, res => {
-      res.data = res.data.map((v, i) => {
-        // window.$Funs.format(v.paymentDate)
-        v.paymentDate = window.$Funs.formatDate(v.paymentDate)
-        v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
-        v.nowstatus = this.state.status[v.status];
-        v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
-        v.key = i
-        return v
+  list=(data)=>{
+    let index=this.state.nav.selected;
+    if(index==0){
+      window.$Funs.$AJAX('proves', 'get', data, res => {
+        res.data = res.data.map((v, i) => {
+          // window.$Funs.format(v.paymentDate)
+          v.paymentDate = window.$Funs.formatDate(v.paymentDate)
+          v.deadlineDate = window.$Funs.formatDate(v.deadlineDate)
+          v.nowstatus = this.state.status[v.status];
+          v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
+          v.key = i
+          return v
+        })
+        this.setState({
+          list: res.data,
+          total: res.count,
+          loading:false
+        })
       })
-      this.setState({
-        list: res.data,
-        total: res.count,
-        loading:false
+    }
+    else if(index==1){
+      window.$Funs.$AJAX('cars', 'get', data, res => {
+        res.data = res.data.map((v, i) => {
+          // window.$Funs.format(v.paymentDate)
+          v.nowstatus = this.state.status[v.status];
+          v.leaveFactoryDate = v.leaveFactoryDate.split(' ')[0]
+          v.key = i
+          return v
+        })
+        this.setState({
+          list: res.data,
+          total: res.count,
+          loading:false
+        })
       })
-    })
+    }else{
+      window.$Funs.$AJAX('newCars', 'get', data, res => {
+        let data = res.data.map((v,i)=>{
+          v.carDto.key = i;
+          v.carDto.proid=v.id;
+          v.carDto.newstatus=v.status;
+          v.carDto.printHistoryDTOS=v.printHistoryDTOS;
+          v.carDto.leaveFactoryDate = v.carDto.leaveFactoryDate.split(' ')[0];
+          v.stop == 0 ? v.carDto.stop = '否' : v.carDto.stop = '是' 
+          v.carDto.photoCodes = v.photoCodes; 
+          return v.carDto
+        })
+
+        this.setState({
+          list: data,
+          total: res.count,
+          loading:false
+        })
+      })
+    }
   }
   pageChange = (page) => {
     this.setState({
@@ -86,15 +143,17 @@ class MainList extends Component {
       this.list(Brr)
     })
   }
-  sh(id,index) {
+  sh=(id,index)=>{
     let data = this.state.list, _this = this;
+    let type=parseInt(_this.state.nav.selected)+1;
+    console.log(type)
     Modal.confirm({
       title: '申请打印',
       content: '确认提交？',
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        window.$Funs.$AJAX("prove/" + id + "/" + window.$Funs.cook.get('name'), "post", null, e => {
+        window.$Funs.$AJAX("prove/" + id + "/" + window.$Funs.cook.get('name')+"?type="+type, "post", null, e => {
           data[index].nowstatus = '审核中'
           data[index].status = 1
           _this.setState({
@@ -120,7 +179,6 @@ class MainList extends Component {
         id: id
       }
     },() => {
-      
       window.scroll(0,2000) 
     })
   }
@@ -141,20 +199,40 @@ class MainList extends Component {
     });
   }
   want=()=>{
-    this.props.want(this.state.print.id);
+    let type=parseInt(this.state.nav.selected)+1;
+    this.props.want(this.state.print.id,type);
+  }
+  prosct=(index)=>{
+    document.getElementById("form").reset()
+    let nav=this.state.nav;
+    if(nav.list[index].selected) return false;
+    for(let val of nav.list){
+      val.selected=false
+    }
+    nav.selected=index;
+    nav.list[index].selected=true;
+    this.setState({
+      nav:nav,
+      form:{},
+      nowpage:1
+    },);
+    this.list({
+      currPage: 1,
+      pageSize: 10
+    })
+    
   }
   render() {
-    // const bread = (
-    //   <Breadcrumb>
-    //     <Breadcrumb.Item><Link to="/carInfo/info">车辆资料</Link></Breadcrumb.Item>
-    //     <Breadcrumb.Item>车辆详情</Breadcrumb.Item>
-    //   </Breadcrumb>
-    // );
-    const columns = [
+    let index=this.state.nav.selected, columns = [],x=0;
+    let liketype;
+    if(index==0) {
+      liketype=Arrs.prove.prove;  
+      x=2100;
+      columns = [
       { title: '车牌号', width: 100, dataIndex: 'vehiclePlate', key: 'vehiclePlate', align: 'center' },
-      { title: 'SIM卡号', width: 100, dataIndex: 'sim', key: 'sim', align: 'center' },
+      { title: 'SIM卡号', width: 100, dataIndex: 'sim', key: 'sim', align: 'center'},
       { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 150, align: 'center' },
-      { title: '公司车队', dataIndex: 'teamName', key: 'teamName', width: 150, align: 'center' },
+      { title: '公司车队', dataIndex: 'teamName', key: 'teamName',  width: 150, align: 'center' },
       { title: '付款时间', dataIndex: 'paymentDate', key: 'paymentDate', width: 100, align: 'center' },
       { title: '有效期', dataIndex: 'deadlineDate', key: 'deadlineDate', width: 100, align: 'center' },
       { title: '车辆类型', dataIndex: 'typeName', key: 'typeName', width: 150, align: 'center' },
@@ -165,7 +243,7 @@ class MainList extends Component {
       { title: '发票号', dataIndex: 'invoiceNum', key: 'invoiceNum', width: 150, align: 'center' },
       { title: '安装时间', dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate', width: 100, align: 'center' },
       {
-        title: '操作', key: 'operation', width: 150, align: 'center', fixed: 'right', render: (res, index) => {
+        title: '操作', key: 'operation', width: 150, align:'center',fixed:'right', render: (res, index) => {
           if (res.status == 0 || res.status == 3) {
             return (
               <Button type="primary" onClick={(item) => this.sh(res.id, res.key)}>申请</Button>
@@ -176,10 +254,66 @@ class MainList extends Component {
             )
           }
         }
-      },
-      // { title: '出厂状态', dataIndex: 'address',  width: 150 ,align: 'center'  },
-      // { title: '备注', dataIndex: 'address',  align: 'center'  },
-    ];
+     }]
+    }
+    else if(index==1){
+      liketype=Arrs.prove.entry;
+      x=2100;
+      columns = [
+        { title: '安装日期', width: 100, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },
+        { title: '公司车队', width: 200, dataIndex: 'teamName', key: 'teamName' ,align: 'center' },
+        { title: '车辆类型', dataIndex: 'typeName', key: 'typeName', width: 150 ,align: 'center' },
+        { title: '终端说明', dataIndex: 'deviceName', key: 'deviceName', width: 150 ,align: 'center' },
+        { title: '车牌号', dataIndex: 'vehicleId', key: 'vehicleId', width: 150 ,align: 'center' },
+        { title: 'SIM卡类型', dataIndex: 'simTypeName', key: 'simTypeName', width: 150 ,align: 'center' },
+        { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 150 ,align: 'center' },
+        { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 150 ,align: 'center' },
+        {
+          title: '操作', key: 'entrytion', width: 150, align:'center',fixed:'right', render: (res, index) => {
+         
+            if (res.status == 0 || res.status == 3) {
+              return (
+                <Button type="primary" onClick={(item) => this.sh(res.id, res.key)}>申请</Button>
+              )
+            } else {
+              return (
+                <Button  onClick={() => this.look(res.printHistoryDTOS, res.vehicleId, res.id, res.status)}>详情</Button>
+              )
+            }
+            
+          }
+       }
+      ];
+    }
+    else {
+      liketype=Arrs.prove.info;
+      x=1500;
+      columns=[
+        { title: '安装日期', width: 100, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },
+        { title: '公司车队', width: 100, dataIndex: 'teamName', key: 'teamName' ,align: 'center' },
+        { title: '车辆类型', dataIndex: 'typeName', key: 'typeName', width: 100 ,align: 'center' },
+        { title: '终端说明', dataIndex: 'deviceName', key: 'deviceName', width: 100 ,align: 'center' },
+        { title: '车牌号', dataIndex: 'vehicleId', key: 'vehicleId', width: 100 ,align: 'center' },
+        { title: 'SIM', dataIndex: 'simTypeName', key: 'simTypeName', width: 100 ,align: 'center' },
+        { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 100 ,align: 'center' },
+        { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 100 ,align: 'center' },
+        { title: '是否报停', dataIndex: 'stop', key: 'stop' ,width: 100 ,align: 'center'},
+        {
+          title: '操作', key: 'infotion', width: 150, align:'center',fixed:'right', render: (res, index) => {
+            if (res.newstatus == 0 || res.newstatus == 3) {
+              return (
+                <Button type="primary" onClick={(item) => this.sh(res.proid, res.key)}>申请</Button>
+              )
+            } else {
+              return (
+                <Button  onClick={() => this.look(res.printHistoryDTOS, res.vehicleId, res.proid, res.newstatus)}>详情</Button>
+              )
+            }
+          }
+       }
+      ]
+    }
+   
     function PrintHistory(props) {
       return (
         <div className='fl history'>
@@ -193,26 +327,37 @@ class MainList extends Component {
     }
     return (
       <div className='prove'>
+         <div className="selectbox">
+          {
+            this.state.nav.list.map((v,i)=>{
+              return(
+                <a href="javascript:void(0)" key={i} className={v.selected?'current':' '} data-id={v.href} onClick={this.prosct.bind(this,i)}>{v.tit}</a>
+              )
+            })
+          }
+        </div>
       <Spin spinning={this.state.loading} size='large'>
-        <Finds Formbody={Arrs.prove} sub={mode => this.sub(mode)} />
-        <Table columns={columns} dataSource={this.state.list} scroll={{ x: 2100}} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
-        {
-          this.state.close == false &&
-          <div className='clean'>
-            <PrintHistory car={this.state.car} />
-            <div className='fr apply'>
-              <div className='applyBtn clean'>
-                {
-                  this.state.print.status == '审核中' && <Button type="primary" onClick={this.printfalse.bind(this, this.state.print.id)}>取消申请</Button> ||
-                  this.state.print.status == '已通过' && <Button type="primary" onClick={this.want}>前往打印</Button>
-                }
-              </div>
-              <div className='isApply'>
-                {this.state.print.status}
-              </div>
-            </div>
-          </div>
-        }
+      
+        <Finds Formbody={liketype} sub={mode => this.sub(mode)} />
+              <Table columns={columns} dataSource={this.state.list} scroll={{ x: x}} pagination={{ defaultPageSize: 10, current: this.state.nowpage, total: this.state.total, onChange: this.pageChange }} />
+              {
+                this.state.close == false &&
+                <div className='clean'>
+                  <PrintHistory car={this.state.car} />
+                  <div className='fr apply'>
+                    <div className='applyBtn clean'>
+                      {
+                        this.state.print.status == '审核中' && <Button type="primary" onClick={this.printfalse.bind(this, this.state.print.id)}>取消申请</Button> ||
+                        this.state.print.status == '已通过' && <Button type="primary" onClick={this.want}>前往打印</Button>
+                      }
+                    </div>
+                    <div className='isApply'>
+                      {this.state.print.status}
+                    </div>
+                  </div>
+                </div>
+              }
+
         </Spin>
       </div>
     )
@@ -224,13 +369,23 @@ class Details extends Component {
     super(props)
     this.state = {
       print:false,
-      value:1
+      value:1,
+      cked:false
     }
   }
   onChange=(e)=>{
     this.setState({
       value: e.target.value,
     });
+  }
+  switched=(val)=>{
+    let bool=this.state.cked;
+    if(bool){
+
+    }
+    this.setState({
+      cked:!bool
+    })
   }
   print=(value)=>{
       this.setState({
@@ -239,16 +394,10 @@ class Details extends Component {
      setTimeout(e => {
        var node =value==1?document.getElementById("printA"):document.getElementById("printB");
        domtoimage.toPng(node).then(dataUrl => {
-         //load.close();
-         // let newWindow = "<div style='width='100%;'><img runat='server' src='"+dataUrl+"' style='width='100%;'></div>";   //打开新窗口
          this.setState({
             printimg:dataUrl
          })
-         //let codestr = document.getElementById("node").innerHTML;   //获取需要生成pdf页面的div代码
-         // document.write("");   //向文档写入HTML表达式或者JavaScript代码
-         setTimeout(e => {
-           console.log( document.getElementById("printimg"))
-         
+         setTimeout(e => { 
            var printHtml = document.getElementById("printimg").innerHTML;
            var wind = window.open(
              "",
@@ -331,9 +480,9 @@ class Details extends Component {
               <div className="tit">浙江马良通讯科技有限公司余慈分公司<br/>证  明</div>
               <div className="bhnum">编号:{details.systemPlatformNumber}</div>
               <div className="say">
-                <div className="p">兹有<span>{details.teamName}</span>所属车辆共<span>一</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalTypeNum}</span>，为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span>{details.manufacturer}</span>，厂家编号为<span>{details.factoryNumber}</span>。截止日期为<span>{window.$Funs.format(details.deadlineDate)}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
+                <div className="p">兹有<span>{details.teamName}</span>所属车辆共<span>一</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalTypeNum}</span>，为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span>{details.manufacturer}</span>，厂家编号为<span>{details.factoryNumber}</span>。截止日期为<span>{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
                   <br/>特此证明！
-                  </div>
+                </div>
               </div>
               <div className="cdtable">
                 <div className="mtit">附：安装GPS车辆基础数据信息</div>
@@ -372,6 +521,9 @@ class Details extends Component {
           </div>
         </div>
         <div className="ckbox">
+             <div className="Alignck">
+                <label>单位用户</label><Switch checkedChildren="开" unCheckedChildren="关"  checked={this.state.cked} onChange={this.switched}/>
+             </div>
               <RadioGroup onChange={this.onChange} value={this.state.value}>
                 <Radio value={1}>A格式</Radio>
                 <Radio value={2}>B格式</Radio>
@@ -395,8 +547,9 @@ export default class Prove extends Component {
     }
   }
   want=(type,id,ts)=>{
-    if(id && !ts){
-      window.$Funs.$AJAX("prove/"+id,"get",null,e=>{
+    
+    if(id && ts){
+      window.$Funs.$AJAX("prove/"+id,"get",{type:ts},e=>{
         this.setState({
           details:e,
         })
@@ -410,8 +563,9 @@ export default class Prove extends Component {
   render() {
     return (
       <div className="provemain">
+     
         {
-          this.state.show == 0 && <MainList want={this.want.bind(this,1)}  /> || <Details want={this.want.bind(this,0,9)} details={this.state.details}/>
+          this.state.show == 0 && <MainList want={this.want.bind(this,1)}  /> || <Details want={this.want.bind(this,0)} details={this.state.details}/>
         }
       </div>
     )

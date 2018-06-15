@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Form, Select, Button,DatePicker } from 'antd';
+const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 
@@ -28,7 +29,6 @@ class findbox extends Component {
     }
     handleReset=()=>{         // 重置按钮
         document.getElementById("form").reset()
-        console.log(this.state.form)
         this.setState({
             form:{}
         },()=>{
@@ -48,10 +48,11 @@ class findbox extends Component {
                                         <FormItem label={ele.name + ':'} className='formItem' key={i}>
                                         {
                                             ele.oftype == 'input' &&  <Input placeholder={'请输入' + ele.name} className='' onChange={this.setStateByKey.bind(this, ele.key,ele.oftype) } /> ||
-                                            ele.oftype == 'select' && 
-                                                ele.Select.map((v,i) => {
-                                                    return <Option value={v.value} key={i}>{v.name}</Option>
-                                                }) ||
+                                            ele.oftype == 'select' && <Select onChange={this.setStateByKey.bind(this, ele.key,ele.oftype) }  >{ 
+                                                ele.Select.map((v,i) => { 
+                                                    return <Option value={v.value} key={i}>{v.name}</Option> 
+                                                }) 
+                                            }</Select> ||
                                             ele.oftype == 'RangePicker' && <RangePicker showTime={{ format: 'HH:mm' }} format="YYYY-MM-DD" placeholder={['开始时间', '结束时间']} onChange={this.setStateByKey.bind(this, ele.another,ele.oftype)}/>
                                         }
                                         </FormItem>
