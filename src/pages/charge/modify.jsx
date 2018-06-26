@@ -152,8 +152,10 @@ class TMsgDetail extends Component{
           onOk:()=> {
             values.invoiceNum = values.prefix + values.invoiceNum;
             delete values.prefix;
-            values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
-            values.chargeTime = window.$Funs.formatDate(values.chargeTime);
+            // values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
+            // values.chargeTime = window.$Funs.formatDate(values.chargeTime);
+            values.chargeTime = new Date(this.props.detail.chargeTime).getTime();
+            values.deadlineDate = values.deadlineDate._d.getTime()
             values.id = this.props.detail.chargeid;
             values.newCarId = this.props.detail.newCarId;
             values.vehicleId = this.props.detail.vehicleId;
@@ -192,6 +194,7 @@ class TMsgDetail extends Component{
         <Option value="S">S</Option>
       </Select>
     );
+    console.log(this.props.detail)
     let msgform = (
       <div className = 'detail'>
         <Form layout="inline"  className='clean'>
@@ -207,6 +210,7 @@ class TMsgDetail extends Component{
                 rules: [ {
                   required: true, message: '请输入收费金额',
                 }],
+                initialValue:this.props.detail.moneyAmont
               })(
                 <Input className = 'pay' />
               )}
@@ -220,7 +224,7 @@ class TMsgDetail extends Component{
                 rules: [ {
                   required: true, message: '请输入收费金额',
                 }],
-                initialValue:'现金'
+                initialValue:this.props.detail.payType
               })(
                 <Select  style={{ width: 200 }}>
                   <Option value="现金">现金</Option>
@@ -237,8 +241,9 @@ class TMsgDetail extends Component{
                 rules: [ {
                   required: true, message: '请输入截止时间',
                 }],
+                // initialValue:new Date(this.props.detail.deadlineDate).getTime()
               })(
-                <DatePicker />
+                <DatePicker placeholder='截止时间'/>
               )}
             </FormItem>
           </div>
@@ -248,6 +253,7 @@ class TMsgDetail extends Component{
                 rules: [ {
                   required: true, message: '请输入发票（或收据）号码',
                 }],
+                initialValue:this.props.detail.invoiceNum.slice(1,)
               })(
                 <Input  addonBefore={prefixSelector} style={{ width: '100%' }} />
               )}
@@ -255,9 +261,9 @@ class TMsgDetail extends Component{
           </div>
           <FormItem label = '收费备注：' className = 'formItem fl clean'>
             {getFieldDecorator('remark', {
-              rules: [ {
-                required: true, message: '请输入收费备注',
-              }],
+              // rules: [ {
+              //   required: true, message: '请输入收费备注',
+              // }],
             })(
               <TextArea rows={3} />
             )}

@@ -20,7 +20,7 @@ const cook = {
     cook.set(name, "", -1);
   }
 };
-const Basse_Port = "http://192.168.1.82:8899/api/v1/";
+const Basse_Port = "http://122.227.217.62:9106/api/v1/";
 const main={
   cook: cook,
   Basse_Port: Basse_Port,

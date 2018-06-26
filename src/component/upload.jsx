@@ -24,7 +24,6 @@ class Avatar extends React.Component {
     loading: false,
   };
   handleChange = (info) => {
-    console.log(info)
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
       return;
@@ -36,7 +35,7 @@ class Avatar extends React.Component {
         loading: false,
       }));
       let obj = {type:this.props.type,photoCode:info.file.response}
-      this.props.getPic(obj)
+      this.props.getPic(obj,this.props.type)
     }
   }
   render() {

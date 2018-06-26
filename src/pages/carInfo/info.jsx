@@ -178,7 +178,16 @@ class Picshow extends Component {
           <div className = 'first fl' >
             <span>
               <p>{this.props.picArr[2].type == 0 ? '车辆登记证书' :(this.props.picArr[2].type == 1 ? '行驶证' : '车身照片')}</p>
-              <img src={this.props.picArr[1].photoCode} onClick={this.open.bind(this,this.props.picArr[2].photoCode)} />
+              <img src={this.props.picArr[2].photoCode} onClick={this.open.bind(this,this.props.picArr[2].photoCode)} />
+            </span>
+           
+          </div>
+        }
+        {this.props.picArr[3] && 
+          <div className = 'first fl' >
+            <span>
+              <p>{this.props.picArr[3].type == 0 ? '车辆登记证书' :(this.props.picArr[3].type == 1 ? '行驶证' : '车身照片')}</p>
+              <img src={this.props.picArr[3].photoCode} onClick={this.open.bind(this,this.props.picArr[3].photoCode)} />
             </span>
            
           </div>

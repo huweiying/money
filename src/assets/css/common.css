@@ -555,9 +555,13 @@ header .select .subNav {
 .container .info .ant-spin-container {
   margin-top: 20px;
 }
+.container .info .main {
+  display: flex;
+  justify-content: space-around;
+}
 .container .info .first {
   margin: 0px 14px;
-  width: 30.3%;
+  width: 22.3%;
   height: 390px;
   display: table;
   vertical-align: middle;
@@ -573,6 +577,7 @@ header .select .subNav {
 }
 .container .info .first img {
   max-width: 100%;
+  max-height: 380px;
 }
 .container .dataQuery .topForm .ant-btn,
 .container .query .topForm .ant-btn,
@@ -1142,6 +1147,7 @@ header .select .subNav {
 }
 .container .recode .picDialog .main .item span img {
   max-width: 100%;
+  max-height: 380px;
   cursor: pointer;
 }
 .container .recode .nav {
@@ -1174,6 +1180,7 @@ header .select .subNav {
 }
 .container .person .top {
   padding: 0 20px;
+  overflow: hidden;
   box-sizing: border-box;
 }
 .container .person .top .ant-btn {
@@ -1181,10 +1188,12 @@ header .select .subNav {
 }
 .container .person .main_con {
   margin-top: 20px;
+  overflow: hidden;
 }
 .container .person .main_con .left {
   background: #fff;
   height: 600px;
+  width: 256px;
 }
 .container .person .main_con .title {
   text-align: center;
@@ -1212,7 +1221,6 @@ header .select .subNav {
 }
 .container .person .main_con .right {
   width: 1150px;
-  margin-top: 10px;
 }
 .container .person .main_con .right .ant-table-wrapper {
   margin-top: 0px;
@@ -1305,6 +1313,8 @@ header .select .subNav {
 .container .pribox .rtbox span {
   border-bottom: 1px solid #000;
   padding: 0 6px;
+  min-width: 40px;
+  text-align: center;
 }
 .container .pribox .lfbox .absoubox,
 .container .pribox .rtbox .absoubox {
@@ -1382,7 +1392,7 @@ header .select .subNav {
 }
 .container .pribox .rtbox .say .p {
   text-indent: 2em;
-  line-height: 34px;
+  line-height: 29px;
 }
 .container .pribox .rtbox .say .p span {
   text-indent: 0;
@@ -1473,6 +1483,7 @@ header .select .subNav {
   height: 100%;
   top: 0;
   left: 0;
+  opacity: 0;
   z-index: 111;
   overflow: hidden;
   font-family: '宋体';
@@ -1542,7 +1553,7 @@ header .select .subNav {
   top: 50%;
   left: 50%;
   z-index: 100;
-  width: 1200px;
+  height: 100vh;
   transform: translate(-50%, -50%);
 }
 .Alignck {

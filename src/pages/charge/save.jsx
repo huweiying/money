@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link , withRouter } from 'react-router-dom'
+import moment from 'moment';
 import { Table , Input , Button , Form , Select,DatePicker ,message,Spin , Modal} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -161,6 +162,8 @@ class TMsgDetail extends Component{
     });
   }
   render(){
+    console.log(this.props.detail.deadlineDate)
+    
     const recodeColumns = [
       { title: '公司车队', width: 250, dataIndex: 'teamName' , key:'teamName',align: 'center' },
       { title: '车牌号码', dataIndex: 'vehicleId',key:'vehicleId', width: 100 ,align: 'center' },
@@ -235,8 +238,11 @@ class TMsgDetail extends Component{
                 rules: [ {
                   required: true, message: '请输入截止时间',
                 }],
+                initialValue:(this.props.detail.deadlineDate != '无') ? moment(this.props.detail.deadlineDate,'YYYY-MM-DD') : ''
               })(
-                <DatePicker placeholder='选择时间'/>
+                <DatePicker placeholder='选择时间' disabledDate={(current)=>{ if(this.props.detail.deadlineDate == '无'){return false}
+                  return current && current < moment(this.props.detail.deadlineDate,'YYYY-MM-DD').endOf('day')
+                }}/>
               )}
             </FormItem>
           </div>

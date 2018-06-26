@@ -86,6 +86,7 @@ class TMsgDetail extends Component {
 
   handleSubmit = () => {
     this.props.form.validateFields((err, values) => {
+      console.log(values)
       if (!err) {
         values.id = this.props.detail.id;
         values.department = this.state.departmentid;
@@ -141,7 +142,6 @@ class TMsgDetail extends Component {
     // let Arr=this.props.nav;
   };
   render() {
-    console.log(this.props.detail)
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
@@ -279,17 +279,14 @@ class TMsgDetail extends Component {
                     required: true,
                   }
                 ],
-                initialValue: this.props.detail.id
+                initialValue: this.props.detail.department
               })(
-                <div>
                   <Select
                     style={{ width: 200 }}
                     onChange={this.handleDepartmentChange.bind(this, 0)}
-                    // defaultValue={this.props.detail.department}
                   >
                     {department}
                   </Select>
-                </div>
               )}
             </FormItem>
             {this.state.group.length > 0 && (
@@ -378,7 +375,7 @@ class Department extends Component{
     }
     if(this.state.departmentName){//添加部门
       window.$Funs.$AJAX('department','post',{'departmentName':this.state.departmentName,'inputMan':window.$Funs.cook.get('id')},(res)=>{
-        console.log(res)
+        
         if(this.state.groupName){//添加部门分组
           window.$Funs.$AJAX('group','post',{'department':res.id,'groupName':this.state.groupName,'inputMan':window.$Funs.cook.get('id')},(res)=>{
             if(this.state.newGroupName){
@@ -409,9 +406,6 @@ class Department extends Component{
 
   }
   render(){
-    let select = this.props.nav.map((v,i)=>{
-      return <Option value={v.id} key = {i}>{v.departmentName}</Option>
-    })
     return (
       <div className = 'depModal'>
         <div className = 'mask'></div>
@@ -420,15 +414,22 @@ class Department extends Component{
           <Divider>新增部门及分组</Divider>
           <div className='group clean'>
             <Input className = 'fl' placeholder="请输入部门名称" onChange={(e)=>{this.setState({departmentName:e.target.value})}}/> 
-            <Input className = 'fr' placeholder="请输入部门名称" onChange={(e)=>{this.setState({groupName:e.target.value})}}/> 
+            <Input className = 'fr' placeholder="请输入分组名称" onChange={(e)=>{this.setState({groupName:e.target.value})}}/> 
           </div>
-          <Divider>新增现有部门分组</Divider>
-          <div className = 'group clean'>
-            <Select defaultValue={this.props.nav[0].id} style={{ width: 200 }} onChange={this.handleChange} className='fl'>
-              {select}
-            </Select>
-            <Input placeholder="请输入分组名称" style={{ width: 200 }} className='fr' onChange={(e)=>{this.setState({newGroupName:e.target.value})}} /> 
-          </div>
+          {this.props.nav.length>0 && <div>
+              <Divider>新增现有部门分组</Divider>
+              <div className = 'group clean'>
+                <Select defaultValue={this.props.nav[0].id} style={{ width: 200 }} onChange={this.handleChange} className='fl'>
+                  {
+                    this.props.nav.map((v,i)=>{
+                      return <Option value={v.id} key = {i}>{v.departmentName}</Option>
+                    })
+                  }
+                </Select>
+              <Input placeholder="请输入分组名称" style={{ width: 200 }} className='fr' onChange={(e)=>{this.setState({newGroupName:e.target.value})}} />
+              </div>
+            </div>
+            }
           <div className = 'btns clean'>
             <Button className="fr" onClick = {this.props.close}>取消</Button>
             <Button type="primary" className="fr" onClick = {this.confirm}>确认</Button>
@@ -438,7 +439,6 @@ class Department extends Component{
     )
   }
 }
-
 export default class Person extends Component {
   constructor(props) {
     super(props);
@@ -460,16 +460,22 @@ export default class Person extends Component {
     };
   }
   componentWillMount = () => {
-    window.$Funs.$AJAX("department", "get", "", res => {
-      this.setState({
-        nav: res
-      });
-      let post = {
-        department: res[0].id,
-        page: this.state.currPage,
-        size: this.state.pageSize,
-      };
-      this.init(post);
+    window.$Funs.$AJAX("department", "get", null, res => {
+      if(res.length>0){
+        this.setState({
+          nav: res
+        });
+        let post = {
+          department: res[0].id,
+          page: this.state.currPage,
+          size: this.state.pageSize,
+        };
+        this.init(post);
+      }else{
+        this.setState({
+          loading:false
+        })
+      }
     });
   };
   init = obj => {

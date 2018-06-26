@@ -54,9 +54,7 @@ function CarDetail(props){//查看车辆详情
   
   componentWillMount(){
     window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{//生产厂家
-      console.log(res)
       window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//z终端生产厂家
-        console.log(data)
         this.setState({
           product:res,
           subitem:data
@@ -103,8 +101,6 @@ function CarDetail(props){//查看车辆详情
     }
     this.setState({
       photoCodes:arr
-    },()=>{
-      // console.log(this.state.photoCodes)
     })
   }
   render() {
@@ -288,6 +284,9 @@ function CarDetail(props){//查看车辆详情
                   </FormItem>
                 </div>
                 <div className = "row clean">
+                  <FormItem label = '车辆登记证书' className = 'formItem clean'>
+                    <Avatar type = '0' getPic={this.getPic}/>
+                  </FormItem>
                   <FormItem label = '车辆登记证书' className = 'formItem clean'>
                     <Avatar type = '0' getPic={this.getPic}/>
                   </FormItem>
