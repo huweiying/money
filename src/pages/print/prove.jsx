@@ -370,7 +370,8 @@ class Details extends Component {
     this.state = {
       print:false,
       value:1,
-      cked:false
+      cked:false,
+      details:null
     }
   }
   onChange=(e)=>{
@@ -416,6 +417,22 @@ class Details extends Component {
      }, 1000);
     },500)
   }
+  xg(e,obj){
+    let _this=this;
+    Modal.confirm({
+      title: '修改',
+      content:(<input defaultValue={e} id="xg"/>),
+      okText: '确认',
+      cancelText: '取消',
+      onOk(){
+        let arr=_this.props.details;
+        arr.obj=document.getElementById("xg").value;
+        _this.setState({
+          details:arr
+        })
+      }
+    });
+  }
   lets(e){
     let a="&nbsp;&nbsp;&nbsp;&nbsp;"
     if(!e) return a
@@ -443,10 +460,10 @@ class Details extends Component {
               <div className="tit">道路运输车辆卫星定位装置安装证明</div>
               <div className="say">
                 <div className="absoubox">运营商存根</div>
-                <div className="p">兹有 <span  dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>
-                  安装 <span dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span> 卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalTypeNum)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家名称为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
-                  批符合道路运输车辆卫星定位系统标准的平台,平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)作为企业监控平台，并已接入政府监管平台,运行正常。
-                  </div>
+                <div className="p">兹有 <span onClick={this.xg.bind(this,details.teamName,'teamName')} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}> </span> 车牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于(<span>{window.$Funs.format(details.leaveFactoryDate)}</span>,车辆出厂前)
+                安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端)，生产厂家为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span  dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>,SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
+                批符合道路运输车辆卫星定位系统标准的系统平台),平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>，作为企业监控平台，并已接入政府监管平台,运行正常。
+                </div>
                 <div className="p">
                   特此证明。
                     </div>
@@ -470,11 +487,16 @@ class Details extends Component {
                   (为第<span>{details.terminalOrder}</span>批符合道路运输车辆卫星定位系统标准的车载终端,生产厂家名称为<span>{details.manufacturer}</span>,厂家编号为<span>{details.factoryNumber}</span>,车载终端序列号为
                   <span>{details.manageNum}</span>),SIM卡号为<span>{details.sim}</span>,采用<span>{details.systemPlatform}</span>(第<span>{details.systemPlatformOrder}</span>
                   批符合道路运输车辆卫星定位系统标准的平台,平台编号<span>{details.systemPlatformNumber}</span>)作为企业监控平台，并已接入政府监管平台,运行正常。
-                  </div>*/
+                  </div>
+                   <div className="p">兹有 <span  dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>
+                  安装 <span dangerouslySetInnerHTML={{__html:this.lets(details.terminalTypeNum)}}></span> 卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家名称为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
+                  批符合道路运输车辆卫星定位系统标准的平台,平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)作为企业监控平台，并已接入政府监管平台,运行正常。
+                  </div>
+                  */
                 }
-                <div className="p">兹有 <span dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>
-                安装 <span dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span> 卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalTypeNum)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家名称为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
-                批符合道路运输车辆卫星定位系统标准的平台,平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)作为企业监控平台，并已接入政府监管平台,运行正常。
+                <div className="p">兹有 <span dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于(<span>{window.$Funs.format(details.leaveFactoryDate)}</span>,车辆出厂前)
+                安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
+                批符合道路运输车辆卫星定位系统标准的系统平台,平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)，作为企业监控平台，并已接入政府监管平台,运行正常。
                 </div>
                 <div className="p">
                   特此证明。
@@ -491,7 +513,7 @@ class Details extends Component {
               <div className="tit">浙江马良通讯科技有限公司余慈分公司<br/>证  明</div>
               <div className="bhnum">编号:{details.systemPlatformNumber}</div>
               <div className="say">
-                <div className="p">兹有<span dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span>所属车辆共<span>一</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalTypeNum}</span>，为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span  dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>，厂家编号为<span  dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>。截止日期为<span>{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
+                <div className="p">兹有<span dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span>所属车辆共<span>壹</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalType}</span>，为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span  dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>，厂家编号为<span  dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>。截止日期为<span>{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
                   <br/>特此证明！
                 </div>
               </div>

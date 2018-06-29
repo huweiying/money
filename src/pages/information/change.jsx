@@ -149,21 +149,41 @@ class TChgForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      terminalType:[],
+      // terminalType:[],
       simTypeName:[],
+      product:[],
+      termType3:'',
+      termType4:'',
+
     }
   }
   componentWillMount(){
-    window.$Funs.$AJAX('ziDian','get',{type:3},(res)=>{
-      this.setState({
-        terminalType:res
-      },()=>{
-        window.$Funs.$AJAX('ziDian','get',{type:4},(res)=>{
-          this.setState({
-            simTypeName:res
+    window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{//生产厂家
+      window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//z终端生产厂家
+        this.setState({
+          product:res,
+          subitem:data
+        },()=>{
+          window.$Funs.$AJAX('ziDian','get',{type:4},(res)=>{
+            this.setState({
+              simTypeName:res
+            })
           })
         })
-      })
+       })
+    })
+  }
+  handleSelect=(type,v)=>{
+    window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:v},(data)=>{//
+      if(type == 3){
+        this.setState({
+          termType3:data.termType
+        })
+      }else{
+        this.setState({
+          termType4:data.termType
+        })
+      }
     })
   }
   handleSubmit=()=>{
@@ -190,12 +210,28 @@ class TChgForm extends Component {
               }else if(v.split('_')[0] == 2){
                 values[v] && (informationChangeDto.transferChangeDto[v.split('_')[1]] = values[v]);
               }else if(v.split('_')[0] == 3){
-                values[v] && (informationChangeDto.terminalChangeDto[v.split('_')[1]] = values[v]);
+                // if(v == '3_newProduct' && values[v]){
+                //   informationChangeDto.terminalChangeDto.newTerminalType = this.state.termType3;
+                //   // window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:values[v]},(data)=>{//
+                //   //   informationChangeDto.terminalChangeDto.newTerminalType = data.termType;
+                //   // })
+                // }else{
+                  values[v] && (informationChangeDto.terminalChangeDto[v.split('_')[1]] = values[v]);
+                // }
               }else{
-                values[v] && (informationChangeDto.simChangeDto[v.split('_')[1]] = values[v]);
+                // if(v == '4_newProduct' && values[v]){
+                //   informationChangeDto.simChangeDto.newTerminalType = this.state.termType4;
+                //   // window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:values[v]},(data)=>{//
+                //   //   informationChangeDto.simChangeDto.newTerminalType = data.termType;
+                //   // })
+                // }else{
+                  values[v] && (informationChangeDto.simChangeDto[v.split('_')[1]] = values[v]);
+                // }
               }
             })
             let obj = {}
+            this.state.termType3 && (informationChangeDto.terminalChangeDto.newTerminalType = this.state.termType3);
+            this.state.termType4 && (informationChangeDto.simChangeDto.newTerminalType = this.state.termType4);
             for(var p in informationChangeDto){
               !(JSON.stringify(informationChangeDto[p])=="{}") && (obj[p] = informationChangeDto[p])
             }
@@ -331,18 +367,15 @@ class TChgForm extends Component {
               </div>
               <div className = 'row clean'>
                 <UnabledItem label='原终端号' value={this.props.detail.manageNum}/>
-                  { this.state.terminalType.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
-                    {getFieldDecorator('3_newTerminalType', {
-                      // initialValue:this.state.terminalType[0]
-                    })(
-                      <Select  style={{ width: 120 }}>
+                  { this.state.product.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新生产厂家'>
+                
+                      <Select  style={{ width: 120 }} onChange={this.handleSelect.bind(this,3)}>
                         {
-                          this.state.terminalType.map((v,i)=>{
+                          this.state.product.map((v,i)=>{
                             return <Option value={v} key={i}>{v}</Option>
                           })
                         }
                       </Select>
-                    )}
                   </FormItem>}
                 <FormItem className = 'formItem clean'{...formItemLayout}  label="新终端号">
                     {getFieldDecorator('3_newManageNum', {
@@ -383,18 +416,15 @@ class TChgForm extends Component {
               <div className = 'row clean'>
                 <UnabledItem label='车牌号' value={this.props.detail.vehicleId}/>
                 <UnabledItem label='原终端号' value='123213'/>
-                { this.state.terminalType.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新终端类型'>
-                    {getFieldDecorator('4_newTerminalType', {
-                      // initialValue:this.state.terminalType[0]
-                    })(
-                      <Select  style={{ width: 120 }}>
+                { this.state.product.length > 0 && <FormItem className = 'formItem clean'{...formItemLayout} label='新生产厂家'>
+                 
+                      <Select  style={{ width: 120 }}  onChange={this.handleSelect.bind(this,4)}>
                         {
-                          this.state.terminalType.map((v,i)=>{
+                          this.state.product.map((v,i)=>{
                             return <Option value={v} key={i}>{v}</Option>
                           })
                         }
                       </Select>
-                    )}
                   </FormItem>}
                 <FormItem className = 'formItem clean'{...formItemLayout}  label="新终端号">
                     {getFieldDecorator('4_newManageNum', {
