@@ -146,7 +146,7 @@ class TMsgDetail extends Component{
       if(!err){
         confirm({
           title: '提示',
-          content: '确认提交补全信息？',
+          content: '确认提交修改信息？',
           okText:'确认',
           cancelText:'取消',
           onOk:()=> {
@@ -162,9 +162,10 @@ class TMsgDetail extends Component{
             values.teamName = this.props.detail.teamName;
             values.inputMan = window.$Funs.cook.get('id');
             values.inputManName = window.$Funs.cook.get('name');
-            window.$Funs.$AJAX('charge','post',values,(res)=>{
+            window.$Funs.$AJAX('charge','patch',values,(res)=>{
               message.success('修改成功');
               this.props.cancel()
+              this.props.init();
             })      
           },
           onCancel() {
@@ -194,7 +195,6 @@ class TMsgDetail extends Component{
         <Option value="S">S</Option>
       </Select>
     );
-    console.log(this.props.detail)
     let msgform = (
       <div className = 'detail'>
         <Form layout="inline"  className='clean'>
@@ -241,7 +241,7 @@ class TMsgDetail extends Component{
                 rules: [ {
                   required: true, message: '请输入截止时间',
                 }],
-                // initialValue:new Date(this.props.detail.deadlineDate).getTime()
+                initialValue:(this.props.detail.deadlineDate) ? moment(this.props.detail.deadlineDate,'YYYY-MM-DD') : ''
               })(
                 <DatePicker placeholder='截止时间'/>
               )}
@@ -261,6 +261,7 @@ class TMsgDetail extends Component{
           </div>
           <FormItem label = '收费备注：' className = 'formItem fl clean'>
             {getFieldDecorator('remark', {
+              initialValue:this.props.detail.remark
               // rules: [ {
               //   required: true, message: '请输入收费备注',
               // }],
@@ -470,7 +471,7 @@ class TModify extends Component {
         <Spin spinning = {this.state.loading} size='large'>
           <SearchForm init={this.init} getSearch = {this.getSearch} exportForm = {this.exportForm}  clearKeyWord = { this.clearKeyWord }/>
           <Table rowSelection={rowSelection} expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.remark}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-          {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel}/>}
+          {this.state.showDiglog && <MsgDetail detail = {this.state.detail} cancel = {this.cancel} init = {this.init}/>}
         </Spin>
       </div>
     )

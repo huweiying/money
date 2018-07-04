@@ -20,7 +20,8 @@ const cook = {
     cook.set(name, "", -1);
   }
 };
-const Basse_Port = "http://122.227.217.62:9106/api/v1/";
+//const Basse_Port = "http://122.227.217.62:9106/api/v1/";
+const Basse_Port = "http://192.168.1.82:8899/api/v1/";
 const main={
   cook: cook,
   Basse_Port: Basse_Port,
@@ -34,7 +35,7 @@ const main={
       let time=new Date(format);
       return format=time.getFullYear()+"年"+(time.getMonth() + 1)+"月"+time.getDate()+"日";
   },
-  $AJAX(newUrl, type, data, callback) {
+  $AJAX(newUrl, type, data, callback,like) {
     let p = new Promise((resolve, reject) => {
       let $put;
       let token = cook.get("token");
@@ -70,7 +71,12 @@ const main={
             reject();
           } else {
             if (res.status == 200 || res.status == 201) {
-              callback(res.body);
+              if(like=='upload'){
+                callback(res);
+              }
+              else{
+                callback(res.body);
+              }
               resolve();
             }
           }
@@ -89,7 +95,7 @@ const main={
     let month = (time.getMonth() + 1)<10 ? '0'+ (time.getMonth() + 1) : time.getMonth() + 1;
     let date = time.getDate() < 10 ? '0' + time.getDate() : time.getDate();
     return year + '-' + month + '-' + date
-  }
+  },
 }
 window.$Funs =main;
 /*export default {

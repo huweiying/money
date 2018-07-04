@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { Base64 } from 'js-base64';
 import { Table, Input, Button, Form, Select, Pagination, Modal, message, Breadcrumb ,Radio,Spin,Switch} from 'antd';
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -146,7 +147,6 @@ class MainList extends Component {
   sh=(id,index)=>{
     let data = this.state.list, _this = this;
     let type=parseInt(_this.state.nav.selected)+1;
-    console.log(type)
     Modal.confirm({
       title: '申请打印',
       content: '确认提交？',
@@ -371,13 +371,44 @@ class Details extends Component {
       print:false,
       value:1,
       cked:false,
-      details:null
+      details:null,
+      bool:false,
+      bools:"false",
+      post:{}
     }
+    this.details = this.details.bind(this);
+  }
+  componentWillMount(){
+   
+  }
+  details(cp) {
+    this.setState({
+        currentPassage: cp
+    });
   }
   onChange=(e)=>{
     this.setState({
       value: e.target.value,
     });
+  }
+  booled=(val)=>{
+    let bool=this.state.bool;
+    let bools;
+    if(bool==true){
+      bools="false"
+      this.setState({
+        print:false,
+      })
+    }else{
+      bools="true"
+      this.setState({
+        print:true,
+      })
+    }
+    this.setState({
+      bool:!bool,
+      bools:bools
+    })
   }
   switched=(val)=>{
     let bool=this.state.cked;
@@ -389,7 +420,42 @@ class Details extends Component {
     })
   }
   print=(value)=>{
+      //dataUrl
+      let details=this.props.details;
+      let post={
+        vehiclePlate:details.vehicleId,
+        num:details.systemPlatformNumber,
+        type:this.state.value,
+        pType:details.type,
+        
+      };
+      var node =value==1?document.getElementById("printA"):document.getElementById("printB");
       this.setState({
+        print:true,
+      })
+       domtoimage.toPng(node).then(dataUrl => {
+         console.log(dataUrl)
+         return false;
+          window.$Funs.$AJAX("img",'post', JSON.stringify({groupName :dataUrl}), e => {
+            post.id=e.text;            
+            window.open("http://192.168.1.83:80/print.html?data="+ Base64.encode(JSON.stringify(post)));
+          },'upload')
+       })
+      
+      // let data=this.props.details;
+      // data.value=value;
+      // Modal.confirm({
+      //   title: '打印申请',
+      //   content: '友情提示：如果在新窗口未打印则不会有打印历史记录！',
+      //   okText: '确认前往打印',
+      //   cancelText:"暂时不想打印",
+      //   onOk(){
+      //     window.open("https://www.minbaojianguan.com/print/print.html?data="+JSON.stringify(data));
+      //     window.history.go(0)
+      //   }
+      // });
+      
+      /*this.setState({
         print:true,
       })
      setTimeout(e => {
@@ -407,6 +473,17 @@ class Details extends Component {
              "height=720, width=1920, top=100, left=100, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no"
            );
            wind.document.body.innerHTML = printHtml;
+           if(wind.matchMedia){
+            var mediaQueryList = wind.matchMedia('print');
+              mediaQueryList.addListener(function(mql) {
+                console.log(mql.matches)
+                // if (mql.matches) {
+                //   alert(1)
+                // } else {
+                //   alert(2)
+                // }
+              })
+           }
            wind.print();
            this.setState({
             print:false,
@@ -415,23 +492,7 @@ class Details extends Component {
          }, 1000);
        });
      }, 1000);
-    },500)
-  }
-  xg(e,obj){
-    let _this=this;
-    Modal.confirm({
-      title: '修改',
-      content:(<input defaultValue={e} id="xg"/>),
-      okText: '确认',
-      cancelText: '取消',
-      onOk(){
-        let arr=_this.props.details;
-        arr.obj=document.getElementById("xg").value;
-        _this.setState({
-          details:arr
-        })
-      }
-    });
+    },500)*/
   }
   lets(e){
     let a="&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -439,11 +500,14 @@ class Details extends Component {
     else return e;
   }
   render() {
-    const details=this.props.details;
+    const details=this.props.details,
+          bool=this.state.bools;
+          
     return (
       <div className="privemain">
+       
         {
-          this.state.print && <div id="printimg">
+          this.state.print && !this.state.bool && <div id="printimg">
             <div className="img">
               <img src={this.state.printimg} width="100%"/>
             </div>
@@ -460,9 +524,10 @@ class Details extends Component {
               <div className="tit">道路运输车辆卫星定位装置安装证明</div>
               <div className="say">
                 <div className="absoubox">运营商存根</div>
-                <div className="p">兹有 <span onClick={this.xg.bind(this,details.teamName,'teamName')} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}> </span> 车牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于(<span>{window.$Funs.format(details.leaveFactoryDate)}</span>,车辆出厂前)
-                安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端)，生产厂家为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span  dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>,SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
-                批符合道路运输车辆卫星定位系统标准的系统平台),平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>，作为企业监控平台，并已接入政府监管平台,运行正常。
+               
+                <div className="p">兹有 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌号 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于(<span contenteditable={bool}>{window.$Funs.format(details.leaveFactoryDate)}</span>,车辆出厂前)
+                安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
+                批符合道路运输车辆卫星定位系统标准的系统平台,平台编号<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)，作为企业监控平台，并已接入政府监管平台,运行正常。
                 </div>
                 <div className="p">
                   特此证明。
@@ -494,9 +559,9 @@ class Details extends Component {
                   </div>
                   */
                 }
-                <div className="p">兹有 <span dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌号 <span  dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于(<span>{window.$Funs.format(details.leaveFactoryDate)}</span>,车辆出厂前)
-                安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span  dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家为<span dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
-                批符合道路运输车辆卫星定位系统标准的系统平台,平台编号<span dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)，作为企业监控平台，并已接入政府监管平台,运行正常。
+                <div className="p">兹有 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span> 车牌号 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></span>,车牌颜色 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></span>,已于(<span contenteditable={bool}>{window.$Funs.format(details.leaveFactoryDate)}</span>,车辆出厂前)
+                安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
+                批符合道路运输车辆卫星定位系统标准的系统平台,平台编号<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)，作为企业监控平台，并已接入政府监管平台,运行正常。
                 </div>
                 <div className="p">
                   特此证明。
@@ -513,7 +578,7 @@ class Details extends Component {
               <div className="tit">浙江马良通讯科技有限公司余慈分公司<br/>证  明</div>
               <div className="bhnum">编号:{details.systemPlatformNumber}</div>
               <div className="say">
-                <div className="p">兹有<span dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span>所属车辆共<span>壹</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span>{details.terminalType}</span>，为第<span dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span  dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>，厂家编号为<span  dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>。截止日期为<span>{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
+                <div className="p">兹有<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span>所属车辆共<span contenteditable={bool}>壹</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span contenteditable={bool}>{details.terminalType}</span>，为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>，厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>。截止日期为<span contenteditable={bool} >{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
                   <br/>特此证明！
                 </div>
               </div>
@@ -531,10 +596,10 @@ class Details extends Component {
                   </tr>
                   <tbody className="hide">
                     <tr>
-                      <td rowspan="2" dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></td>
-                      <td rowspan="2"  dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></td>
-                      <td rowspan="2" dangerouslySetInnerHTML={{__html:this.lets(details.typeName)}}></td>
-                      <td rowspan="2" dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></td>
+                      <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.vehicleId)}}></td>
+                      <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></td>
+                      <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.typeName)}}></td>
+                      <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></td>
                       <td rowspan="2">浙江马良通讯科技有限公司余慈分公司</td>
                       <td>设备号 <br/>{details.manageNum}</td>
                       <td rowspan="2"></td>
@@ -557,6 +622,9 @@ class Details extends Component {
              <div className="Alignck">
                 <label>单位用户</label><Switch checkedChildren="开" unCheckedChildren="关"  checked={this.state.cked} onChange={this.switched}/>
              </div>
+             <div className="Alignck">
+              <label>编辑</label><Switch checkedChildren="开" unCheckedChildren="关"  checked={this.state.bool} onChange={this.booled}/>
+            </div>
               <RadioGroup onChange={this.onChange} value={this.state.value}>
                 <Radio value={1}>A格式</Radio>
                 <Radio value={2}>B格式</Radio>
@@ -564,7 +632,7 @@ class Details extends Component {
         </div>
         <div className="button">
           <a href="javascript:void(0);" onClick={this.props.want}>上一步</a>
-          <a href="javascript:void(0);" onClick={this.print.bind(this,this.state.value)}>打印</a>
+          {!this.state.bool && <a href="javascript:void(0);" onClick={this.print.bind(this,this.state.value)}>打印</a>}
         </div>
       </div>
     )
@@ -580,9 +648,10 @@ export default class Prove extends Component {
     }
   }
   want=(type,id,ts)=>{
-    
     if(id && ts){
       window.$Funs.$AJAX("prove/"+id,"get",{type:ts},e=>{
+        let details=e;
+        e.type=ts;
         this.setState({
           details:e,
         })

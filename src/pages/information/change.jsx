@@ -270,7 +270,7 @@ class TChgForm extends Component {
         <div className = "addForm">
           <Form layout="inline" onSubmit={this.handleSubmit} className='clean'>
             <div>
-              <p>移动变更</p>
+              <p>移机变更</p>
               <div className = 'row clean'>
                 <UnabledItem label='公司（或车队）名' value={this.props.detail.teamName}/>
                 <UnabledItem label='原车牌号' value={this.props.detail.oldVehicleId}/>
@@ -298,6 +298,16 @@ class TChgForm extends Component {
                       rules: [ {
                         pattern: new RegExp(/^1[3|5|7|8|]\d{9}$/) ,message: '手机格式不正确',
                       }],
+                    })(
+                      <Input  />
+                    )}
+                </FormItem>
+              </div>
+              <div className = 'row clean'>
+              <UnabledItem label='原所属区域' value={this.props.detail.address}/>
+                <FormItem className = 'formItem clean'{...formItemLayout} label="新所属区域">
+                    {getFieldDecorator('1_address', {
+                    
                     })(
                       <Input  />
                     )}

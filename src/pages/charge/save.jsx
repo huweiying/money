@@ -162,7 +162,6 @@ class TMsgDetail extends Component{
     });
   }
   render(){
-    console.log(this.props.detail.deadlineDate)
     
     const recodeColumns = [
       { title: '公司车队', width: 250, dataIndex: 'teamName' , key:'teamName',align: 'center' },
