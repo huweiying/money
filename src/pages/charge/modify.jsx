@@ -154,8 +154,9 @@ class TMsgDetail extends Component{
             delete values.prefix;
             // values.deadlineDate = new Date(this.props.detail.deadlineDate).getTime();
             // values.chargeTime = window.$Funs.formatDate(values.chargeTime);
-            values.chargeTime = new Date(this.props.detail.chargeTime).getTime();
+            // values.chargeTime = new Date(this.props.detail.chargeTime).getTime();
             values.deadlineDate = values.deadlineDate._d.getTime()
+            values.chargeTime = values.chargeTime._d.getTime()
             values.id = this.props.detail.chargeid;
             values.newCarId = this.props.detail.newCarId;
             values.vehicleId = this.props.detail.vehicleId;
@@ -188,7 +189,7 @@ class TMsgDetail extends Component{
       },
     };
     const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: 'F',
+      initialValue:this.props.detail.invoiceNum[0],
     })(
       <Select style={{ width: 50 }}>
         <Option value="F">F</Option>
@@ -236,14 +237,24 @@ class TMsgDetail extends Component{
                 </Select>     
               )}
             </FormItem>
-            <FormItem className = 'formItem clean'{...formItemLayout} label="截止时间">
+            <FormItem className = 'formItem clean'{...formItemLayout} label="截止日期">
               {getFieldDecorator('deadlineDate', {
                 rules: [ {
-                  required: true, message: '请输入截止时间',
+                  required: true, message: '请输入截止日期',
                 }],
                 initialValue:(this.props.detail.deadlineDate) ? moment(this.props.detail.deadlineDate,'YYYY-MM-DD') : ''
               })(
-                <DatePicker placeholder='截止时间'/>
+                <DatePicker placeholder='截止日期'/>
+              )}
+            </FormItem>
+            <FormItem className = 'formItem clean'{...formItemLayout} label="收款日期">
+              {getFieldDecorator('chargeTime', {
+                rules: [ {
+                  required: true, message: '请输入收款日期',
+                }],
+                initialValue:(this.props.detail.chargeTime) ? moment(this.props.detail.chargeTime,'YYYY-MM-DD') : ''
+              })(
+                <DatePicker placeholder='收款日期'/>
               )}
             </FormItem>
           </div>
@@ -432,9 +443,9 @@ class TModify extends Component {
       exslDTO.maps = {
         "teamName":'公司车队',
         "vehicleId":'车牌号',
-        "moneyAmont":'付款金额',
-        "payType":'付款方式',
-        "chargeTime":'付款日期',
+        "moneyAmont":'收款金额',
+        "payType":'收款方式',
+        "chargeTime":'收款日期',
         "deadlineDate":'有效期至',
         "invoiceNum":'发票（或收据）号码',
         "inputManName":'收款人',
@@ -448,9 +459,9 @@ class TModify extends Component {
     const columns = [
       { title: '公司车队', dataIndex: 'teamName',key:'teamName',  width: 150 ,align: 'center' },
       { title: '车牌号', dataIndex: 'vehicleId',key:'vehicleId',  width: 100 ,align: 'center' },
-      { title: '付款金额', dataIndex: 'moneyAmont',key:'moneyAmont',  width: 100 ,align: 'center' },
-      { title: '付款方式', dataIndex: 'payType',key:'payType',  width: 100 ,align: 'center' },
-      { title: '付款日期', dataIndex: 'chargeTime',key:'chargeTime' , width: 100 ,align: 'center' },
+      { title: '收款金额', dataIndex: 'moneyAmont',key:'moneyAmont',  width: 100 ,align: 'center' },
+      { title: '收款方式', dataIndex: 'payType',key:'payType',  width: 100 ,align: 'center' },
+      { title: '收款日期', dataIndex: 'chargeTime',key:'chargeTime' , width: 100 ,align: 'center' },
       { title: '有效期至', dataIndex: 'deadlineDate',key:'deadlineDate',  width: 100 ,align: 'center' },
       { title: '发票（或收据）号码', dataIndex: 'invoiceNum',key:'invoiceNum',  width: 150 ,align: 'center' },
       { title: '收款人', dataIndex: 'inputManName',key:'inputManName', width: 100 ,align: 'center' },

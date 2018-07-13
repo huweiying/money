@@ -30,7 +30,7 @@ export default class Index extends Component {
             {this.state.roles == 0 && <NavLink to='/person'  onClick = {()=>{this.props.handleNav(6)}}><img src={require('../../assets/img/personal.jpg')}/>人员管理</NavLink>}
           </div>
         </div>}
-        { this.state.roles == 1 && 
+        { this.state.roles == 1 && //操作员
         <div className = 'navIndex'>
           <div  className = 'clean row'>
             <NavLink to='/carInfo/entry' onClick = {()=>{this.props.handleNav(1)}}><img src={require('../../assets/img/car.jpg')}/>车辆基本信息</NavLink>

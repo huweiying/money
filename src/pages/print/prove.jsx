@@ -153,7 +153,10 @@ class MainList extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        window.$Funs.$AJAX("prove/" + id + "/" + window.$Funs.cook.get('name')+"?type="+type, "post", null, e => {
+        window.$Funs.$AJAX("prove/" + id, "post", {
+          baseInteger:type,
+          baseString:window.$Funs.cook.get('name')
+        }, e => {
           data[index].nowstatus = '审核中'
           data[index].status = 1
           _this.setState({
@@ -164,8 +167,10 @@ class MainList extends Component {
       }
     });
   }
-  look = (list, carnum, id, status) => {
+  look = (list, carnum, id, status) => { 
+    console.log(list)
     for(let val of list){
+      val.createTime= window.$Funs.formatDate(val.createTime)
       val.status=this.state.Bstatus[val.status];
     }
     this.setState({
@@ -423,8 +428,8 @@ class Details extends Component {
       //dataUrl
       let details=this.props.details;
       let post={
-        vehiclePlate:details.vehicleId,
-        num:details.systemPlatformNumber,
+        vehiclePlate:encodeURI(encodeURI(details.vehicleId)),
+        num:Math.ceil(parseFloat(details.systemPlatformNumber)*(Math.random()+0.75)),
         type:this.state.value,
         pType:details.type,
         
@@ -434,11 +439,12 @@ class Details extends Component {
         print:true,
       })
        domtoimage.toPng(node).then(dataUrl => {
-         console.log(dataUrl)
-         return false;
-          window.$Funs.$AJAX("img",'post', JSON.stringify({groupName :dataUrl}), e => {
+          window.$Funs.$AJAX("img",'post', dataUrl, e => {
+          //   this.setState({
+          //     printimg:dataUrl
+          //  })
             post.id=e.text;            
-            window.open("http://192.168.1.83:80/print.html?data="+ Base64.encode(JSON.stringify(post)));
+            window.open("http://122.227.217.62:9105/finical/print.html?data="+ Base64.encode(JSON.stringify(post)));
           },'upload')
        })
       
@@ -529,7 +535,7 @@ class Details extends Component {
                 安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
                 批符合道路运输车辆卫星定位系统标准的系统平台,平台编号<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)，作为企业监控平台，并已接入政府监管平台,运行正常。
                 </div>
-                <div className="p">
+                <div className="p mgt20">
                   特此证明。
                     </div>
               </div>
@@ -563,7 +569,7 @@ class Details extends Component {
                 安装(口北斗/GPS双模口/GPS)卫星定位装置,终端型号为 <span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalType)}}></span>(为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准的车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>,厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>,车载终端序列号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manageNum)}}></span>),SIM卡号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.sim)}}></span>,采用<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatform)}}></span>(第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformOrder)}}></span>
                 批符合道路运输车辆卫星定位系统标准的系统平台,平台编号<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.systemPlatformNumber)}}></span>)，作为企业监控平台，并已接入政府监管平台,运行正常。
                 </div>
-                <div className="p">
+                <div className="p mgt20">
                   特此证明。
                     </div>
               </div>

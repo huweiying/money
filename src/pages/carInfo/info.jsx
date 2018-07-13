@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link,withRouter } from 'react-router-dom'
-import { Table , Input , Button , Form , Select ,Spin,Modal} from 'antd';
+import { Table , Input , Button , Form , Select ,Spin,Modal ,DatePicker} from 'antd';
+import Avatar from '../../component/upload';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
@@ -198,6 +199,309 @@ class Picshow extends Component {
     )
   }
 }
+class AddNew extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+     photoCodes:[],
+     product:[],//生产厂家
+     zdType:[],
+     subitem:{},//终端厂家
+     editItem:{}//修改后的内容
+    }
+  }
+ 
+ componentWillMount(){
+  console.log(this.props.newItem)
+   window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{//生产厂家
+     window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//z终端生产厂家
+       this.setState({
+         product:res,
+         subitem:data,
+         editItem:this.props.newItem,
+         photoCodes:this.props.newItem.photoCodes
+       })
+      })
+   })
+ }
+ handleSelect=(v)=>{//选择厂家
+   window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:v},(res)=>{//生产厂家
+     this.setState({
+       subitem:res
+     })
+    })
+ }
+ handleSubmit=(e)=>{
+   e.preventDefault();
+   this.props.form.validateFields((err, values) => {
+     if (!err) {
+       confirm({
+         title: '提示',
+         content: '确认提交补全信息？',
+         okText:'确认',
+         cancelText:'取消',
+         onOk:()=> {
+           values.carId = this.props.item.id;
+           values.photoCodes = this.state.photoCodes;
+           values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
+           window.$Funs.$AJAX('car/newCar','post',values,(res)=>{
+             message.success('操作成功');
+             this.props.cancel()
+           })
+         },
+         onCancel() {
+         },
+       });
+     }
+   });
+
+ }
+ getPic = (obj)=>{
+   let arr = this.state.newItem.photoCodes;
+   if(obj){
+     arr.push(obj) 
+    }
+   this.setState({
+     photoCodes:arr
+   })
+ }
+ render() {
+   const { getFieldDecorator} = this.props.form;
+   const formItemLayout = {
+     labelCol: {
+       xs: { span: 24 },
+       sm: { span: 8 },
+     },
+     wrapperCol: {
+       xs: { span: 24 },
+       sm: { span: 16 },
+     },
+   };
+   let editItem = this.state.editItem;
+   console.log(this.state.photoCodes)
+   return (
+     <div className='addNew'>
+       <div>
+         <h2>修改车辆证明信息</h2>
+         <div className = "addForm">
+           <Form layout="inline" onSubmit={this.handleSubmit} className='clean'>
+             <div className = 'row clean'>
+               <FormItem label='车牌号' className = 'formItem clean'>
+                 <Input  value={this.props.item.vehicleId} disabled className = 'disabled'/>
+               </FormItem>
+               <FormItem label='公司车队' className = 'formItem clean'>
+                 <Input  value={this.props.item.teamName} disabled className = 'disabled'/>
+               </FormItem>
+               <FormItem className = 'formItem clean'{...formItemLayout} label="车牌颜色">
+                   {getFieldDecorator('carColor', {
+                     initialValue:editItem.carColor
+                   })(
+                     <Select  style={{ width: 120 }} >
+                       <Option value="黄色">黄色</Option>
+                       <Option value="蓝色">蓝色</Option>
+                       <Option value="黑色">黑色</Option>
+                       <Option value="白色">白色</Option>
+                     </Select>
+                   )}
+               </FormItem>
+
+               <FormItem  label='车辆类型' className = 'formItem clean'>
+                 <Input value={this.props.item.typeName} disabled className = 'disabled'/>
+               </FormItem>
+
+             </div>
+             <div className = "row clean">
+                 <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="联系电话">
+                   {getFieldDecorator('phone', {
+                    initialValue:editItem.phone,
+                     rules: [ {
+                       required: true, message: '请输入联系电话',
+                       pattern: new RegExp(/^1[3|5|7|8|]\d{9}$/) ,message: '手机格式不正确',
+                     }],
+                   })(
+                     <Input  />
+                   )}
+                 </FormItem>
+                 <FormItem className = 'formItem clean'{...formItemLayout} hasFeedback label="所属地区">
+                   {getFieldDecorator('address', {
+                    initialValue:editItem.address,
+                     rules: [ {
+                       required: true, message: '请输入所属地区',
+                     }],
+                   })(
+                     <Input  />
+                   )}
+                 </FormItem>
+                 <FormItem  label='安装时间' className = 'formItem clean'>
+                   <span className = 'tag'>此为出厂安装</span>
+                   <Input value={this.props.item.leaveFactoryDate} disabled className = 'disabled'/>
+                 </FormItem>
+                 
+                 <FormItem className = 'formItem clean'{...formItemLayout} label='导航类型'>
+                   {getFieldDecorator('navigationType', {
+                     initialValue:editItem.navigationType
+                   })(
+                     <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+                       <Option value="北斗/GPS双模">北斗/GPS双模</Option>
+                       <Option value="GPS">GPS</Option>
+                     </Select>
+                   )}
+                 </FormItem>
+               </div>
+
+               <div className = "row clean">
+                 <FormItem className = 'formItem clean' label='终端说明'>
+                   <Input  value={this.props.item.deviceName} disabled className = 'disabled'/>
+                 </FormItem>
+
+                 <FormItem  className = 'formItem clean' label='SIM卡号'>
+                   <Input  value={this.props.item.sim} disabled className = 'disabled'/>
+                 </FormItem>
+                 {this.state.product.length > 0 &&
+                 <FormItem className = 'formItem clean'{...formItemLayout} label="生产厂家">
+                   {getFieldDecorator('manufacturer', {
+                     initialValue:editItem.manufacturer
+                   })(
+                     <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+                       { this.state.product.map((v,i)=>{
+                         return <Option value={v} key={i}>{v}</Option>
+                       })}
+                     </Select>
+                   )}
+                 </FormItem>
+                 }
+                 <FormItem className = 'formItem clean'{...formItemLayout} label="终端类型号">
+                   {getFieldDecorator('terminalTypeNum', {
+                     initialValue:this.state.subitem.termTypeID
+                   })(
+                     <Input  disabled />
+                   )}
+                 </FormItem>
+               </div>
+               <div className = "row clean">
+                   {
+                     this.state.subitem.producerID && (
+                       <FormItem className = 'formItem clean'{...formItemLayout}  label="厂家编号">
+                         {getFieldDecorator('factoryNumber', {
+                           initialValue:this.state.subitem.producerID
+                         })(
+                           <Input  disabled />
+                         )}
+                       </FormItem>
+                     )
+                   }
+                   {
+                     this.state.subitem.termType && (
+                       <FormItem className = 'formItem clean'{...formItemLayout}  label="终端类型">
+                         {getFieldDecorator('terminalType', {
+                           initialValue:this.state.subitem.termType
+                         })(
+                           <Input  disabled />
+                         )}
+                       </FormItem>
+                     )
+                   }
+                   {
+                     this.state.subitem.termPici && (
+                       <FormItem className = 'formItem clean'{...formItemLayout} label="终端批次">
+                         {getFieldDecorator('terminalOrder', {
+                           initialValue:this.state.subitem.termPici
+                         })(
+                           <Input  disabled  />
+                         )}
+                       </FormItem>
+                     )
+                   }
+                 
+                 <FormItem  className = 'formItem clean' label='终端号'>
+                   <Input  value={this.props.item.manageNum} disabled className = 'disabled'/>
+                 </FormItem>
+               </div>
+               <div className = "row clean">
+                 <FormItem className = 'formItem clean'{...formItemLayout} label='系统平台'>
+                   {getFieldDecorator('systemPlatform', {
+                     initialValue:editItem.systemPlatform
+                   })(
+                     <Select  style={{ width: 120 }} onChange={this.handleSelect}>
+                       <Option value="马良车辆监控导航系统">马良车辆监控导航系统</Option>
+                     </Select>
+                   )}
+                 </FormItem>
+
+                 <FormItem className = 'formItem clean'{...formItemLayout}  label="平台编号">
+                   {getFieldDecorator('systemPlatformNumber', {
+                     initialValue:'50627'
+                   })(
+                     <Input disabled />
+                   )}
+                 </FormItem>
+
+                 <FormItem className = 'formItem clean'{...formItemLayout} label="平台批次">
+                   <span className = 'tag'>资料齐全</span>
+                   {getFieldDecorator('systemPlatformOrder', {
+                     initialValue:'6'
+                   })(
+                     <Input disabled />
+                   )}
+                 </FormItem>
+               </div>
+               <div className = "row clean">
+                 <FormItem label = '车辆登记证书' className = 'formItem clean'>
+                   <Avatar type = '0' getPic={this.getPic} imgUrl/>
+                 </FormItem>
+                 <FormItem label = '车辆登记证书' className = 'formItem clean'>
+                   <Avatar type = '0' getPic={this.getPic}/>
+                 </FormItem>
+                 <FormItem label = '行驶证' className = 'formItem clean'>
+                   <Avatar type = '1' getPic={this.getPic}/>
+                 </FormItem>
+                 <FormItem label = '车身照片' className = 'formItem clean'>
+                   <Avatar type = '2' getPic={this.getPic}/>
+                 </FormItem>
+               </div>
+               <div className = "row clean">
+                 <p className = "note">备注（选填）</p>
+                 <FormItem className = 'formItem clean'{...formItemLayout} label="来电人">
+                   {getFieldDecorator('callAPerson', {
+                    initialValue:editItem.callAPerson
+                   })(
+                     <Input  />
+                   )}
+                 </FormItem>
+                 <FormItem className = 'formItem clean'{...formItemLayout} label="来电时间">
+                   {getFieldDecorator('callDate', {
+                    // initialValue:editItem.callDate
+                   })(
+                     <DatePicker placeholder='选择时间'/>
+                   )}
+                 </FormItem>
+                 <FormItem className = 'formItem clean'{...formItemLayout} label="记录人">
+                   {getFieldDecorator('recordPerson', {
+                    initialValue:editItem.recordPerson
+                   })(
+                     <Input  />
+                   )}
+                 </FormItem>
+               </div>
+               <div className ="row clean">
+                 <FormItem  className = 'formItem clean' label='备注'>
+                   <Input  value={this.props.item.comment} disabled className = 'disabled comment'/>
+                 </FormItem>
+               </div>
+               <FormItem className = 'btns'>
+                 <Button  type="primary"  htmlType="submit"  >确认修改
+                 </Button>
+                 <Button onClick = {this.props.close}>取消</Button>
+               </FormItem>
+           </Form>
+         </div>
+       </div>
+     </div>
+   )
+ }
+}
+
+const AddForm = Form.create()(AddNew)
 
 class TInfo extends Component {
   constructor(props) {
@@ -239,6 +543,7 @@ class TInfo extends Component {
     !data.pageSize && (data.pageSize = this.state.pageSize) 
     window.$Funs.$AJAX('newCars','get',data,(res)=>{
       let arr = res.data.map((v,i)=>{
+        v.carDto._id = v.id;
         v.carDto.key = i;
         v.carDto.leaveFactoryDate = v.carDto.leaveFactoryDate.split(' ')[0];
         v.stop == 0 ? v.carDto.stop = '否' : v.carDto.stop = '是' 
@@ -263,15 +568,7 @@ class TInfo extends Component {
     }
     let url = encodeURIComponent('currPage=1&pageSize='+this.state.pageSize+str)
     this.props.history.push('info?'+url)
-    // if(data){
-    //   this.setState({
-    //     keyWord:data,
-    //     currPage:1,
-    //     loading:true
-    //   },()=>{
-    //     this.init(data)
-    //   })
-    // }
+
   }
   clearKeyWord = ()=>{
     this.setState({
@@ -288,14 +585,7 @@ class TInfo extends Component {
     }
     let url = encodeURIComponent('currPage='+ page + '&pageSize='+this.state.pageSize+str)
     this.props.history.push('info?'+url)
-    // this.setState({
-    //   currPage:page,
-    //   loading:true,
-    // },()=>{
-    //   let data = this.state.keyWord;
-    //   data.currPage = page
-    //   this.init(data)
-    // })
+
   }
   photoDetail = (item)=>{
     this.setState({
@@ -309,25 +599,27 @@ class TInfo extends Component {
       currPage:1
     })
   }
+
   render() {
     const columns = [
-      { title: '安装日期', width: 100, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },
-      { title: '公司车队', width: 100, dataIndex: 'teamName', key: 'teamName' ,align: 'center' },
-      { title: '车辆类型', dataIndex: 'typeName', key: 'typeName', width: 100 ,align: 'center' },
-      { title: '终端说明', dataIndex: 'deviceName', key: 'deviceName', width: 100 ,align: 'center' },
+      { title: '安装日期', width: 150, dataIndex: 'leaveFactoryDate', key: 'leaveFactoryDate',align: 'center' },
+      { title: '公司车队', width: 250, dataIndex: 'teamName', key: 'teamName' ,align: 'center' },
+      { title: '车辆类型', dataIndex: 'typeName', key: 'typeName', width: 200 ,align: 'center' },
+      { title: '终端说明', dataIndex: 'deviceName', key: 'deviceName', width: 150 ,align: 'center' },
       { title: '车牌号', dataIndex: 'vehicleId', key: 'vehicleId', width: 100 ,align: 'center' },
-      { title: 'SIM', dataIndex: 'simTypeName', key: 'simTypeName', width: 100 ,align: 'center' },
-      { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 100 ,align: 'center' },
+      { title: 'SIM', dataIndex: 'simTypeName', key: 'simTypeName', width: 200 ,align: 'center' },
+      { title: 'SIM卡号', dataIndex: 'sim', key: 'sim', width: 110 ,align: 'center' },
       { title: '证件详情', key: 'photoCodes', render: (item) => (item.photoCodes && item.photoCodes.length !=0) && <a onClick = {()=>{this.photoDetail(item)}}>点击查看</a> , width: 100 ,align: 'center' },
-      { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 100 ,align: 'center' },
+      { title: '终端号', dataIndex: 'manageNum', key: 'manageNum', width: 150 ,align: 'center' },
       { title: '是否报停', dataIndex: 'stop', key: 'stop' ,width: 100 ,align: 'center'  },
+      { title: '操作', dataIndex: '', key: 'action',align: 'center', render: (item) =>  <Button type = 'primary' onClick = {()=>{this.props.editCar(item)}}>修改</Button> ,width: 150 ,align: 'center'},
     ];
     return (
       <div className = 'info'>
         <Spin spinning = {this.state.loading} size='large'>
-          {this.state.carType.length > 0 && <SearchForm init={this.init} getSearch = {this.getSearch} carType = {this.state.carType} history = {this.props.history} clearKeyWord = { this.clearKeyWord }/>}
-          <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
-          {this.state.showDialog && <Picshow picArr={this.state.picArr} cancel = {this.cancel}/>}
+            {this.state.carType.length > 0 && <SearchForm init={this.init} getSearch = {this.getSearch} carType = {this.state.carType} history = {this.props.history} clearKeyWord = { this.clearKeyWord }/>}
+            <Table  expandedRowRender={record => <p style={{ margin: 0 }}>备注：{record.comment}</p>} columns={columns} dataSource={this.state.data}  pagination = {{ defaultPageSize:this.state.pageSize,total:this.state.total,onChange:this.pageChange,current:this.state.currPage }}/>
+            {this.state.showDialog && <Picshow picArr={this.state.picArr} cancel = {this.cancel}/>}
         </Spin>
       </div>
     )
@@ -336,4 +628,41 @@ class TInfo extends Component {
 
 const Info = withRouter(TInfo)
 
-export default Info
+
+class Total extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isEdit:false,
+      item:{},
+      newItem:{},
+    }
+  }
+  editCar = (item)=>{
+    let id = item._id;
+    window.$Funs.$AJAX('newCar/'+id,'get',{},(res)=>{
+      this.setState({
+        isEdit:true,
+        item:res.carDto,
+        newItem:res.newCarDto
+      })
+
+    })
+  }
+  close = ()=>{
+    this.setState({
+      isEdit:false,
+    })
+
+  }
+  render() {
+    return (
+      <div className = 'entry'>
+        {this.state.isEdit ? <AddForm  close = {this.close} item = {this.state.item} newItem = {this.state.newItem}></AddForm> : <Info editCar = {this.editCar}></Info>}
+      </div>
+    )
+  }
+}
+
+
+export default Total

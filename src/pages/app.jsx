@@ -15,7 +15,6 @@ import { message} from 'antd';
       navIdx : 0 //导航id
     }
   }
-  
   componentWillMount(){
     if(!window.$Funs.cook.get('userName')){//未登录
       this.props.history.push('/login')
@@ -23,8 +22,9 @@ import { message} from 'antd';
       if(this.props.location.pathname == '/'){
         return
       }else{
+        let url = this.props.location.pathname.split('/')[1];
         if(window.$Funs.cook.get('roles') == '1'){//操作员
-          if(this.props.location.pathname.split('/')[1] != 'carInfo' ){
+          if(url != 'carInfo' && url != 'information'){
             this.props.history.push('/login')
             message.error('您没有该权限，请重新登录')
             return
@@ -32,7 +32,7 @@ import { message} from 'antd';
             return
           }
         }else if(window.$Funs.cook.get('roles') == '3'){
-          if(this.props.location.pathname.split('/')[1] != 'print' || this.props.location.pathname.split('/')[1] != 'charge' ){
+          if( url != 'print' && url != 'charge' && url != 'carInfo' ){
             this.props.history.push('/login')
             message.error('您没有该权限，请重新登录')
             return
@@ -41,9 +41,7 @@ import { message} from 'antd';
           }
         }
       }
-
     }
-    
   }
   handleNav = (i)=>{
     this.setState({

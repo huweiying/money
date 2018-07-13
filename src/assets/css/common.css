@@ -546,7 +546,7 @@ header .select .subNav {
   width: 210px;
   margin-top: 5px;
 }
-.container .info .ant-btn {
+.container .info .topForm .ant-btn {
   width: 140px;
   height: 38px;
   margin-left: 120px;
@@ -1343,14 +1343,18 @@ header .select .subNav {
 }
 .container .pribox .lfbox .say {
   position: relative;
-  font-size: 14px;
+  font-size: 12px;
 }
 .container .pribox .lfbox .say .p {
   text-indent: 2em;
-  line-height: 28px;
+  line-height: 24px;
+  width: 100%;
 }
 .container .pribox .lfbox .say .p span {
   text-indent: 0;
+}
+.container .pribox .lfbox .say .mgt20 {
+  margin-top: 20px;
 }
 .container .pribox .lfbox .bot {
   text-align: right;

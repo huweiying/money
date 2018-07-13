@@ -23,6 +23,9 @@ class Avatar extends React.Component {
   state = {
     loading: false,
   };
+  componentWillMount(){
+    this.handleChange();
+  }
   handleChange = (info) => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
@@ -46,6 +49,7 @@ class Avatar extends React.Component {
       </div>
     );
     const imageUrl = this.state.imageUrl;
+    // console.log(imageUrl)
     return (
       <Upload
         name="multipartFile"
