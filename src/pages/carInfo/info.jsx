@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Link,withRouter } from 'react-router-dom'
-import { Table , Input , Button , Form , Select ,Spin,Modal ,DatePicker} from 'antd';
+import moment from 'moment';
+import { Table , Input , Button , Form , Select ,Spin,Modal ,DatePicker,message} from 'antd';
 import Avatar from '../../component/upload';
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
+const confirm = Modal.confirm;
 // import { renderRoutes } from 'react-router-config'
 
 class TopForm extends Component {
@@ -207,19 +209,20 @@ class AddNew extends Component {
      product:[],//生产厂家
      zdType:[],
      subitem:{},//终端厂家
+     loading:true,
      editItem:{}//修改后的内容
     }
   }
  
  componentWillMount(){
-  console.log(this.props.newItem)
    window.$Funs.$AJAX('ziDian','get',{type:1},(res)=>{//生产厂家
      window.$Funs.$AJAX('newCar/getTerminal','get',{producerName:res[0]},(data)=>{//z终端生产厂家
        this.setState({
          product:res,
          subitem:data,
          editItem:this.props.newItem,
-         photoCodes:this.props.newItem.photoCodes
+         photoCodes:this.props.newItem.photoCodes,
+         loading:false
        })
       })
    })
@@ -237,16 +240,20 @@ class AddNew extends Component {
      if (!err) {
        confirm({
          title: '提示',
-         content: '确认提交补全信息？',
+         content: '确认修改车辆信息？',
          okText:'确认',
          cancelText:'取消',
          onOk:()=> {
            values.carId = this.props.item.id;
-           values.photoCodes = this.state.photoCodes;
+           values.photoCodes = this.state.photoCodes.map(v=>{
+             v.photoCode = v.photoCode.replace('https://hailiangcaiwu.oss-cn-hangzhou.aliyuncs.com/','');
+             (v.photoCode.indexOf('?') != -1) && (v.photoCode = v.photoCode.slice(0,v.photoCode.indexOf('?'))) 
+             return v
+           });
            values.callDate && (values.callDate = new Date(values.callDate._d).getTime())
-           window.$Funs.$AJAX('car/newCar','post',values,(res)=>{
+           window.$Funs.$AJAX('car/newCar/'+this.props.item.id,'patch',values,(res)=>{
              message.success('操作成功');
-             this.props.cancel()
+             this.props.close()
            })
          },
          onCancel() {
@@ -256,10 +263,10 @@ class AddNew extends Component {
    });
 
  }
- getPic = (obj)=>{
-   let arr = this.state.newItem.photoCodes;
+ getPic = (i,obj,type)=>{
+   let arr = this.state.photoCodes;
    if(obj){
-     arr.push(obj) 
+     arr[i] = obj
     }
    this.setState({
      photoCodes:arr
@@ -271,16 +278,25 @@ class AddNew extends Component {
      labelCol: {
        xs: { span: 24 },
        sm: { span: 8 },
-     },
-     wrapperCol: {
-       xs: { span: 24 },
-       sm: { span: 16 },
-     },
-   };
-   let editItem = this.state.editItem;
-   console.log(this.state.photoCodes)
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
+  let editItem = this.state.editItem;
+  let regPto = this.state.photoCodes.filter(v=>{//车辆登记证书
+    return v.type == 0
+  });
+  let drivePto = this.state.photoCodes.find(v=>{//行驶证
+    return v.type == 1
+  })
+  let carPto = this.state.photoCodes.find(v=>{
+    return v.type == 2
+  })
    return (
      <div className='addNew'>
+       <Spin size="large" spinning={this.state.loading}/>
        <div>
          <h2>修改车辆证明信息</h2>
          <div className = "addForm">
@@ -447,16 +463,16 @@ class AddNew extends Component {
                </div>
                <div className = "row clean">
                  <FormItem label = '车辆登记证书' className = 'formItem clean'>
-                   <Avatar type = '0' getPic={this.getPic} imgUrl/>
+                   <Avatar type = '0' getPic={this.getPic.bind(this,0)} imgUrl= {regPto.length>0 ? regPto[0].photoCode : null}/>
                  </FormItem>
                  <FormItem label = '车辆登记证书' className = 'formItem clean'>
-                   <Avatar type = '0' getPic={this.getPic}/>
+                   <Avatar type = '0' getPic={this.getPic.bind(this,1)} imgUrl= {regPto.length>1 ? regPto[1].photoCode : null}/>
                  </FormItem>
                  <FormItem label = '行驶证' className = 'formItem clean'>
-                   <Avatar type = '1' getPic={this.getPic}/>
+                   <Avatar type = '1' getPic={this.getPic.bind(this,2)} imgUrl= {drivePto ? drivePto.photoCode : null}/>
                  </FormItem>
                  <FormItem label = '车身照片' className = 'formItem clean'>
-                   <Avatar type = '2' getPic={this.getPic}/>
+                   <Avatar type = '2' getPic={this.getPic.bind(this,3)} imgUrl= {carPto ? carPto.photoCode : null}/>
                  </FormItem>
                </div>
                <div className = "row clean">
@@ -470,9 +486,9 @@ class AddNew extends Component {
                  </FormItem>
                  <FormItem className = 'formItem clean'{...formItemLayout} label="来电时间">
                    {getFieldDecorator('callDate', {
-                    // initialValue:editItem.callDate
+                     initialValue: (editItem.callDate) ? moment(new Date(editItem.callDate),'YYYY-MM-DD') : null
                    })(
-                     <DatePicker placeholder='选择时间'/>
+                     <DatePicker placeholder='选择时间' />
                    )}
                  </FormItem>
                  <FormItem className = 'formItem clean'{...formItemLayout} label="记录人">
@@ -489,13 +505,13 @@ class AddNew extends Component {
                  </FormItem>
                </div>
                <FormItem className = 'btns'>
-                 <Button  type="primary"  htmlType="submit"  >确认修改
-                 </Button>
+                 <Button  type="primary"  htmlType="submit">确认修改</Button>
                  <Button onClick = {this.props.close}>取消</Button>
                </FormItem>
            </Form>
          </div>
        </div>
+       <Spin />
      </div>
    )
  }

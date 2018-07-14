@@ -24,7 +24,7 @@ class Avatar extends React.Component {
     loading: false,
   };
   componentWillMount(){
-    this.handleChange();
+    // this.handleChange();
   }
   handleChange = (info) => {
     if (info.file.status === 'uploading') {
@@ -48,7 +48,7 @@ class Avatar extends React.Component {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
-    const imageUrl = this.state.imageUrl;
+    const imageUrl = this.state.imageUrl ? this.state.imageUrl : this.props.imgUrl;
     // console.log(imageUrl)
     return (
       <Upload
