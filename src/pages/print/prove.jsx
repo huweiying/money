@@ -205,7 +205,20 @@ class MainList extends Component {
   }
   want=()=>{
     let type=parseInt(this.state.nav.selected)+1;
-    this.props.want(this.state.print.id,type);
+    let numid;
+    if(this.state.car.privelist.length>0){
+      numid=this.state.car.privelist[this.state.car.privelist.length-1]
+    }else{
+      numid={num:0};
+    }
+   
+    // let print=this.state.print;
+    // print.numid=numid
+    // this.setState({
+    //   print:print
+    // })
+    this.props.want(this.state.print.id,type,numid);
+    
   }
   prosct=(index)=>{
     document.getElementById("form").reset()
@@ -429,7 +442,7 @@ class Details extends Component {
       let details=this.props.details;
       let post={
         vehiclePlate:encodeURI(encodeURI(details.vehicleId)),
-        num:Math.ceil(parseFloat(details.systemPlatformNumber)*(Math.random()+0.75)),
+        num:details.systemPlatformNumber,
         type:this.state.value,
         pType:details.type,
         
@@ -526,7 +539,7 @@ class Details extends Component {
         <div className={['pribox', this.state.print ? 'print':'noprint'].join(' ')}>
           <div className="lfbox" id="printA">
             <div className="conent">
-              <div className="bhnum">编号:<span>{details.systemPlatformNumber}</span></div>
+              <div className="bhnum">编号:<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.printnum)}}></span></div>
               <div className="tit">道路运输车辆卫星定位装置安装证明</div>
               <div className="say">
                 <div className="absoubox">运营商存根</div>
@@ -548,7 +561,7 @@ class Details extends Component {
               浙江马良通讯科技有限公司余慈分公司 <i></i>
             </div>
             <div className="conent hdbot hide">
-              <div className="bhnum">编号:<span>{details.systemPlatformNumber}</span></div>
+            <div className="bhnum">编号:<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.printnum)}}></span></div>
               <div className="tit">道路运输车辆卫星定位装置安装证明</div>
               <div className="say">
                 <div className="absoubox">管理部门存根</div>
@@ -582,9 +595,9 @@ class Details extends Component {
           <div className="rtbox" id="printB">
             <div className="conent">
               <div className="tit">浙江马良通讯科技有限公司余慈分公司<br/>证  明</div>
-              <div className="bhnum">编号:{details.systemPlatformNumber}</div>
+              <div className="bhnum">编号:<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.printnum)}}></span></div>
               <div className="say">
-                <div className="p">兹有<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span>所属车辆共<span contenteditable={bool}>壹</span>台已于<span>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span contenteditable={bool}>{details.terminalType}</span>，为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>，厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>。截止日期为<span contenteditable={bool} >{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
+                <div className="p">兹有<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></span>所属车辆共<span contenteditable={bool}>壹</span>台已于<span contenteditable={bool}>{window.$Funs.format(details.leaveFactoryDate)}</span>安装我公司GPS监控,终端型号为<span contenteditable={bool}>{details.terminalType}</span>，为第<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.terminalOrder)}}></span>批符合道路运输车辆卫星定位系统标准车载终端，生产厂家为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.manufacturer)}}></span>，厂家编号为<span contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.factoryNumber)}}></span>。截止日期为<span contenteditable={bool} >{!this.state.cked && window.$Funs.format(details.deadlineDate) || "永久"}</span> 经核查于省市运管GPS监控平台实现数据联网联控，且使用正常，望运管局给予办理相关手续!
                   <br/>特此证明！
                 </div>
               </div>
@@ -606,12 +619,12 @@ class Details extends Component {
                       <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.carColor)}}></td>
                       <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.typeName)}}></td>
                       <td rowspan="2" contenteditable={bool} dangerouslySetInnerHTML={{__html:this.lets(details.teamName)}}></td>
-                      <td rowspan="2">浙江马良通讯科技有限公司余慈分公司</td>
-                      <td>设备号 <br/>{details.manageNum}</td>
-                      <td rowspan="2"></td>
+                      <td rowspan="2" contenteditable={bool}>浙江马良通讯科技有限公司余慈分公司</td>
+                      <td>设备号 <br/><span contenteditable={bool}>{details.manageNum}</span></td>
+                      <td rowspan="2" contenteditable={bool}></td>
                     </tr>
                     <tr>
-                      <td>卡号{details.sim}</td>
+                      <td >卡号<span contenteditable={bool}>{details.sim}</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -653,11 +666,13 @@ export default class Prove extends Component {
       printimg:null,
     }
   }
-  want=(type,id,ts)=>{
+  want=(type,id,ts,numid)=>{
     if(id && ts){
       window.$Funs.$AJAX("prove/"+id,"get",{type:ts},e=>{
         let details=e;
         e.type=ts;
+       // e.systemPlatformNumber=parseInt(numid.num)+1
+       e.printnum=parseInt(numid.num)+1
         this.setState({
           details:e,
         })
